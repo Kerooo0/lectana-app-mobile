@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">Lectana</string>
+    // inicio
+    <string name="titulo_inicio">¡Bienvenido a Lectana!</string>
+    <string name="sub_inicio">Tú biblioteca digital educativa</string>
+    <string name="boton_inicio">Comenzar</string>
+    <string name="descripcion_logo">Logo de lectana</string>
+    //login
+    <string name="iniciar_sesion">Iniciar Sesion</string>
+    <string name="email">Email</string>
+    <string name="contraseña">Contraseña</string>
+    <string name="registrarse">¿No tenés cuenta? Registrate</string>
+    <string name="invitado">Explorar sin cuenta</string>
+    <string name="ejemplo_email">pepito@gmail.com</string>
+    <string name="ejemplo_contraseña">*******</string>
+    //centro de ayuda
+    <string name="centro_ayuda">Centro de Ayuda</string>
+    <string name="FQA">Peguntas Frecuentes (FQA)</string>
+    <string name="pregunta_1">¿Cómo usar la app?</string>
+    <string name="respuesta_1">Lectana te permite leer cuentos, resolver actividades y ganar puntos. Explora la biblioteca, únete a aulas y sigue tu progreso</string>
+    <string name="pregunta_2">¿Cómo unirme a un aula?</string>
+    <string name="respuesta_2">Tu docente te dará un código de aula. Ingresalo en la sección0 "Unirse a Aula" para acceder a los contenidos de tu clase</string>
+    <string name="pregunta_3">¿Cómo cambio mi avatar?</string>
+    <string name="respuesta_3">Puedes cambiar tu avatar desde la sección "Mi Perfil" o visitando la "Tienda de Recompensas" para desbloquear nuevos</string>
+    <string name="pregunta_4">¿Cómo gano puntos?</string>
+    <string name="respuesta_4">Ganás puntos al completar lecturas, resolver actividades correctamente y mantener rachas de lectura diaria</string>
+    <string name="ayuda">Necesito Ayuda</string>
+    <string name="mensaje_ayuda">Si tenés alguna pregunta o necesitás soporte, no dudes en contactarnos</string>
+    <string name="enviar_sugerencia">Enviar Sugerencia</string>
+
+</resources>
