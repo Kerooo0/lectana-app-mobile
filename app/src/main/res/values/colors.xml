@@ -4,4 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="azul_claro">#0092F0</color>
     <color name="azul_semi_oscuro">#1976D2</color>
+    <color name="amarilloCalido">#FFEFB3</color>
+    <color name="amarilloPastel">#FFF6C9</color>
+    <color name="naranjaPastel">#FFD180</color>
 </resources>
