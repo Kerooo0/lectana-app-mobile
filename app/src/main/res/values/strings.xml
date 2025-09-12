@@ -27,5 +27,15 @@
     <string name="ayuda">Necesito Ayuda</string>
     <string name="mensaje_ayuda">Si tenés alguna pregunta o necesitás soporte, no dudes en contactarnos</string>
     <string name="enviar_sugerencia">Enviar Sugerencia</string>
-
+    // registro pregunta
+    <string name="titulo_registro_preg">¿Quién sos?</string>
+    <string name="sub_registro_preg">Elegí tú rol para continuar con el registro</string>
+    <string name="flecha_descripcion">Volver</string>
+    <string name="img_registro_docente">Registro docente</string>
+    <string name="docente_registro_preg">Docente</string>
+    <string name="doncete_reg_preg_sub">Gestioná aulas y asigná cuentos</string>
+    <string name="alumno_registro_preg">Estudiante</string>
+    <string name="img_registro_alumno">Registro de alumno</string>
+    <string name="alumno_registro_preg_sub">Leé cuentos y resolvé actividades</string>
+    <string name="button_registro_preg">Continuar</string>
 </resources>
