@@ -3,16 +3,14 @@ package com.example.lectana.registro;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-import com.example.lectana.Inicio;
 import com.example.lectana.Login;
 import com.example.lectana.R;
 
@@ -23,6 +21,8 @@ public class registro_pregunta extends AppCompatActivity {
 
     String opcionSeleccionada = null;
     CardView cardDocente, cardAlumno;
+    ImageView volver;
+    Button btnContinuar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +33,8 @@ public class registro_pregunta extends AppCompatActivity {
 
         cardDocente = findViewById(R.id.cardDocente);
         cardAlumno = findViewById(R.id.cardAlumno);
-
+        volver = findViewById(R.id.flechaRegistro);
+        btnContinuar = findViewById(R.id.btnOpcionRegistro);
 
         cardDocente.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,6 +54,29 @@ public class registro_pregunta extends AppCompatActivity {
             }
 
         });
+
+        volver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(registro_pregunta.this,Login.class);
+
+                startActivity(intent);
+            }
+
+        });
+
+
+        btnContinuar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                registroOpcion();
+
+            }
+
+        });
+
 
     }
 
@@ -77,6 +101,32 @@ public class registro_pregunta extends AppCompatActivity {
 
     }
 
+
+    private void registroOpcion(){
+
+        if(opcionSeleccionada != null){
+
+            if( opcionSeleccionada.equalsIgnoreCase("docente") ){
+
+                Toast.makeText(registro_pregunta.this, "Vas hacia registro docente", Toast.LENGTH_SHORT).show();
+
+            } else {
+
+                Toast.makeText(registro_pregunta.this, "Vas hacia registro alumno", Toast.LENGTH_SHORT).show();
+
+            }
+
+        } else {
+
+            Toast.makeText(registro_pregunta.this, "Debes seleccionar una opción", Toast.LENGTH_SHORT).show();
+
+        }
+
+
+
+
+
+    }
 
 
 

@@ -9,23 +9,26 @@
 
 
     <ImageView
-        android:id="@+id/flecha_registro_preg"
-        android:layout_width="33dp"
-        android:layout_height="30dp"
+        android:id="@+id/flechaRegistro"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:clickable="true"
         android:contentDescription="@string/flecha_descripcion"
+        android:focusable="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="?attr/homeAsUpIndicator" />
 
     <TextView
         android:id="@+id/tit_registro_preg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="1247dp"
+        android:layout_height="48dp"
         android:layout_marginStart="36dp"
+        android:textSize="26sp"
         android:text="@string/titulo_registro_preg"
         android:textAppearance="?attr/textAppearanceHeadline6"
-        app:layout_constraintStart_toEndOf="@id/flecha_registro_preg"
-        app:layout_constraintTop_toTopOf="@id/flecha_registro_preg" />
+        app:layout_constraintStart_toEndOf="@id/flechaRegistro"
+        app:layout_constraintTop_toTopOf="@id/flechaRegistro" />
 
 
     <TextView
@@ -33,6 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
+        android:textSize="16sp"
         android:text="@string/sub_registro_preg"
         android:textAppearance="?attr/textAppearanceBody2"
         app:layout_constraintEnd_toEndOf="parent"
@@ -133,7 +137,7 @@
 
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btnOpcionRegistro"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="108dp"
