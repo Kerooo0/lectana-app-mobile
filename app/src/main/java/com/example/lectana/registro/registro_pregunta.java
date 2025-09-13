@@ -19,6 +19,9 @@ import com.example.lectana.R;
 
 public class registro_pregunta extends AppCompatActivity {
 
+
+
+
     String opcionSeleccionada = null;
     CardView cardDocente, cardAlumno;
     ImageView volver;
@@ -35,6 +38,14 @@ public class registro_pregunta extends AppCompatActivity {
         cardAlumno = findViewById(R.id.cardAlumno);
         volver = findViewById(R.id.flechaRegistro);
         btnContinuar = findViewById(R.id.btnOpcionRegistro);
+
+        if (savedInstanceState != null) {
+            opcionSeleccionada = savedInstanceState.getString("opcionSeleccionada");
+            if (opcionSeleccionada != null) {
+                cambioEstado(opcionSeleccionada);
+            }
+        }
+
 
         cardDocente.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,6 +139,12 @@ public class registro_pregunta extends AppCompatActivity {
 
     }
 
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("opcionSeleccionada", opcionSeleccionada);
+    }
 
 
 }
