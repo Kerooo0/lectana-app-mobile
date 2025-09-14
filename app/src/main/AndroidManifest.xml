@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Lectana">
         <activity
+            android:name=".registro.alumno.RegistroAlumno"
+            android:exported="false" />
+        <activity
             android:name=".registro.registro_pregunta"
             android:exported="false" />
         <activity

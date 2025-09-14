@@ -13,8 +13,7 @@ import androidx.cardview.widget.CardView;
 
 import com.example.lectana.Login;
 import com.example.lectana.R;
-
-
+import com.example.lectana.registro.alumno.RegistroAlumno;
 
 
 public class registro_pregunta extends AppCompatActivity {
@@ -123,7 +122,9 @@ public class registro_pregunta extends AppCompatActivity {
 
             } else {
 
-                Toast.makeText(registro_pregunta.this, "Vas hacia registro alumno", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(registro_pregunta.this, RegistroAlumno.class);
+
+                startActivity(intent);
 
             }
 

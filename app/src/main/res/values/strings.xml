@@ -38,4 +38,20 @@
     <string name="img_registro_alumno">Registro de alumno</string>
     <string name="alumno_registro_preg_sub">Leé cuentos y resolvé actividades</string>
     <string name="button_registro_preg">Continuar</string>
+
+    <!-- Registro Alumno / Docente -->
+    <string name="preguntaRegistro">¿Ya tenés una cuenta?</string>
+    <string name="registroIniciarSesion">Iniciá sesión</string>
+    <string name="registoEstudiante">Registro Estudiante</string>
+    <string name="terminosCondiciones">Terminos y conediciones</string>
+    <string name="privacidad">Politica de Privacidad</string>
+    <string name="soporte">Soporte</string>
+    <string name="flechaVolver">Volver</string>
+    <string name="btn_registro">Siguiente</string>
+
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
 </resources>
