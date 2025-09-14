@@ -26,6 +26,7 @@ public class Login extends AppCompatActivity {
 
         registro = findViewById(R.id.txtRegister);
 
+
         registro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
