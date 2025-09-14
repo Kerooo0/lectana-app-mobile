@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <Button
+        android:id="@+id/boton_registrarse"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:background="@drawable/boton_verde"
+        android:text="@string/btn_registro"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.133" />
+
+    <TextView
+        android:id="@+id/textoTenesCuenta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="44dp"
+        android:text="@string/preguntaRegistro"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/boton_registrarse" />
+
+    <TextView
+        android:id="@+id/IniciarSesionRegistro"
+        android:layout_width="82dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="24dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:minHeight="48dp"
+        android:text="@string/registroIniciarSesion"
+        android:textColor="@color/azul_claro"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.081"
+        app:layout_constraintStart_toEndOf="@+id/textoTenesCuenta"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textoTenesCuenta"
+        />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="38dp"
+        android:orientation="horizontal"
+        android:background="@drawable/fondo_footer_registro"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textoTenesCuenta">
+
+
+        <TextView
+            android:id="@+id/condiciones"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:textColor="@color/azul_links"
+            android:clickable="true"
+            android:focusable="true"
+            android:minHeight="48dp"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:text="@string/terminosCondiciones" />
+
+        <TextView
+            android:id="@+id/privacidad"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/azul_links"
+            android:clickable="true"
+            android:focusable="true"
+            android:minHeight="48dp"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:text="@string/privacidad" />
+
+        <TextView
+            android:id="@+id/soporteRegistro"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/azul_links"
+            android:clickable="true"
+            android:focusable="true"
+            android:minHeight="48dp"
+            android:gravity="center"
+            android:layout_marginEnd="20dp"
+            android:layout_weight="1"
+            android:text="@string/soporte" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
