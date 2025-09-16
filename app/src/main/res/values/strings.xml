@@ -48,6 +48,10 @@
     <string name="soporte">Soporte</string>
     <string name="flechaVolver">Volver</string>
     <string name="btn_registro">Siguiente</string>
+    
+    
+    <!-- Fragment registro alumno -->
+    <string name="pregunta_edad_alumno">¿Cuántos años tenés?</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->

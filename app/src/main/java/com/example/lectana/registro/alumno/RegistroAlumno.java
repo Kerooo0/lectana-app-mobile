@@ -46,6 +46,13 @@ public class RegistroAlumno extends AppCompatActivity {
             }
         });
 
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.frameLayout, new EdadAlumnoFragment())
+                    .commit();
+        }
+
 
     }
+
 }
