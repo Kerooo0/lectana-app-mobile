@@ -5,11 +5,14 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.lectana.Login;
 import com.example.lectana.R;
@@ -18,8 +21,9 @@ import com.example.lectana.registro.registro_pregunta;
 
 public class EdadAlumnoFragment extends Fragment {
 
-    private ImageView flechaVolver;
-
+    private String seleccionadaNombre = "";
+    private final int[] opcionIds = {R.id.preescolar, R.id.primariaInicial, R.id.primaria, R.id.secundaria, R.id.avanzado};
+    private final int[] ids = {R.id.preescolar, R.id.primariaInicial, R.id.primaria, R.id.secundaria, R.id.avanzado};
     public EdadAlumnoFragment() {
 
     }
@@ -32,51 +36,23 @@ public class EdadAlumnoFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_edad_alumno, container, false);
 
-        flechaVolver = view.findViewById(R.id.flechaVolverRegistro);
+        ImageView flechaVolver = view.findViewById(R.id.flechaVolverRegistro);
 
+        Button siguiente = view.findViewById(R.id.boton_registrarse);
 
-        View opcion1 = view.findViewById(R.id.opcion1);
-        ImageView icono1 = opcion1.findViewById(R.id.opcion_icon);
-        TextView texto1 = opcion1.findViewById(R.id.opcion_text);
-        icono1.setImageResource(R.drawable.monio);
-        texto1.setText(getString(R.string.preescolar));
-        TextView textoedad1 = opcion1.findViewById(R.id.opcion_edad);
-        textoedad1.setText(getString(R.string.edadPreescolar));
+        crearCards(view);
 
+        for (int id : ids) {
+            View opcion = view.findViewById(id);
+            opcion.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    cambioEstado(opcion);
+                }
 
-        View opcion2 = view.findViewById(R.id.opcion2);
-        ImageView icono2 = opcion2.findViewById(R.id.opcion_icon);
-        TextView texto2 = opcion2.findViewById(R.id.opcion_text);
-        icono2.setImageResource(R.drawable.rompe_cabezas);
-        texto2.setText(getString(R.string.primaria));
-        TextView textoedad2 = opcion2.findViewById(R.id.opcion_edad);
-        textoedad2.setText(getString(R.string.edadPrimaria));
+            });
+        }
 
-
-        View opcion3 = view.findViewById(R.id.opcion3);
-        ImageView icono3 = opcion3.findViewById(R.id.opcion_icon);
-        TextView texto3 = opcion3.findViewById(R.id.opcion_text);
-        icono3.setImageResource(R.drawable.mochila);
-        texto3.setText(getString(R.string.primariaInicial));
-        TextView textoedad3 = opcion3.findViewById(R.id.opcion_edad);
-        textoedad3.setText(getString(R.string.edadPrimariaInicial));
-
-
-        View opcion4 = view.findViewById(R.id.opcion4);
-        ImageView icono4 = opcion4.findViewById(R.id.opcion_icon);
-        TextView texto4 = opcion4.findViewById(R.id.opcion_text);
-        icono4.setImageResource(R.drawable.sombrero);
-        texto4.setText(getString(R.string.secundaria));
-        TextView textoedad4 = opcion4.findViewById(R.id.opcion_edad);
-        textoedad4.setText(getString(R.string.edadSecundaria));
-
-        View opcion5 = view.findViewById(R.id.opcion5);
-        ImageView icono5 = opcion5.findViewById(R.id.opcion_icon);
-        TextView texto5 = opcion5.findViewById(R.id.opcion_text);
-        icono5.setImageResource(R.drawable.libro);
-        texto5.setText(getString(R.string.avanzado));
-        TextView textoedad5 = opcion5.findViewById(R.id.opcion_edad);
-        textoedad5.setText(R.string.edadAvanzado);
 
         flechaVolver.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,6 +63,67 @@ public class EdadAlumnoFragment extends Fragment {
             }
         });
 
+    siguiente.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (seleccionadaNombre.equalsIgnoreCase("")){
+                    Toast.makeText(getContext(), "Debes seleccionar una opción", Toast.LENGTH_SHORT).show();
+                   // Intent intent = new Intent(getActivity(), registro_pregunta.class);
+                   // startActivity(intent);
+                } else {
+                    Toast.makeText(getContext(), "Vas hacia la siguiente pantalla "+seleccionadaNombre, Toast.LENGTH_SHORT).show();
+
+                }
+
+
+            }
+        });
+
+
         return view;
     }
+
+
+  private void  crearCards(View view){
+
+
+      int[] iconos = {R.drawable.monio, R.drawable.rompe_cabezas, R.drawable.mochila, R.drawable.sombrero, R.drawable.libro};
+      int[] textos = {R.string.preescolar, R.string.primariaInicial, R.string.primaria, R.string.secundaria, R.string.avanzado};
+      int[] edades = {R.string.edadPreescolar, R.string.primariaInicial, R.string.edadPrimaria, R.string.edadSecundaria, R.string.edadAvanzado};
+
+      for (int i = 0; i < opcionIds.length; i++) {
+          View opcion = view.findViewById(opcionIds[i]);
+          ((ImageView) opcion.findViewById(R.id.opcion_icon)).setImageResource(iconos[i]);
+          ((TextView) opcion.findViewById(R.id.opcion_text)).setText(getString(textos[i]));
+          ((TextView) opcion.findViewById(R.id.opcion_edad)).setText(getString(edades[i]));
+      }
+
+
+    }
+
+    private void cambioEstado(View opcion){
+
+      seleccionadaNombre = "";
+
+        for (int id : ids) {
+            View v = getView().findViewById(id);
+            v.setSelected(false);
+            v.animate().scaleY(1f).setDuration(200).start();
+        }
+
+        opcion.animate().scaleY(1.13f).setDuration(200).start();
+        opcion.setSelected(true);
+        seleccionadaNombre = opcion.getResources().getResourceEntryName(opcion.getId());
+        Log.d("Seleccion", "Seleccionada Nombre: " + seleccionadaNombre);
+
+
+
+    }
+
+
+
+
+
+
 }
