@@ -8,6 +8,8 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.lectana.registro.registro_pregunta;
+
 public class Login extends AppCompatActivity {
 
     TextView registro;
