@@ -1,4 +1,4 @@
-package com.example.lectana.registro;
+package com.example.lectana;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,11 +10,6 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-
-import com.example.lectana.Login;
-import com.example.lectana.R;
-
-
 
 
 public class registro_pregunta extends AppCompatActivity {
