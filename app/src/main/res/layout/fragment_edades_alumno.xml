@@ -100,11 +100,58 @@
             />
 
 
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardAdvertenciaAlumno"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:visibility="gone"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/avanzado"
+            app:layout_constraintEnd_toStartOf="@+id/boton_registrarse"
+            android:background="@color/fondo_beige">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <TextView
+                    android:id="@+id/textoImportanteAlumno"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:text="@string/importante"
+                    android:textColor="@color/textoRojo"
+                    android:textSize="14sp"/>
+
+                <TextView
+                    android:id="@+id/textoAdvertenciaAlumno"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:text="@string/mensajeAdvertenciaPrimario"
+                    android:textColor="@color/textoRojo"
+                    android:textSize="14sp"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
         <Button
             android:id="@+id/boton_registrarse"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="32dp"
+            android:layout_marginTop="20dp"
             android:background="@drawable/boton_verde"
             android:text="@string/btn_registro"
             android:textColor="@color/white"
@@ -113,7 +160,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/avanzado"
+            app:layout_constraintTop_toBottomOf="@+id/cardAdvertenciaAlumno"
             app:layout_constraintVertical_bias="0.964" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

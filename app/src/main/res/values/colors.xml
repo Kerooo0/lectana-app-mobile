@@ -2,6 +2,8 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="celeste_claro">#E9F3FF</color>
+    <color name="azul_fuerte">#2563EB</color>
     <color name="azul_claro">#0092F0</color>
     <color name="azul_semi_oscuro">#1976D2</color>
     <color name="azul_links">#1976D2</color>
@@ -10,4 +12,7 @@
     <color name="naranjaPastel">#FFD180</color>
     <color name="verde">#00C853</color>
     <color name="grisClaro">#EEEEEE</color>
+    <color name="fondo_beige">#F7F1E8</color>
+    <color name="rojoClaro">#FDA7B3</color>
+    <color name="textoRojo">#C62828</color>
 </resources>

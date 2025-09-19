@@ -3,6 +3,8 @@ package com.example.lectana.registro.alumno;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -23,6 +25,9 @@ public class EdadAlumnoFragment extends Fragment {
     private String seleccionadaNombre = "";
     private final int[] opcionIds = {R.id.preescolar, R.id.primariaInicial, R.id.primaria, R.id.secundaria, R.id.avanzado};
     private final int[] ids = {R.id.preescolar, R.id.primariaInicial, R.id.primaria, R.id.secundaria, R.id.avanzado};
+    Button siguiente;
+    CardView cardAdvertencia;
+    TextView importante, advertencia;
     public EdadAlumnoFragment() {
 
     }
@@ -33,11 +38,18 @@ public class EdadAlumnoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+
         View view = inflater.inflate(R.layout.fragment_edades_alumno, container, false);
+
+        cardAdvertencia = view.findViewById(R.id.cardAdvertenciaAlumno);
 
         ImageView flechaVolver = view.findViewById(R.id.flechaVolverRegistro);
 
-        Button siguiente = view.findViewById(R.id.boton_registrarse);
+        siguiente = view.findViewById(R.id.boton_registrarse);
+
+        importante = view.findViewById(R.id.textoImportanteAlumno);
+
+        advertencia = view.findViewById(R.id.textoAdvertenciaAlumno);
 
         crearCards(view);
 
@@ -102,8 +114,10 @@ public class EdadAlumnoFragment extends Fragment {
     }
 
     private void cambioEstado(View opcion){
-
+        int color;
+        int colorTexto;
         seleccionadaNombre = "";
+
 
         for (int id : ids) {
             View v = getView().findViewById(id);
@@ -114,6 +128,41 @@ public class EdadAlumnoFragment extends Fragment {
         opcion.animate().scaleY(1.13f).setDuration(200).start();
         opcion.setSelected(true);
         seleccionadaNombre = opcion.getResources().getResourceEntryName(opcion.getId());
+
+        if (seleccionadaNombre.equalsIgnoreCase("preescolar") || seleccionadaNombre.equalsIgnoreCase("primariaInicial")){
+
+
+            color = ContextCompat.getColor(requireContext(),R.color.fondo_beige);
+            cardAdvertencia.setBackgroundColor(color);
+            colorTexto = ContextCompat.getColor(requireContext(),R.color.textoRojo);
+            importante.setTextColor(colorTexto);
+            advertencia.setTextColor(colorTexto);
+            advertencia.setText(getString(R.string.mensajeAdvertenciaPreescolar));
+            cardAdvertencia.setVisibility(View.VISIBLE);
+            siguiente.setText(getString(R.string.estoyConAdulto));
+
+        } else if (seleccionadaNombre.equalsIgnoreCase("primaria")) {
+
+            color = ContextCompat.getColor(requireContext(),R.color.celeste_claro);
+            cardAdvertencia.setBackgroundColor(color);
+            colorTexto = ContextCompat.getColor(requireContext(),R.color.azul_fuerte);
+            importante.setTextColor(colorTexto);
+            advertencia.setTextColor(colorTexto);
+            advertencia.setText(getString(R.string.mensajeAdvertenciaPrimario));
+            if (cardAdvertencia.getVisibility() != View.VISIBLE){
+                cardAdvertencia.setVisibility(View.VISIBLE);
+            }
+
+
+            siguiente.setText(getString(R.string.estoyConAdulto));
+
+        } else {
+
+            cardAdvertencia.setVisibility(View.GONE);
+            siguiente.setText(getString(R.string.continuar));
+
+        }
+
         Log.d("Seleccion", "Seleccionada Nombre: " + seleccionadaNombre);
 
 

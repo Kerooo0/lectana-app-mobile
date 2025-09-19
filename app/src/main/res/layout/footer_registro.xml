@@ -38,11 +38,12 @@
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="38dp"
-        android:orientation="horizontal"
+        android:layout_marginTop="32dp"
         android:background="@drawable/fondo_footer_registro"
         android:gravity="center"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textoTenesCuenta">
 
@@ -52,38 +53,38 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:textColor="@color/azul_links"
+            android:layout_weight="1"
             android:clickable="true"
             android:focusable="true"
-            android:minHeight="48dp"
             android:gravity="center"
-            android:layout_weight="1"
-            android:text="@string/terminosCondiciones" />
+            android:minHeight="48dp"
+            android:text="@string/terminosCondiciones"
+            android:textColor="@color/azul_links" />
 
         <TextView
             android:id="@+id/privacidad"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/azul_links"
+            android:layout_weight="1"
             android:clickable="true"
             android:focusable="true"
-            android:minHeight="48dp"
             android:gravity="center"
-            android:layout_weight="1"
-            android:text="@string/privacidad" />
+            android:minHeight="48dp"
+            android:text="@string/privacidad"
+            android:textColor="@color/azul_links" />
 
         <TextView
             android:id="@+id/soporteRegistro"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/azul_links"
-            android:clickable="true"
-            android:focusable="true"
-            android:minHeight="48dp"
-            android:gravity="center"
             android:layout_marginEnd="20dp"
             android:layout_weight="1"
-            android:text="@string/soporte" />
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:minHeight="48dp"
+            android:text="@string/soporte"
+            android:textColor="@color/azul_links" />
 
     </LinearLayout>
 
