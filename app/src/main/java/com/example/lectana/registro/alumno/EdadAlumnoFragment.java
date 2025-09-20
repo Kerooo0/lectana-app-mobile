@@ -6,6 +6,8 @@ import android.os.Bundle;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -80,11 +82,17 @@ public class EdadAlumnoFragment extends Fragment {
 
                 if (seleccionadaNombre.equalsIgnoreCase("")){
                     Toast.makeText(getContext(), "Debes seleccionar una opción", Toast.LENGTH_SHORT).show();
-                    // Intent intent = new Intent(getActivity(), registro_pregunta.class);
-                    // startActivity(intent);
+
                 } else {
                     Toast.makeText(getContext(), "Vas hacia la siguiente pantalla "+seleccionadaNombre, Toast.LENGTH_SHORT).show();
 
+                    Fragment nuevoFragmento = new DatosBasicosAlumno();
+                    FragmentManager fragmentManager = getParentFragmentManager();
+                    FragmentTransaction cambioDeFragment = fragmentManager.beginTransaction();
+
+                    cambioDeFragment.replace(R.id.frameLayout, nuevoFragmento);
+
+                    cambioDeFragment.commit();
                 }
 
 
@@ -101,7 +109,7 @@ public class EdadAlumnoFragment extends Fragment {
 
         int[] iconos = {R.drawable.monio, R.drawable.rompe_cabezas, R.drawable.mochila, R.drawable.sombrero, R.drawable.libro};
         int[] textos = {R.string.preescolar, R.string.primariaInicial, R.string.primaria, R.string.secundaria, R.string.avanzado};
-        int[] edades = {R.string.edadPreescolar, R.string.primariaInicial, R.string.edadPrimaria, R.string.edadSecundaria, R.string.edadAvanzado};
+        int[] edades = {R.string.edadPreescolar, R.string.edadPrimariaInicial, R.string.edadPrimaria, R.string.edadSecundaria, R.string.edadAvanzado};
 
         for (int i = 0; i < opcionIds.length; i++) {
             View opcion = view.findViewById(opcionIds[i]);
