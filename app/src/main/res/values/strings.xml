@@ -92,7 +92,12 @@
 
     <!-- item opciones del alumno -->
     <string name="opcion_edad">rango de edad del alumno</string>
-
-
-
+    <string name="seguridad">Seguridad: </string>
+    <string name="nivelSeguridad">Débil</string>
+    <!-- DatosAcceso -->
+    <string name="datosAcceso">Datos de acceso</string>
+    <string name="repetirPassword">Repetir contraseña</string>
+    <string name="codigoAulaRegistro">Código del aula (opcional)</string>
+    <string name="codigoAulaRegistroSubtitulo">Código del aula</string>
+    <string name="infoCodigoAula">Este código te lo da tu docente (opcional)</string>
 </resources>
