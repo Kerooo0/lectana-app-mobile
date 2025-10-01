@@ -1,5 +1,13 @@
 <resources>
+    // Datos básicos
     <string name="app_name">Lectana</string>
+    <string name="datosBasicos">Datos básicos</string>
+    <string name="nombre">Nombre</string>
+    <string name="email">Email</string>
+    <string name="contraseña">Contraseña</string>
+    <string name="edad">Edad</string>
+    <string name="pais">País</string>
+    <string name="codigoAula">Código de aula</string>
     <string name="continuar">Continuar</string>
     // inicio
     <string name="titulo_inicio">¡Bienvenido a Lectana!</string>
@@ -8,8 +16,6 @@
     <string name="descripcion_logo">Logo de lectana</string>
     //login
     <string name="iniciar_sesion">Iniciar Sesion</string>
-    <string name="email">Email</string>
-    <string name="contraseña">Contraseña</string>
     <string name="registrarse">¿No tenés cuenta? Registrate</string>
     <string name="invitado">Explorar sin cuenta</string>
     <string name="ejemplo_email">pepito@gmail.com</string>
@@ -85,10 +91,6 @@
 
     <!-- DatosBasicos -->
 
-    <string name="datosBasicos">Datos básicos</string>
-    <string name="nombre">Nombre</string>
-    <string name="edad">Edad</string>
-    <string name="pais">País</string>
 
     <!-- item opciones del alumno -->
     <string name="opcion_edad">rango de edad del alumno</string>
@@ -100,4 +102,9 @@
     <string name="codigoAulaRegistro">Código del aula (opcional)</string>
     <string name="codigoAulaRegistroSubtitulo">Código del aula</string>
     <string name="infoCodigoAula">Este código te lo da tu docente (opcional)</string>
+    <!-- Confirmacion de datos del alumno -->
+    <string name="confirmacionDatos">Confirmación de datos</string>
+    <string name="textoConfirmacionDatos">¡Listo! Ya podés comenzar a leer y resolver actividades.
+    </string>
+    <string name="progresoAlumnoDocente">Recorda que tú docente puede ver tú progreso.</string>
 </resources>
