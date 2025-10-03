@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -37,6 +38,8 @@ public class ConfirmacionDatosAlumnos extends Fragment {
 
         ImageView volver = vista.findViewById(R.id.flechaVolverRegistro);
 
+        Button siguiente = vista.findViewById(R.id.boton_registrarse);
+
         volver.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -46,6 +49,21 @@ public class ConfirmacionDatosAlumnos extends Fragment {
                 FragmentTransaction cambioDeFragment = fragmentManager.beginTransaction();
 
                 cambioDeFragment.replace(R.id.frameLayout, volver);
+
+                cambioDeFragment.commit();
+
+            }
+        });
+
+        siguiente.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Fragment crear = new CuentaCreadaAlumnoFragment();
+                FragmentManager fragmentManager = getParentFragmentManager();
+                FragmentTransaction cambioDeFragment = fragmentManager.beginTransaction();
+
+                cambioDeFragment.replace(R.id.frameLayout, crear);
 
                 cambioDeFragment.commit();
 

@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+    tools:context=".registro.docente.DatosPersonalesDocenteFragment">
+
+    <include
+        layout="@layout/header_registro"
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <include
+        layout="@layout/barra_progreso_docente"
+        android:id="@+id/barraProgresoDocente"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/header"
+        />
+
+
+    <ScrollView
+        android:id="@+id/scrollContent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@+id/barraProgresoDocente"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tituloDatosPersonalesDocente"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/datosPersonales"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.165"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/nombreDocente"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:textStyle="bold"
+                android:text="@string/nombre"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.118"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tituloDatosPersonalesDocente" />
+
+
+            <EditText
+                android:id="@+id/editTextNombreDocente"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="15dp"
+                android:ems="10"
+                android:inputType="text"
+                android:hint="@string/nombre"
+                android:background="@drawable/fondo_edit_text_borde_gris_redondeado"
+                android:drawableStart="@drawable/vector_persona"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.253"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/nombreDocente"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                />
+
+            <TextView
+                android:id="@+id/apellidoDocente"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:textStyle="bold"
+                android:text="@string/apellido"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.118"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editTextNombreDocente" />
+
+            <EditText
+                android:id="@+id/editTextApellidoDocente"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="15dp"
+                android:ems="10"
+                android:inputType="text"
+                android:hint="@string/apellido"
+                android:background="@drawable/fondo_edit_text_borde_gris_redondeado"
+                android:drawableStart="@drawable/vector_persona"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.253"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/apellidoDocente"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                />
+
+            <TextView
+                android:id="@+id/dniDocente"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:textStyle="bold"
+                android:text="@string/dni"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.118"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editTextApellidoDocente" />
+
+            <EditText
+                android:id="@+id/editTextDniDocente"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="15dp"
+                android:ems="10"
+                android:inputType="number"
+                android:hint="@string/dni"
+                android:background="@drawable/fondo_edit_text_borde_gris_redondeado"
+                android:drawableStart="@drawable/vector_persona"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.253"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dniDocente"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                />
+
+            <TextView
+                android:id="@+id/mensajeDni"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/mensajeDni"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.212"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editTextDniDocente" />
+
+            <TextView
+                android:id="@+id/emailDocente"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/email"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.118"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/mensajeDni" />
+
+            <EditText
+                android:id="@+id/editTextEmailDocente"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="15dp"
+                android:ems="10"
+                android:inputType="textEmailAddress"
+                android:hint="@string/email"
+                android:background="@drawable/fondo_edit_text_borde_gris_redondeado"
+                android:drawableStart="@drawable/vector_email"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.253"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/emailDocente"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                />
+
+            <TextView
+                android:id="@+id/telefonoDocente"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/telefonoOpc"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.118"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editTextEmailDocente" />
+
+            <EditText
+                android:id="@+id/editTextTelefonoDocente"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="15dp"
+                android:ems="10"
+                android:inputType="number"
+                android:hint="@string/telefono"
+                android:background="@drawable/fondo_edit_text_borde_gris_redondeado"
+                android:drawableStart="@drawable/vector_phone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.253"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/telefonoDocente"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                />
+
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:text="@string/btn_registro"
+                android:background="@drawable/boton_rosa_rectangular"
+                app:backgroundTint="@null"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editTextTelefonoDocente" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

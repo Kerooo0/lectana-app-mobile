@@ -3,10 +3,14 @@
     <string name="app_name">Lectana</string>
     <string name="datosBasicos">Datos básicos</string>
     <string name="nombre">Nombre</string>
+    <string name="apellido">Apellido</string>
+    <string name="dni">DNI</string>
     <string name="email">Email</string>
+    <string name="telefono">Teléfono</string>
     <string name="contraseña">Contraseña</string>
     <string name="edad">Edad</string>
     <string name="pais">País</string>
+    <string name="datosPersonales">Datos personales</string>
     <string name="codigoAula">Código de aula</string>
     <string name="continuar">Continuar</string>
     // inicio
@@ -107,4 +111,15 @@
     <string name="textoConfirmacionDatos">¡Listo! Ya podés comenzar a leer y resolver actividades.
     </string>
     <string name="progresoAlumnoDocente">Recorda que tú docente puede ver tú progreso.</string>
+
+    <!-- Creación de cuenta exitosa -->
+    <string name="creacionAlumnoExitosa">¡Tu cuenta fue creada con exito!</string>
+    <string name="mensajeCreacionAlumnoExitoso">Ahora podés guardar tu progreso, crear favoritos y unirte a aulas virtuales</string>
+    <string name="explorarBiblioteca">Explorar biblioteca</string>
+
+   <!-- Registro de docentes -->
+    //  Datos personales docente
+    <string name="registroDocente">Registro Docente</string>
+    <string name="mensajeDni">Solo números, sin puntos ni guiones</string>
+    <string name="telefonoOpc">Teléfono (opcional)</string>
 </resources>

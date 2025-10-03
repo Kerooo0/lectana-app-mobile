@@ -118,12 +118,14 @@ public class registro_pregunta extends AppCompatActivity {
 
             if( opcionSeleccionada.equalsIgnoreCase("docente") ){
 
-                Toast.makeText(registro_pregunta.this, "Vas hacia registro docente", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(registro_pregunta.this, RegistroActivity.class);
+                intent.putExtra("seleccion", "Docente");
+                startActivity(intent);
 
             } else {
 
                 Intent intent = new Intent(registro_pregunta.this, RegistroActivity.class);
-
+                intent.putExtra("seleccion", "Alumno");
                 startActivity(intent);
 
             }

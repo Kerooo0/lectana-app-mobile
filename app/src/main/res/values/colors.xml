@@ -14,8 +14,9 @@
     <color name="verdeClaro">#BDFBE1</color>
     <color name="verdeBordesOscuros">#67FAD1</color>
     <color name="grisClaro">#EEEEEE</color>
-    <color name="fondo_beige">#F7F1E8</color>
+    <color name="fondo_beige">#F6E0AF</color>
     <color name="rojoClaro">#FDA7B3</color>
     <color name="textoRojo">#C62828</color>
     <color name="grisClaroEditText">#E0E0E0</color>
+    <color name="violetaClaro">#D946EF</color>
 </resources>
