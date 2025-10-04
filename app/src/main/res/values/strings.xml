@@ -8,6 +8,7 @@
     <string name="email">Email</string>
     <string name="telefono">Teléfono</string>
     <string name="contraseña">Contraseña</string>
+    <string name="confirmaPassword">Confirmar contraseña</string>
     <string name="edad">Edad</string>
     <string name="pais">País</string>
     <string name="datosPersonales">Datos personales</string>
@@ -128,4 +129,10 @@
     <string name="ejemploInstitucion">Ej: Escuela Nº 123</string>
     <string name="provinciaRegion">Provincia/Region(Opcional)</string>
     <string name="nivelEducativo">Nivel educativo</string>
+
+
+    <!-- Estados de la password -->
+    <string name="malo">Mala</string>
+    <string name="buena">Buena</string>
+
 </resources>

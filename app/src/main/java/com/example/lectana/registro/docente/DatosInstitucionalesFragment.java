@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -45,6 +46,8 @@ public class DatosInstitucionalesFragment extends Fragment {
 
         textoRegistro.setText(getString(R.string.registroDocente));
 
+        Button siguiente = vista.findViewById(R.id.botonSiguienteDatosInstitucionales);
+
         volver.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -58,6 +61,20 @@ public class DatosInstitucionalesFragment extends Fragment {
 
                 cambioDeFragment.commit();
 
+            }
+        });
+
+        siguiente.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment Siguiente = new DatosAccesoDocenteFragment();
+                FragmentManager fragmentManager = getParentFragmentManager();
+
+                FragmentTransaction cambioDeFragment = fragmentManager.beginTransaction();
+
+                cambioDeFragment.replace(R.id.frameLayout, Siguiente);
+
+                cambioDeFragment.commit();
             }
         });
 
