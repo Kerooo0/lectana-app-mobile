@@ -4,10 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -34,6 +37,8 @@ public class DatosPersonalesDocenteFragment extends Fragment {
 
         TextView textoRegistro = vista.findViewById(R.id.textoRegistro);
 
+        Button siguiente = vista.findViewById(R.id.btn_siguiente_datos_personales);
+
         textoRegistro.setText(getString(R.string.registroDocente));
 
         volver.setOnClickListener(new View.OnClickListener() {
@@ -46,6 +51,20 @@ public class DatosPersonalesDocenteFragment extends Fragment {
             }
         });
 
+        siguiente.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Fragment Siguiente = new DatosInstitucionalesFragment();
+                FragmentManager fragmentManager = getParentFragmentManager();
+
+                FragmentTransaction cambioDeFragment = fragmentManager.beginTransaction();
+
+                cambioDeFragment.replace(R.id.frameLayout, Siguiente);
+
+                cambioDeFragment.commit();
+            }
+        });
 
         return vista;
     }

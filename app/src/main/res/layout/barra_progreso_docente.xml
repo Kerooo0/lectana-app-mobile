@@ -8,7 +8,7 @@
 
 
     <ProgressBar
-        android:id="@+id/barraProgreso"
+        android:id="@+id/barraProgresoDoc"
         style="@android:style/Widget.ProgressBar.Horizontal"
         android:layout_width="0dp"
         android:layout_height="8dp"
@@ -29,7 +29,7 @@
         android:text="@string/pasoUno"
         android:textColor="@android:color/darker_gray"
         android:textSize="14sp"
-        app:layout_constraintTop_toBottomOf="@id/barraProgreso"
+        app:layout_constraintTop_toBottomOf="@id/barraProgresoDoc"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -47,7 +47,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.042"
         app:layout_constraintStart_toEndOf="@+id/barraProgresoPaso"
-        app:layout_constraintTop_toBottomOf="@+id/barraProgreso"
+        app:layout_constraintTop_toBottomOf="@+id/barraProgresoDoc"
         app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

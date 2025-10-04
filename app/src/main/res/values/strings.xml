@@ -13,6 +13,7 @@
     <string name="datosPersonales">Datos personales</string>
     <string name="codigoAula">Código de aula</string>
     <string name="continuar">Continuar</string>
+    <string name="ambos">Ambos</string>
     // inicio
     <string name="titulo_inicio">¡Bienvenido a Lectana!</string>
     <string name="sub_inicio">Tú biblioteca digital educativa</string>
@@ -117,9 +118,14 @@
     <string name="mensajeCreacionAlumnoExitoso">Ahora podés guardar tu progreso, crear favoritos y unirte a aulas virtuales</string>
     <string name="explorarBiblioteca">Explorar biblioteca</string>
 
-   <!-- Registro de docentes -->
-    //  Datos personales docente
+    <!-- Registro de docentes -->
+    // Datos personales docente
     <string name="registroDocente">Registro Docente</string>
     <string name="mensajeDni">Solo números, sin puntos ni guiones</string>
     <string name="telefonoOpc">Teléfono (opcional)</string>
+    <string name="datosInstitucionales">Datos institucionales</string>
+    <string name="nombreInstitucion">Nombre de la institución</string>
+    <string name="ejemploInstitucion">Ej: Escuela Nº 123</string>
+    <string name="provinciaRegion">Provincia/Region(Opcional)</string>
+    <string name="nivelEducativo">Nivel educativo</string>
 </resources>
