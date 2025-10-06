@@ -1,6 +1,5 @@
 package com.example.lectana.registro.docente;
 
-import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -15,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.lectana.R;
+import com.example.lectana.clases.validaciones.ValidacionesPassword;
 
 public class DatosAccesoDocenteFragment extends Fragment {
 
@@ -23,7 +23,7 @@ public class DatosAccesoDocenteFragment extends Fragment {
         // Required empty public constructor
     }
 
-    private TextView estadoPassword;
+    private TextView estadoPassword, coincidenciaPasswordDocente;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,40 +40,52 @@ public class DatosAccesoDocenteFragment extends Fragment {
 
         progreso.setText(getString(R.string.pasoTres));
 
+        textoRegistro.setText(getString(R.string.registroDocente));
+
         EditText password = vista.findViewById(R.id.editTextpasswordDocente);
 
         estadoPassword = vista.findViewById(R.id.resultadoPassword);
 
-        password.addTextChangedListener(new TextWatcher() {
+        EditText passwordCoincidencia = vista.findViewById(R.id.editTextRepetirpasswordDocente);
+
+        coincidenciaPasswordDocente = vista.findViewById(R.id.coincidenciaPasswordDocente);
 
 
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            }
-
+        TextWatcher watcher = new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String pass1 = password.getText().toString();
+                String pass2 = passwordCoincidencia.getText().toString();
 
-                String password = s.toString();
-                String regex = "^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[@#$%^&+=!]).*$";
 
-                int length = s.length();
-                if (password.matches(regex)) {
-                    estadoPassword.setText(getString(R.string.buena));
-                    estadoPassword.setTextColor(Color.GREEN);
-                } else {
-                    estadoPassword.setText(getString(R.string.malo));
-                    estadoPassword.setTextColor(Color.RED);
-                }
+                boolean esValida = ValidacionesPassword.esPasswordValida(pass1);
+                ValidacionesPassword.mostrarEstadoPassword(estadoPassword, esValida);
+
+
+                validarCoincidencia(pass1, pass2);
             }
 
-                @Override
-                public void afterTextChanged(Editable s) {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-            }
-        });
+            @Override public void afterTextChanged(Editable s) {}
+        };
+
+
+        password.addTextChangedListener(watcher);
+        passwordCoincidencia.addTextChangedListener(watcher);
 
         return vista;
+    }
+
+
+    private void validarCoincidencia(String pass1, String pass2) {
+        boolean coinciden = ValidacionesPassword.sonPasswordsIguales(pass1, pass2);
+        ValidacionesPassword.mostrarCoincidenciaPasswords(
+                coincidenciaPasswordDocente,
+                coinciden,
+                "Coinciden",
+                "No coinciden"
+        );
     }
 }

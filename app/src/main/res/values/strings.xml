@@ -134,5 +134,5 @@
     <!-- Estados de la password -->
     <string name="malo">Mala</string>
     <string name="buena">Buena</string>
-
+    <string name="coincidenciaPassword">Las contraseñas no coinciden</string>
 </resources>

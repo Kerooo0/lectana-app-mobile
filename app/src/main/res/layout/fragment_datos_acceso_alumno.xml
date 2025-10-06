@@ -31,8 +31,7 @@
         android:text="@string/datosAcceso"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.081"
+        android:layout_marginStart="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/barraProgresoIncluida" />
 
@@ -43,9 +42,8 @@
         android:layout_marginTop="30dp"
         android:text="@string/contraseña"
         android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/datosAcceso"
+        android:layout_marginStart="20dp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/datosAcceso" />
 
     <EditText
@@ -75,21 +73,21 @@
         android:textSize="12sp"
         android:text="@string/seguridad"
         app:layout_constraintBottom_toTopOf="@+id/repetirPasswordAlumno"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/passwordAlumno"
+        android:layout_marginStart="20dp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/passwordAlumno" />
 
     <TextView
+        android:id="@+id/estadoPasswordAlumno"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="@string/nivelSeguridad"
+        android:text="@string/malo"
+        android:textColor="@color/rojoClaro"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.020"
         app:layout_constraintStart_toEndOf="@+id/nivelSeguridad"
-
         app:layout_constraintTop_toBottomOf="@+id/passwordAlumno" />
 
     <TextView
@@ -99,10 +97,21 @@
         android:layout_marginTop="28dp"
         android:text="@string/repetirPassword"
         android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.077"
+        android:layout_marginStart="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nivelSeguridad" />
+
+    <TextView
+        android:id="@+id/repetirPasswordIncorrectaAlumno"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="@string/coincidenciaPassword"
+        android:visibility="gone"
+        android:layout_marginStart="20dp"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/repetirPasswordAlumno" />
 
     <EditText
         android:id="@+id/editTextRepetirPasswordAlumno"
@@ -113,11 +122,11 @@
         android:inputType="textPassword"
         android:background="@drawable/fondo_edit_text_borde_gris_redondeado"
         android:drawableStart="@drawable/vector_candado"
-        android:hint="@string/edad"
+        android:hint="@string/repetirPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.132"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/repetirPasswordAlumno"
+        app:layout_constraintTop_toBottomOf="@+id/repetirPasswordIncorrectaAlumno"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         />
