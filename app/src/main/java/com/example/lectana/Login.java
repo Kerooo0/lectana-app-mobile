@@ -13,6 +13,7 @@ import com.example.lectana.registro.registro_pregunta;
 public class Login extends AppCompatActivity {
 
     TextView registro;
+    Button boton_iniciar_sesion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +22,7 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         registro = findViewById(R.id.txtRegister);
+        boton_iniciar_sesion = findViewById(R.id.btnLogin);
 
         registro.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -30,6 +32,12 @@ public class Login extends AppCompatActivity {
             }
         });
 
-
-    }
+        // Botón temporal para probar Pantalla Principal Docente
+        boton_iniciar_sesion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Login.this, PantallaPrincipalDocente.class);
+                startActivity(intent);
+            }
+        });
 }

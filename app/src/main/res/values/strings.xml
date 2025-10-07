@@ -135,4 +135,22 @@
     <string name="malo">Mala</string>
     <string name="buena">Buena</string>
     <string name="coincidenciaPassword">Las contraseñas no coinciden</string>
+    
+    <!-- Panel Docente -->
+    <string name="panel_docente">Panel Docente</string>
+    <string name="bienvenida_profesor">Bienvenida, Prof. García</string>
+    <string name="aulas">Aulas</string>
+    <string name="estudiantes">Alumnos</string>
+    <string name="cuentos_asignados">Cuentos</string>
+    <string name="acciones_rapidas">Acciones Rápidas</string>
+    <string name="crear_nueva_aula">Crear Nueva Aula</string>
+    <string name="asignar_cuento_aula">Asignar Cuento a Aula</string>
+    <string name="mis_aulas">Mis Aulas</string>
+    <string name="estudiantes_activos_hoy">estudiantes activos hoy</string>
+    <string name="ver_detalles">Ver Detalles</string>
+    <string name="codigo_aula">Código:</string>
+    <string name="estudiantes_text">estudiantes</string>
+    <string name="descripcion_notificaciones">Notificaciones</string>
+    <string name="descripcion_configuracion">Configuración</string>
+    <string name="descripcion_estadisticas">Estadísticas</string>
 </resources>

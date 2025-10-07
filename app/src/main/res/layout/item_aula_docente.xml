@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="3dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+        <!-- Contenido Principal de la Aula -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/texto_nombre_aula"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3°A - Lengua y Literatura"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/texto_detalles_aula"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="24 estudiantes • Código: ABC123"
+                android:textColor="@color/grisClaro"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/texto_estudiantes_activos_hoy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="18 estudiantes activos hoy"
+                android:textColor="@color/verde"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+        <!-- Botones de Acción -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/icono_ver_estadisticas"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="12dp"
+                android:contentDescription="@string/descripcion_estadisticas"
+                android:src="@drawable/ic_bar_chart"
+                android:tint="@color/azul_claro" />
+
+            <Button
+                android:id="@+id/boton_ver_detalles_aula"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/boton_azul_rectangular"
+                android:text="@string/ver_detalles"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:minWidth="60dp"
+                android:minHeight="32dp"
+                app:backgroundTint="@null" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
