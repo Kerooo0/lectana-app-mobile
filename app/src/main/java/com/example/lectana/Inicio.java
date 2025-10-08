@@ -15,6 +15,8 @@ import androidx.core.view.WindowInsetsCompat;
 public class Inicio extends AppCompatActivity {
 
     Button boton;
+    Button botonIrPanelEstudiante;
+    Button botonIrPanelDocente;
     private static final String BASE_URL = "https://lectana-backend.onrender.com";
 
     @Override
@@ -24,11 +26,31 @@ public class Inicio extends AppCompatActivity {
         setContentView(R.layout.activity_inicio);
 
         boton = findViewById(R.id.boton_inicio);
+        botonIrPanelEstudiante = findViewById(R.id.boton_ir_panel_estudiante);
+        botonIrPanelDocente = findViewById(R.id.boton_ir_panel_docente);
 
         boton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Inicio.this, Login.class);
+                startActivity(intent);
+            }
+        });
+
+        // Botón temporal: ir directo al Panel Estudiante
+        botonIrPanelEstudiante.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Inicio.this, PanelEstudianteActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        // Botón temporal: ir directo al Panel Docente
+        botonIrPanelDocente.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Inicio.this, PantallaPrincipalDocente.class);
                 startActivity(intent);
             }
         });

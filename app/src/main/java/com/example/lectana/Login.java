@@ -33,11 +33,11 @@ public class Login extends AppCompatActivity {
             }
         });
 
-        // Botón temporal para probar Pantalla Principal Docente
+        // Botón temporal para probar Panel Estudiante
         boton_iniciar_sesion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Login.this, PantallaPrincipalDocente.class);
+                Intent intent = new Intent(Login.this, PanelEstudianteActivity.class);
                 startActivity(intent);
             }
         });
