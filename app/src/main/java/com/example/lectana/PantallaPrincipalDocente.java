@@ -60,18 +60,18 @@ public class PantallaPrincipalDocente extends AppCompatActivity {
         adaptador_lista_aulas = new AdaptadorListaAulas(lista_aulas_docente_datos, new AdaptadorListaAulas.OnClickListenerAula() {
             @Override
             public void onClicAula(ModeloAula aula_seleccionada) {
-                // Navegar a detalles del aula
-                Intent intento_navegacion = new Intent(PantallaPrincipalDocente.this, PantallaDetallesAula.class);
-                intento_navegacion.putExtra("id_aula", aula_seleccionada.getId_aula());
-                startActivity(intento_navegacion);
+                // TODO: Navegar a detalles del aula cuando se implemente
+                // Intent intento_navegacion = new Intent(PantallaPrincipalDocente.this, PantallaDetallesAula.class);
+                // intento_navegacion.putExtra("id_aula", aula_seleccionada.getId_aula());
+                // startActivity(intento_navegacion);
             }
 
             @Override
             public void onClicEstadisticas(ModeloAula aula_seleccionada) {
-                // Navegar a estadísticas del aula
-                Intent intento_navegacion = new Intent(PantallaPrincipalDocente.this, PantallaEstadisticasAula.class);
-                intento_navegacion.putExtra("id_aula", aula_seleccionada.getId_aula());
-                startActivity(intento_navegacion);
+                // TODO: Navegar a estadísticas del aula cuando se implemente
+                // Intent intento_navegacion = new Intent(PantallaPrincipalDocente.this, PantallaEstadisticasAula.class);
+                // intento_navegacion.putExtra("id_aula", aula_seleccionada.getId_aula());
+                // startActivity(intento_navegacion);
             }
         });
 
@@ -104,18 +104,18 @@ public class PantallaPrincipalDocente extends AppCompatActivity {
         icono_campana_notificaciones.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View vista) {
-                // Navegar a notificaciones
-                Intent intento_navegacion = new Intent(PantallaPrincipalDocente.this, PantallaNotificaciones.class);
-                startActivity(intento_navegacion);
+                // TODO: Navegar a notificaciones cuando se implemente
+                // Intent intento_navegacion = new Intent(PantallaPrincipalDocente.this, PantallaNotificaciones.class);
+                // startActivity(intento_navegacion);
             }
         });
 
         icono_configuracion_ajustes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View vista) {
-                // Navegar a configuración
-                Intent intento_navegacion = new Intent(PantallaPrincipalDocente.this, PantallaConfiguracion.class);
-                startActivity(intento_navegacion);
+                // TODO: Navegar a configuración cuando se implemente
+                // Intent intento_navegacion = new Intent(PantallaPrincipalDocente.this, PantallaConfiguracion.class);
+                // startActivity(intento_navegacion);
             }
         });
 
@@ -123,7 +123,7 @@ public class PantallaPrincipalDocente extends AppCompatActivity {
             @Override
             public void onClick(View vista) {
                 // Navegar a crear aula
-                Intent intento_navegacion = new Intent(PantallaPrincipalDocente.this, PantallaCrearAula.class);
+                Intent intento_navegacion = new Intent(PantallaPrincipalDocente.this, CrearNuevaAulaActivity.class);
                 startActivity(intento_navegacion);
             }
         });
@@ -131,9 +131,9 @@ public class PantallaPrincipalDocente extends AppCompatActivity {
         findViewById(R.id.boton_asignar_cuento_aula).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View vista) {
-                // Navegar a asignar cuento
-                Intent intento_navegacion = new Intent(PantallaPrincipalDocente.this, PantallaAsignarCuento.class);
-                startActivity(intento_navegacion);
+                // TODO: Navegar a asignar cuento cuando se implemente
+                // Intent intento_navegacion = new Intent(PantallaPrincipalDocente.this, PantallaAsignarCuento.class);
+                // startActivity(intento_navegacion);
             }
         });
     }

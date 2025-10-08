@@ -24,6 +24,12 @@
             android:name=".PantallaPrincipalDocente"
             android:exported="false" />
         <activity
+            android:name=".CrearNuevaAulaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SeleccionarCuentosActivity"
+            android:exported="false" />
+        <activity
             android:name=".centro_ayuda"
             android:exported="false" />
         <activity

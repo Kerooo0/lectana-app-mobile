@@ -152,5 +152,30 @@
     <string name="estudiantes_text">estudiantes</string>
     <string name="descripcion_notificaciones">Notificaciones</string>
     <string name="descripcion_configuracion">Configuración</string>
+    <!-- Crear Nueva Aula - Paso 1 -->
+    <string name="crear_nueva_aula_titulo">Crear Nueva Aula</string>
+    <string name="nombre_del_aula">Nombre del Aula</string>
+    <string name="ejemplo_nombre_aula">Ej: 3°A - Lengua</string>
+    <string name="nombre_del_colegio">Nombre del Colegio</string>
+    <string name="ejemplo_nombre_colegio">Ej: Colegio San Martín</string>
+    <string name="grado">Grado</string>
+    <string name="ejemplo_grado">3°</string>
+    <string name="seccion">Sección</string>
+    <string name="ejemplo_seccion">A</string>
+    <string name="materia">Materia</string>
+    <string name="ejemplo_materia">Lengua y Literatura</string>
+    <string name="descripcion_opcional">Descripción (Opcional)</string>
+    <string name="ejemplo_descripcion">Descripción del aula...</string>
+    <string name="vista_previa">Vista Previa</string>
+    <string name="codigo_generado_automaticamente">Código: Se generará automáticamente</string>
+    <string name="crear_aula">Crear Aula</string>
+    <string name="cancelar">Cancelar</string>
+    
+    <!-- Seleccionar Cuentos - Paso 2 -->
+    <string name="seleccionar_cuentos_titulo">Seleccionar Cuentos</string>
+    <string name="configurar_aula">Configurar Aula</string>
+    <string name="cuentos_disponibles">Cuentos Disponibles</string>
+    <string name="finalizar_aula">Finalizar Aula</string>
+    <string name="cuentos_seleccionados">Cuentos Seleccionados</string>
     <string name="descripcion_estadisticas">Estadísticas</string>
 </resources>

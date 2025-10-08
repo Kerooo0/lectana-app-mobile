@@ -18,5 +18,11 @@
     <color name="rojoClaro">#FDA7B3</color>
     <color name="textoRojo">#C62828</color>
     <color name="grisClaroEditText">#E0E0E0</color>
+    <color name="gris_claro">#E0E0E0</color>
+    <color name="gris_medio">#757575</color>
+    <color name="gris_oscuro">#424242</color>
+    <color name="fondo_claro">#F5F5F5</color>
+    <color name="morado_claro">#F3E5F5</color>
+    <color name="rojo">#F44336</color>
     <color name="violetaClaro">#D946EF</color>
 </resources>
