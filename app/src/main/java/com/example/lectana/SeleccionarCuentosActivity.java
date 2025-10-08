@@ -74,14 +74,22 @@ public class SeleccionarCuentosActivity extends AppCompatActivity implements Ada
 
     private void cargarCuentosDisponibles() {
         // Datos de ejemplo - aquí se conectaría con la API
-        listaCuentos.add(new ModeloCuento(1, "El Principito", "Antoine de Saint-Exupéry", "Primaria", "Un clásico de la literatura infantil"));
-        listaCuentos.add(new ModeloCuento(2, "Caperucita Roja", "Charles Perrault", "Preescolar", "La historia de la niña y el lobo"));
-        listaCuentos.add(new ModeloCuento(3, "Los Tres Cerditos", "Anónimo", "Preescolar", "La fábula de los tres hermanos"));
-        listaCuentos.add(new ModeloCuento(4, "Alicia en el País de las Maravillas", "Lewis Carroll", "Primaria", "Las aventuras de Alicia"));
-        listaCuentos.add(new ModeloCuento(5, "El Patito Feo", "Hans Christian Andersen", "Preescolar", "La historia del patito diferente"));
-        listaCuentos.add(new ModeloCuento(6, "Pinocho", "Carlo Collodi", "Primaria", "Las aventuras del muñeco de madera"));
-        listaCuentos.add(new ModeloCuento(7, "La Bella y la Bestia", "Gabrielle-Suzanne Barbot", "Primaria", "Una historia de amor y transformación"));
-        listaCuentos.add(new ModeloCuento(8, "Blancanieves", "Hermanos Grimm", "Preescolar", "La historia de la princesa y los siete enanitos"));
+        listaCuentos.add(new ModeloCuento(1, "El Principito", "Antoine de Saint-Exupéry", "Fantasía", 
+            "8-12", "4.8★", "", "25 min", "Un clásico de la literatura infantil"));
+        listaCuentos.add(new ModeloCuento(2, "Caperucita Roja", "Charles Perrault", "Clásico", 
+            "4-6", "4.5★", "", "15 min", "La historia de la niña y el lobo"));
+        listaCuentos.add(new ModeloCuento(3, "Los Tres Cerditos", "Anónimo", "Clásico", 
+            "3-5", "4.2★", "", "12 min", "La fábula de los tres hermanos"));
+        listaCuentos.add(new ModeloCuento(4, "Alicia en el País de las Maravillas", "Lewis Carroll", "Fantasía", 
+            "8-12", "4.6★", "", "45 min", "Las aventuras de Alicia"));
+        listaCuentos.add(new ModeloCuento(5, "El Patito Feo", "Hans Christian Andersen", "Clásico", 
+            "4-7", "4.7★", "", "18 min", "La historia del patito diferente"));
+        listaCuentos.add(new ModeloCuento(6, "Pinocho", "Carlo Collodi", "Aventura", 
+            "6-10", "4.4★", "", "35 min", "Las aventuras del muñeco de madera"));
+        listaCuentos.add(new ModeloCuento(7, "La Bella y la Bestia", "Gabrielle-Suzanne Barbot", "Romance", 
+            "6-10", "4.5★", "", "30 min", "Una historia de amor y transformación"));
+        listaCuentos.add(new ModeloCuento(8, "Blancanieves", "Hermanos Grimm", "Clásico", 
+            "4-6", "4.3★", "", "20 min", "La historia de la princesa y los siete enanitos"));
         
         adaptadorCuentos.notifyDataSetChanged();
     }

@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fondo_claro">
+
+    <!-- Header -->
+    <LinearLayout
+        android:id="@+id/header_asignar_cuento"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/verde"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/boton_volver"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_arrow_back"
+                android:tint="@android:color/white"
+                android:contentDescription="@string/flecha_descripcion"
+                android:padding="4dp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:layout_marginHorizontal="8dp">
+
+                <TextView
+                    android:id="@+id/texto_titulo_asignar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/asignar_cuento"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/texto_nombre_aula_asignar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="3°A - Lengua"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Barra de búsqueda -->
+    <LinearLayout
+        android:id="@+id/contenedor_busqueda"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="16dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@android:color/white"
+        android:padding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/header_asignar_cuento">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_search"
+            android:tint="@color/gris_medio"
+            android:layout_marginEnd="12dp"
+            android:contentDescription="@string/buscar_cuentos" />
+
+        <EditText
+            android:id="@+id/campo_busqueda_cuentos"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/buscar_cuentos"
+            android:textColorHint="@color/gris_medio"
+            android:textSize="16sp"
+            android:background="@null"
+            android:inputType="text" />
+
+    </LinearLayout>
+
+    <!-- Filtros de categoría -->
+    <HorizontalScrollView
+        android:id="@+id/scroll_filtros"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="16dp"
+        app:layout_constraintTop_toBottomOf="@id/contenedor_busqueda">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/filtro_todos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="@string/todos"
+                android:textColor="@android:color/white"
+                android:background="@drawable/boton_verde"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"
+                app:backgroundTint="@null" />
+
+            <Button
+                android:id="@+id/filtro_clasicos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="@string/clasicos"
+                android:textColor="@color/gris_oscuro"
+                android:background="@drawable/boton_blanco_rectangular"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"
+                app:backgroundTint="@null" />
+
+            <Button
+                android:id="@+id/filtro_aventura"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="@string/aventura"
+                android:textColor="@color/gris_oscuro"
+                android:background="@drawable/boton_blanco_rectangular"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"
+                app:backgroundTint="@null" />
+
+            <Button
+                android:id="@+id/filtro_edad"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/edad_8_12"
+                android:textColor="@color/gris_oscuro"
+                android:background="@drawable/boton_blanco_rectangular"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"
+                app:backgroundTint="@null" />
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+    <!-- Lista de cuentos -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_cuentos_disponibles"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="80dp"
+        app:layout_constraintTop_toBottomOf="@id/scroll_filtros"
+        app:layout_constraintBottom_toTopOf="@id/boton_confirmar_asignaciones"
+        android:paddingBottom="16dp"
+        android:clipToPadding="false" />
+
+    <!-- Botón de confirmar asignaciones -->
+    <Button
+        android:id="@+id/boton_confirmar_asignaciones"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/boton_verde"
+        android:text="@string/confirmar_asignaciones"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:backgroundTint="@null" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

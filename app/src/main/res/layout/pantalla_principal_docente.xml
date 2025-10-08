@@ -242,38 +242,63 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginHorizontal="16dp"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:gravity="center"
         app:layout_constraintTop_toBottomOf="@id/texto_titulo_acciones_rapidas">
 
-        <Button
-            android:id="@+id/boton_crear_nueva_aula"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_weight="1"
-            android:layout_marginEnd="6dp"
-            android:background="@drawable/boton_azul_rectangular"
-            android:drawableStart="@drawable/ic_add"
-            android:drawablePadding="10dp"
-            android:text="@string/crear_nueva_aula"
-            android:textColor="@android:color/white"
-            android:textSize="15sp"
+        <!-- Primera fila de botones -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:gravity="center"
-            android:paddingHorizontal="12dp"
-            app:backgroundTint="@null" />
+            android:layout_marginBottom="12dp">
 
+            <Button
+                android:id="@+id/boton_crear_nueva_aula"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/boton_azul_rectangular"
+                android:drawableStart="@drawable/ic_add"
+                android:drawablePadding="10dp"
+                android:text="@string/crear_nueva_aula"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"
+                android:gravity="center"
+                android:paddingHorizontal="12dp"
+                app:backgroundTint="@null" />
+
+            <Button
+                android:id="@+id/boton_asignar_cuento_aula"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/boton_verde"
+                android:text="@string/asignar_cuento_aula"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"
+                android:drawableStart="@drawable/ic_book"
+                android:drawablePadding="10dp"
+                android:gravity="center"
+                android:paddingHorizontal="12dp"
+                app:backgroundTint="@null" />
+
+        </LinearLayout>
+
+        <!-- Segunda fila - Botón Crear Actividad -->
         <Button
-            android:id="@+id/boton_asignar_cuento_aula"
-            android:layout_width="0dp"
+            android:id="@+id/boton_crear_actividad"
+            android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:layout_weight="1"
-            android:layout_marginStart="6dp"
-            android:background="@drawable/boton_verde"
-            android:text="@string/asignar_cuento_aula"
+            android:background="@drawable/boton_naranja_rectangular"
+            android:drawableStart="@drawable/ic_check_circle"
+            android:drawablePadding="10dp"
+            android:text="@string/crear_actividad"
             android:textColor="@android:color/white"
             android:textSize="15sp"
-            android:drawableStart="@drawable/ic_book"
-            android:drawablePadding="10dp"
             android:gravity="center"
             android:paddingHorizontal="12dp"
             app:backgroundTint="@null" />

@@ -60,10 +60,11 @@ public class PantallaPrincipalDocente extends AppCompatActivity {
         adaptador_lista_aulas = new AdaptadorListaAulas(lista_aulas_docente_datos, new AdaptadorListaAulas.OnClickListenerAula() {
             @Override
             public void onClicAula(ModeloAula aula_seleccionada) {
-                // TODO: Navegar a detalles del aula cuando se implemente
-                // Intent intento_navegacion = new Intent(PantallaPrincipalDocente.this, PantallaDetallesAula.class);
-                // intento_navegacion.putExtra("id_aula", aula_seleccionada.getId_aula());
-                // startActivity(intento_navegacion);
+                // Navegar a visualizar aula
+                Intent intento_navegacion = new Intent(PantallaPrincipalDocente.this, VisualizarAulaActivity.class);
+                intento_navegacion.putExtra("nombre_aula", aula_seleccionada.getNombre_aula());
+                intento_navegacion.putExtra("codigo_aula", aula_seleccionada.getCodigo_aula());
+                startActivity(intento_navegacion);
             }
 
             @Override
@@ -110,14 +111,14 @@ public class PantallaPrincipalDocente extends AppCompatActivity {
             }
         });
 
-        icono_configuracion_ajustes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View vista) {
-                // TODO: Navegar a configuración cuando se implemente
-                // Intent intento_navegacion = new Intent(PantallaPrincipalDocente.this, PantallaConfiguracion.class);
-                // startActivity(intento_navegacion);
-            }
-        });
+            icono_configuracion_ajustes.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View vista) {
+                    // Navegar al perfil del docente
+                    Intent intento_navegacion = new Intent(PantallaPrincipalDocente.this, PerfilDocenteActivity.class);
+                    startActivity(intento_navegacion);
+                }
+            });
 
         findViewById(R.id.boton_crear_nueva_aula).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,9 +132,18 @@ public class PantallaPrincipalDocente extends AppCompatActivity {
         findViewById(R.id.boton_asignar_cuento_aula).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View vista) {
-                // TODO: Navegar a asignar cuento cuando se implemente
-                // Intent intento_navegacion = new Intent(PantallaPrincipalDocente.this, PantallaAsignarCuento.class);
-                // startActivity(intento_navegacion);
+                // Navegar a asignar cuento
+                Intent intento_navegacion = new Intent(PantallaPrincipalDocente.this, AsignarCuentoActivity.class);
+                startActivity(intento_navegacion);
+            }
+        });
+
+        findViewById(R.id.boton_crear_actividad).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View vista) {
+                // Navegar a crear actividad
+                Intent intento_navegacion = new Intent(PantallaPrincipalDocente.this, CrearActividadActivity.class);
+                startActivity(intento_navegacion);
             }
         });
     }

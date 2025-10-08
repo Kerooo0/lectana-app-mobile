@@ -30,6 +30,27 @@
             android:name=".SeleccionarCuentosActivity"
             android:exported="false" />
         <activity
+            android:name=".VisualizarAulaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AsignarCuentoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CrearActividadActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DetalleCuentoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SeleccionarAulaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PerfilDocenteActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ConfiguracionAulaActivity"
+            android:exported="false" />
+        <activity
             android:name=".centro_ayuda"
             android:exported="false" />
         <activity

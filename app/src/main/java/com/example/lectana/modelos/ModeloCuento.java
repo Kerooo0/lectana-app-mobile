@@ -4,17 +4,27 @@ public class ModeloCuento {
     private int id;
     private String titulo;
     private String autor;
-    private String nivel;
+    private String genero;
+    private String edadRecomendada;
+    private String rating;
+    private String imagenUrl;
+    private String tiempoLectura;
     private String descripcion;
     private boolean seleccionado;
 
     public ModeloCuento() {}
 
-    public ModeloCuento(int id, String titulo, String autor, String nivel, String descripcion) {
+    public ModeloCuento(int id, String titulo, String autor, String genero, 
+                       String edadRecomendada, String rating, String imagenUrl, 
+                       String tiempoLectura, String descripcion) {
         this.id = id;
         this.titulo = titulo;
         this.autor = autor;
-        this.nivel = nivel;
+        this.genero = genero;
+        this.edadRecomendada = edadRecomendada;
+        this.rating = rating;
+        this.imagenUrl = imagenUrl;
+        this.tiempoLectura = tiempoLectura;
         this.descripcion = descripcion;
         this.seleccionado = false;
     }
@@ -44,12 +54,44 @@ public class ModeloCuento {
         this.autor = autor;
     }
 
-    public String getNivel() {
-        return nivel;
+    public String getGenero() {
+        return genero;
     }
 
-    public void setNivel(String nivel) {
-        this.nivel = nivel;
+    public void setGenero(String genero) {
+        this.genero = genero;
+    }
+
+    public String getEdadRecomendada() {
+        return edadRecomendada;
+    }
+
+    public void setEdadRecomendada(String edadRecomendada) {
+        this.edadRecomendada = edadRecomendada;
+    }
+
+    public String getRating() {
+        return rating;
+    }
+
+    public void setRating(String rating) {
+        this.rating = rating;
+    }
+
+    public String getImagenUrl() {
+        return imagenUrl;
+    }
+
+    public void setImagenUrl(String imagenUrl) {
+        this.imagenUrl = imagenUrl;
+    }
+
+    public String getTiempoLectura() {
+        return tiempoLectura;
+    }
+
+    public void setTiempoLectura(String tiempoLectura) {
+        this.tiempoLectura = tiempoLectura;
     }
 
     public String getDescripcion() {

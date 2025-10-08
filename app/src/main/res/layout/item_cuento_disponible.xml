@@ -3,34 +3,35 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginVertical="4dp"
-    android:layout_marginHorizontal="8dp"
+    android:layout_marginBottom="12dp"
     app:cardCornerRadius="12dp"
-    app:cardElevation="2dp">
+    app:cardElevation="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center_vertical"
         android:padding="16dp"
-        android:background="@android:color/white">
+        android:gravity="center_vertical">
 
-        <!-- Checkbox -->
+        <!-- Checkbox para selección -->
         <CheckBox
             android:id="@+id/checkbox_cuento"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:buttonTint="@color/azul_semi_oscuro" />
+            android:layout_marginEnd="12dp"
+            android:buttonTint="@color/verde" />
 
-        <!-- Icono del cuento -->
+        <!-- Imagen del cuento -->
         <ImageView
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/ic_book"
-            android:tint="@color/azul_semi_oscuro"
-            android:layout_marginEnd="16dp" />
+            android:id="@+id/imagen_cuento"
+            android:layout_width="60dp"
+            android:layout_height="80dp"
+            android:src="@drawable/imagen_cuento_placeholder"
+            android:scaleType="centerCrop"
+            android:contentDescription="Imagen del cuento"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/borde_redondeado_imagen_cuento" />
 
         <!-- Información del cuento -->
         <LinearLayout
@@ -40,42 +41,94 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/texto_titulo_cuento"
+                android:id="@+id/titulo_cuento"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="El Principito"
+                android:text="Caperucita Roja"
                 android:textColor="@color/gris_oscuro"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:maxLines="2"
+                android:ellipsize="end" />
 
             <TextView
-                android:id="@+id/texto_autor_cuento"
+                android:id="@+id/autor_cuento"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Antoine de Saint-Exupéry"
+                android:text="Hermanos Grimm"
                 android:textColor="@color/gris_medio"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:layout_marginTop="2dp" />
 
-            <TextView
-                android:id="@+id/texto_nivel_cuento"
+            <!-- Fila con edad, rating y tiempo -->
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:layout_marginTop="4dp"
-                android:text="Nivel: Primaria"
-                android:textColor="@color/azul_semi_oscuro"
-                android:textSize="12sp" />
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/badge_edad"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4-6"
+                    android:background="@drawable/badge_edad"
+                    android:textColor="@color/gris_oscuro"
+                    android:textSize="11sp"
+                    android:paddingHorizontal="6dp"
+                    android:paddingVertical="2dp"
+                    android:layout_marginEnd="6dp" />
+
+                <TextView
+                    android:id="@+id/rating_cuento"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4.5★"
+                    android:textColor="@color/amarilloCalido"
+                    android:textSize="12sp"
+                    android:layout_marginEnd="6dp" />
+
+                <ImageView
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:src="@drawable/ic_clock"
+                    android:tint="@color/gris_medio"
+                    android:contentDescription="Tiempo de lectura"
+                    android:layout_marginEnd="2dp" />
+
+                <TextView
+                    android:id="@+id/tiempo_lectura"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="15 min"
+                    android:textColor="@color/gris_medio"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+            <!-- Género -->
+            <TextView
+                android:id="@+id/genero_cuento"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Clásico"
+                android:textColor="@color/azul_claro"
+                android:textSize="12sp"
+                android:layout_marginTop="2dp" />
 
         </LinearLayout>
 
-        <!-- Indicador de selección -->
+        <!-- Botón de vista previa -->
         <ImageView
-            android:id="@+id/icono_seleccionado"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_check_circle"
-            android:tint="@color/verde"
-            android:visibility="gone" />
+            android:id="@+id/boton_vista_previa"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_eye"
+            android:tint="@color/gris_medio"
+            android:contentDescription="@string/vista_previa"
+            android:background="@drawable/boton_circular_gris"
+            android:padding="6dp" />
 
     </LinearLayout>
 
