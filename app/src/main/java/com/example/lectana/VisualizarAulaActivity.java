@@ -14,10 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.lectana.adaptadores.AdaptadorActividadesPorCuento;
 import com.example.lectana.adaptadores.AdaptadorCuentosDetallados;
 import com.example.lectana.adaptadores.AdaptadorEstudiantesAula;
+import com.example.lectana.adaptadores.AdaptadorProgresoEstudiantes;
 import com.example.lectana.modelos.ModeloActividadDetallada;
 import com.example.lectana.modelos.ModeloCuentoConActividades;
 import com.example.lectana.modelos.ModeloCuentoDetallado;
 import com.example.lectana.modelos.ModeloEstudianteAula;
+import com.example.lectana.modelos.ModeloProgresoEstudiante;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +41,7 @@ public class VisualizarAulaActivity extends AppCompatActivity {
     private Button botonPestanaEstudiantes;
     private Button botonPestanaCuentos;
     private Button botonPestanaActividades;
+    private Button botonPestanaProgreso;
     
     // RecyclerView
     private RecyclerView recyclerViewContenido;
@@ -47,11 +50,13 @@ public class VisualizarAulaActivity extends AppCompatActivity {
     private AdaptadorEstudiantesAula adaptadorEstudiantes;
     private AdaptadorCuentosDetallados adaptadorCuentosDetallados;
     private AdaptadorActividadesPorCuento adaptadorActividadesPorCuento;
+    private AdaptadorProgresoEstudiantes adaptadorProgresoEstudiantes;
     
     // Datos
     private List<ModeloEstudianteAula> listaEstudiantes;
     private List<ModeloCuentoDetallado> listaCuentosDetallados;
     private List<ModeloCuentoConActividades> listaCuentosConActividades;
+    private List<ModeloProgresoEstudiante> listaProgresoEstudiantes;
     
     // Estado actual de la pestaña
     private String pestanaActual = "estudiantes";
@@ -80,6 +85,7 @@ public class VisualizarAulaActivity extends AppCompatActivity {
         botonPestanaEstudiantes = findViewById(R.id.boton_pestana_estudiantes);
         botonPestanaCuentos = findViewById(R.id.boton_pestana_cuentos);
         botonPestanaActividades = findViewById(R.id.boton_pestana_actividades);
+        botonPestanaProgreso = findViewById(R.id.boton_pestana_progreso);
         
         recyclerViewContenido = findViewById(R.id.recycler_view_contenido);
         recyclerViewContenido.setLayoutManager(new LinearLayoutManager(this));
@@ -88,11 +94,13 @@ public class VisualizarAulaActivity extends AppCompatActivity {
         listaEstudiantes = new ArrayList<>();
         listaCuentosDetallados = new ArrayList<>();
         listaCuentosConActividades = new ArrayList<>();
+        listaProgresoEstudiantes = new ArrayList<>();
         
         // Inicializar adaptadores
         adaptadorEstudiantes = new AdaptadorEstudiantesAula(listaEstudiantes);
         adaptadorCuentosDetallados = new AdaptadorCuentosDetallados(listaCuentosDetallados);
         adaptadorActividadesPorCuento = new AdaptadorActividadesPorCuento(listaCuentosConActividades);
+        adaptadorProgresoEstudiantes = new AdaptadorProgresoEstudiantes(listaProgresoEstudiantes);
     }
 
     private void configurarListeners() {
@@ -116,6 +124,7 @@ public class VisualizarAulaActivity extends AppCompatActivity {
         botonPestanaEstudiantes.setOnClickListener(v -> mostrarPestanaEstudiantes());
         botonPestanaCuentos.setOnClickListener(v -> mostrarPestanaCuentos());
         botonPestanaActividades.setOnClickListener(v -> mostrarPestanaActividades());
+        botonPestanaProgreso.setOnClickListener(v -> mostrarPestanaProgreso());
     }
 
     private void cargarDatosEjemplo() {
@@ -171,10 +180,29 @@ public class VisualizarAulaActivity extends AppCompatActivity {
             "Vocabulario - Capítulo 1", "Respuesta Abierta", 12, "Activa"));
         listaCuentosConActividades.add(new ModeloCuentoConActividades("3", "El Gato con Botas", 2, actividadesGato));
         
+        // Cargar datos de progreso de estudiantes
+        cargarDatosProgresoEstudiantes();
+        
         // Actualizar estadísticas
         numeroEstudiantesAula.setText(String.valueOf(listaEstudiantes.size()));
         numeroCuentosAula.setText(String.valueOf(listaCuentosDetallados.size()));
         numeroActividadesAula.setText(String.valueOf(listaCuentosConActividades.size() * 2)); // 2 actividades por cuento
+    }
+
+    private void cargarDatosProgresoEstudiantes() {
+        // Datos de ejemplo para el progreso de estudiantes
+        listaProgresoEstudiantes.clear();
+        
+        listaProgresoEstudiantes.add(new ModeloProgresoEstudiante("1", "Ana García", "Hace 1 hora", 4, 5, 92, "completado"));
+        listaProgresoEstudiantes.add(new ModeloProgresoEstudiante("2", "Carlos López", "Hace 3 horas", 3, 5, 78, "en_progreso"));
+        listaProgresoEstudiantes.add(new ModeloProgresoEstudiante("3", "María Rodríguez", "Hace 30 min", 5, 5, 96, "completado"));
+        listaProgresoEstudiantes.add(new ModeloProgresoEstudiante("4", "Juan Pérez", "Hace 1 día", 2, 5, 65, "en_progreso"));
+        listaProgresoEstudiantes.add(new ModeloProgresoEstudiante("5", "Sofía Martín", "Hace 2 horas", 4, 5, 88, "completado"));
+        listaProgresoEstudiantes.add(new ModeloProgresoEstudiante("6", "Diego Fernández", "Hace 4 horas", 3, 5, 72, "en_progreso"));
+        listaProgresoEstudiantes.add(new ModeloProgresoEstudiante("7", "Lucía González", "Hace 45 min", 5, 5, 100, "completado"));
+        listaProgresoEstudiantes.add(new ModeloProgresoEstudiante("8", "Mateo Silva", "Hace 1 día", 1, 5, 45, "pendiente"));
+        listaProgresoEstudiantes.add(new ModeloProgresoEstudiante("9", "Valentina Ruiz", "Hace 2 horas", 4, 5, 85, "completado"));
+        listaProgresoEstudiantes.add(new ModeloProgresoEstudiante("10", "Sebastián Torres", "Hace 3 horas", 3, 5, 76, "en_progreso"));
     }
 
     private void mostrarPestanaEstudiantes() {
@@ -198,6 +226,13 @@ public class VisualizarAulaActivity extends AppCompatActivity {
         adaptadorActividadesPorCuento.notifyDataSetChanged();
     }
 
+    private void mostrarPestanaProgreso() {
+        pestanaActual = "progreso";
+        actualizarBotonesPestanas();
+        recyclerViewContenido.setAdapter(adaptadorProgresoEstudiantes);
+        adaptadorProgresoEstudiantes.notifyDataSetChanged();
+    }
+
     private void actualizarBotonesPestanas() {
         // Resetear todos los botones
         botonPestanaEstudiantes.setBackgroundResource(R.drawable.boton_pestana_inactiva);
@@ -208,6 +243,9 @@ public class VisualizarAulaActivity extends AppCompatActivity {
         
         botonPestanaActividades.setBackgroundResource(R.drawable.boton_pestana_inactiva);
         botonPestanaActividades.setTextColor(getResources().getColor(R.color.gris_medio));
+        
+        botonPestanaProgreso.setBackgroundResource(R.drawable.boton_pestana_inactiva);
+        botonPestanaProgreso.setTextColor(getResources().getColor(R.color.gris_medio));
         
         // Activar el botón correspondiente
         switch (pestanaActual) {
@@ -222,6 +260,10 @@ public class VisualizarAulaActivity extends AppCompatActivity {
             case "actividades":
                 botonPestanaActividades.setBackgroundResource(R.drawable.boton_pestana_activa);
                 botonPestanaActividades.setTextColor(getResources().getColor(R.color.gris_oscuro));
+                break;
+            case "progreso":
+                botonPestanaProgreso.setBackgroundResource(R.drawable.boton_pestana_activa);
+                botonPestanaProgreso.setTextColor(getResources().getColor(R.color.gris_oscuro));
                 break;
         }
     }
