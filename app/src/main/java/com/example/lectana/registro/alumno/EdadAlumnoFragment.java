@@ -87,11 +87,14 @@ public class EdadAlumnoFragment extends Fragment {
                     Toast.makeText(getContext(), "Vas hacia la siguiente pantalla "+seleccionadaNombre, Toast.LENGTH_SHORT).show();
 
                     Fragment nuevoFragmento = new DatosBasicosAlumno();
+
+                    Bundle bundle = new Bundle();
+                    bundle.putString("edadSeleccionada", seleccionadaNombre);
+                    nuevoFragmento.setArguments(bundle);
+
                     FragmentManager fragmentManager = getParentFragmentManager();
                     FragmentTransaction cambioDeFragment = fragmentManager.beginTransaction();
-
                     cambioDeFragment.replace(R.id.frameLayout, nuevoFragmento);
-
                     cambioDeFragment.commit();
                 }
 
