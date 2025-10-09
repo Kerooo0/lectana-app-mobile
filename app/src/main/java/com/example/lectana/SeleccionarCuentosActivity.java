@@ -142,7 +142,7 @@ public class SeleccionarCuentosActivity extends AppCompatActivity implements Ada
         // Aquí se haría la llamada a la API para crear el aula con los cuentos seleccionados
         // Por ahora, solo navegamos de vuelta al Panel Docente
         
-        Intent intent = new Intent(this, PantallaPrincipalDocente.class);
+        Intent intent = new Intent(this, com.example.lectana.docente.PantallaPrincipalDocente.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();

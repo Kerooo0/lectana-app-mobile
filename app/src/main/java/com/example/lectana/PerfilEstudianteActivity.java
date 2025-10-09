@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.lectana.estudiante.PanelEstudianteActivity;
+
 public class PerfilEstudianteActivity extends AppCompatActivity {
 
     private ImageView botonVolverPerfilEstudiante;

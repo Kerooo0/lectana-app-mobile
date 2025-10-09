@@ -37,347 +37,12 @@
 
     </LinearLayout>
 
-    <ScrollView
+    <FrameLayout
+        android:id="@+id/contenedor_fragments"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@id/header_estudiante"
-        app:layout_constraintBottom_toTopOf="@id/navegacion_inferior">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <!-- Sección Novedad -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/card_novedad"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:visibility="visible"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp"
-                    android:background="@color/celeste_claro">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="¡Novedad!"
-                        android:textColor="@color/gris_oscuro"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="8dp" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="12dp">
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_info"
-                            android:tint="@color/azul_claro"
-                            android:layout_marginEnd="8dp" />
-
-                        <TextView
-                            android:id="@+id/texto_novedad"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Tu docente te asignó una nueva lectura: El Loro Pelado."
-                            android:textColor="@color/gris_oscuro"
-                            android:textSize="14sp" />
-
-                    </LinearLayout>
-
-                    <Button
-                        android:id="@+id/boton_ver_lectura"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:background="@drawable/boton_azul_rectangular"
-                        android:text="Ver lectura"
-                        android:textColor="@android:color/white"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        app:backgroundTint="@null" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <!-- Sección Continuar Lectura -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Continuar Lectura"
-                        android:textColor="@color/gris_oscuro"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="12dp" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <!-- Imagen del libro -->
-                        <ImageView
-                            android:id="@+id/imagen_libro_actual"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:src="@drawable/imagen_principito"
-                            android:scaleType="centerCrop"
-                            android:layout_marginEnd="16dp"
-                            android:background="@drawable/borde_redondeado_imagen_cuento" />
-
-                        <!-- Información del libro -->
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/titulo_libro_actual"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="El Principito"
-                                android:textColor="@color/gris_oscuro"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:layout_marginBottom="4dp" />
-
-                            <TextView
-                                android:id="@+id/capitulo_libro_actual"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Capítulo 3 de 8"
-                                android:textColor="@color/gris_medio"
-                                android:textSize="14sp"
-                                android:layout_marginBottom="8dp" />
-
-                            <!-- Barra de progreso -->
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:gravity="center_vertical">
-
-                                <View
-                                    android:id="@+id/barra_progreso_lectura"
-                                    android:layout_width="0dp"
-                                    android:layout_height="6dp"
-                                    android:layout_weight="1"
-                                    android:background="@drawable/barra_progreso_azul" />
-
-                                <TextView
-                                    android:id="@+id/porcentaje_progreso_lectura"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="8dp"
-                                    android:text="37% completado"
-                                    android:textColor="@color/azul_claro"
-                                    android:textSize="12sp" />
-
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-                        <!-- Botón reproducir -->
-                        <ImageView
-                            android:id="@+id/boton_reproducir_lectura"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:src="@drawable/ic_play_circle"
-                            android:tint="@color/azul_claro"
-                            android:background="@drawable/circle_background"
-                            android:padding="8dp"
-                            android:layout_marginStart="16dp" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <!-- Sección Actividad Pendiente -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:background="@color/naranjaPastel"
-                    android:gravity="center_vertical">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_chat"
-                        android:tint="@color/gris_oscuro"
-                        android:layout_marginEnd="12dp" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/texto_actividad_pendiente"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Tenés 1 actividad pendiente"
-                            android:textColor="@color/gris_oscuro"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:layout_marginBottom="2dp" />
-
-                        <TextView
-                            android:id="@+id/nombre_actividad_pendiente"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="La Abeja Haragana"
-                            android:textColor="@color/gris_medio"
-                            android:textSize="14sp" />
-
-                    </LinearLayout>
-
-                    <Button
-                        android:id="@+id/boton_hacer_actividad"
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:background="@drawable/boton_naranja_rectangular"
-                        android:text="Hacer"
-                        android:textColor="@android:color/white"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:paddingHorizontal="16dp"
-                        app:backgroundTint="@null" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <!-- Sección Racha de Lectura -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:background="@color/amarilloPastel"
-                    android:gravity="center_vertical">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_flame"
-                        android:tint="@color/gris_oscuro"
-                        android:layout_marginEnd="12dp" />
-
-                    <TextView
-                        android:id="@+id/texto_racha_lectura"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Racha de lectura: 3 días seguidos"
-                        android:textColor="@color/gris_oscuro"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_trophy"
-                        android:tint="@color/amarilloCalido" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <!-- Sección Puntos Ganados -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:background="@color/verdeClaro"
-                    android:gravity="center_vertical">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_points"
-                        android:tint="@color/gris_oscuro"
-                        android:layout_marginEnd="12dp" />
-
-                    <TextView
-                        android:id="@+id/texto_puntos_semana"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Puntos ganados esta semana: +25 puntos"
-                        android:textColor="@color/gris_oscuro"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_bar_chart"
-                        android:tint="@color/verde" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-        </LinearLayout>
-
-    </ScrollView>
+        app:layout_constraintBottom_toTopOf="@id/navegacion_inferior" />
 
     <!-- Navegación Inferior -->
     <LinearLayout
@@ -401,12 +66,14 @@
             android:padding="8dp">
 
             <ImageView
+                android:id="@+id/icono_inicio"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_home"
                 android:tint="@color/azul_fuerte" />
 
             <TextView
+                android:id="@+id/texto_inicio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Inicio"
@@ -427,12 +94,14 @@
             android:padding="8dp">
 
             <ImageView
+                android:id="@+id/icono_biblioteca"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_library"
                 android:tint="@color/gris_medio" />
 
             <TextView
+                android:id="@+id/texto_biblioteca"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Biblioteca"
@@ -457,6 +126,7 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
+                    android:id="@+id/icono_progreso"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_trophy"
@@ -475,6 +145,7 @@
             </RelativeLayout>
 
             <TextView
+                android:id="@+id/texto_progreso"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Progreso"
@@ -495,12 +166,14 @@
             android:padding="8dp">
 
             <ImageView
+                android:id="@+id/icono_tienda"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_store"
                 android:tint="@color/gris_medio" />
 
             <TextView
+                android:id="@+id/texto_tienda"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tienda"
@@ -521,12 +194,14 @@
             android:padding="8dp">
 
             <ImageView
+                android:id="@+id/icono_perfil"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_person"
                 android:tint="@color/gris_medio" />
 
             <TextView
+                android:id="@+id/texto_perfil"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Perfil"

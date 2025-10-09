@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fondo_claro">
+
+    <!-- Header -->
+    <LinearLayout
+        android:id="@+id/header_biblioteca"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/azul_fuerte"
+        android:padding="16dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/boton_volver_biblioteca"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_arrow_back"
+            android:tint="@android:color/white"
+            android:padding="4dp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Biblioteca"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center" />
+
+        <ImageView
+            android:id="@+id/boton_filtros_biblioteca"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_filter"
+            android:tint="@android:color/white"
+            android:padding="4dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@id/header_biblioteca"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <!-- Búsqueda -->
+        <EditText
+            android:id="@+id/campo_busqueda_biblioteca"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:hint="Buscar cuentos..."
+            android:paddingHorizontal="12dp"
+            android:background="@drawable/boton_blanco_rectangular"
+            android:textColorHint="@color/gris_medio"
+            android:textColor="@color/gris_oscuro" />
+
+        <!-- Filtros -->
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fillViewport="false"
+            android:scrollbars="none"
+            android:layout_marginTop="12dp">
+
+            <LinearLayout
+                android:id="@+id/contenedor_chips_genero"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <Button
+                    android:id="@+id/filtro_bibl_todos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Todos"
+                    android:background="@drawable/boton_verde"
+                    android:textColor="@android:color/white"
+                    android:layout_marginEnd="8dp"
+                    app:backgroundTint="@null" />
+
+                <Button
+                    android:id="@+id/filtro_bibl_clasicos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Clásicos"
+                    android:background="@drawable/boton_blanco_rectangular"
+                    android:textColor="@color/gris_oscuro"
+                    android:layout_marginEnd="8dp"
+                    app:backgroundTint="@null" />
+
+                <Button
+                    android:id="@+id/filtro_bibl_aventura"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Aventura"
+                    android:background="@drawable/boton_blanco_rectangular"
+                    android:textColor="@color/gris_oscuro"
+                    android:layout_marginEnd="8dp"
+                    app:backgroundTint="@null" />
+
+                <Button
+                    android:id="@+id/filtro_bibl_fantasia"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Fantasía"
+                    android:background="@drawable/boton_blanco_rectangular"
+                    android:textColor="@color/gris_oscuro"
+                    android:layout_marginEnd="8dp"
+                    app:backgroundTint="@null" />
+
+            </LinearLayout>
+
+        </HorizontalScrollView>
+
+        <!-- Lista de cuentos -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_biblioteca"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="12dp"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+

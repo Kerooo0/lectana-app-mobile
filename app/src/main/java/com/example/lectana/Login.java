@@ -10,6 +10,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.lectana.registro.registro_pregunta;
+import com.example.lectana.estudiante.PanelEstudianteActivity;
 
 public class Login extends AppCompatActivity {
 

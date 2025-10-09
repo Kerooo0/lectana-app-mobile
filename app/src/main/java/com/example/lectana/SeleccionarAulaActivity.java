@@ -142,7 +142,7 @@ public class SeleccionarAulaActivity extends AppCompatActivity implements Adapta
                 android.widget.Toast.LENGTH_LONG).show();
             
             // Regresar al panel principal
-            Intent intent = new Intent(this, PantallaPrincipalDocente.class);
+            Intent intent = new Intent(this, com.example.lectana.docente.PantallaPrincipalDocente.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();

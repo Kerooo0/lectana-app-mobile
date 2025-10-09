@@ -21,7 +21,7 @@
             android:name=".registro.registro_pregunta"
             android:exported="false" />
         <activity
-            android:name=".PantallaPrincipalDocente"
+            android:name=".docente.PantallaPrincipalDocente"
             android:exported="false" />
         <activity
             android:name=".CrearNuevaAulaActivity"
@@ -51,10 +51,26 @@
             android:name=".ConfiguracionAulaActivity"
             android:exported="false" />
         <activity
-            android:name=".PanelEstudianteActivity"
+            android:name=".estudiante.PanelEstudianteActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ActividadesAsignadasActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ResolucionOpcionMultipleActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ResolucionRespuestaAbiertaActivity"
             android:exported="false" />
         <activity
             android:name=".PerfilEstudianteActivity"
+            android:exported="false" />
+        
+        <activity
+            android:name=".TiendaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ReproductorAudiolibroActivity"
             android:exported="false" />
         <activity
             android:name=".centro_ayuda"

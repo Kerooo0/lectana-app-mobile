@@ -1,4 +1,4 @@
-package com.example.lectana;
+package com.example.lectana.docente;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +14,12 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.lectana.VisualizarAulaActivity;
+import com.example.lectana.CrearNuevaAulaActivity;
+import com.example.lectana.AsignarCuentoActivity;
+import com.example.lectana.CrearActividadActivity;
+import com.example.lectana.PerfilDocenteActivity;
+import com.example.lectana.R;
 import com.example.lectana.adaptadores.AdaptadorListaAulas;
 import com.example.lectana.modelos.ModeloAula;
 

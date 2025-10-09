@@ -12,6 +12,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.lectana.estudiante.PanelEstudianteActivity;
+import com.example.lectana.docente.PantallaPrincipalDocente;
+
 public class Inicio extends AppCompatActivity {
 
     Button boton;
