@@ -3,18 +3,22 @@ package com.example.lectana.registro.docente;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.lectana.R;
 import com.example.lectana.clases.validaciones.ValidacionesPassword;
+import com.example.lectana.registro.alumno.DatosBasicosAlumno;
 
 public class DatosAccesoDocenteFragment extends Fragment {
 
@@ -22,9 +26,10 @@ public class DatosAccesoDocenteFragment extends Fragment {
     public DatosAccesoDocenteFragment() {
         // Required empty public constructor
     }
-
-    private TextView estadoPassword, coincidenciaPasswordDocente;
-
+    private String pass1 = "";
+    private TextView estadoPassword, coincidenciaPasswordDocente, errorPassword;
+    private boolean passwordsValidas = false, esValida = false;
+    private Button siguiente;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -48,19 +53,41 @@ public class DatosAccesoDocenteFragment extends Fragment {
 
         EditText passwordCoincidencia = vista.findViewById(R.id.editTextRepetirpasswordDocente);
 
+        errorPassword = vista.findViewById(R.id.errorPasswordDocente);
+
         coincidenciaPasswordDocente = vista.findViewById(R.id.coincidenciaPasswordDocente);
 
+        siguiente = vista.findViewById(R.id.continuarDocente);
+
+        siguiente.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // if (passwordsValidas && esValida) {
+
+               // Fragment Confirmar = new ();
+               //  FragmentManager fragmentManager = getParentFragmentManager();
+              //  FragmentTransaction cambioDeFragment = fragmentManager.beginTransaction();
+
+              //  cambioDeFragment.replace(R.id.frameLayout, Confirmar);
+
+              //  cambioDeFragment.commit();
+
+                // }
+
+            }
+        });
 
 
         TextWatcher watcher = new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String pass1 = password.getText().toString();
+                pass1 = password.getText().toString();
                 String pass2 = passwordCoincidencia.getText().toString();
 
 
-                boolean esValida = ValidacionesPassword.esPasswordValida(pass1);
-                ValidacionesPassword.mostrarEstadoPassword(estadoPassword, esValida);
+                esValida = ValidacionesPassword.esPasswordValida(pass1);
+                ValidacionesPassword.mostrarEstadoPassword(estadoPassword, esValida,errorPassword,pass1);
 
 
                 validarCoincidencia(pass1, pass2);
@@ -81,7 +108,7 @@ public class DatosAccesoDocenteFragment extends Fragment {
 
     private void validarCoincidencia(String pass1, String pass2) {
         boolean coinciden = ValidacionesPassword.sonPasswordsIguales(pass1, pass2);
-        ValidacionesPassword.mostrarCoincidenciaPasswords(
+        passwordsValidas = ValidacionesPassword.mostrarCoincidenciaPasswords(
                 coincidenciaPasswordDocente,
                 coinciden,
                 "Coinciden",

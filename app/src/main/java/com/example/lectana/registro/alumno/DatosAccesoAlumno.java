@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,13 +29,23 @@ public class DatosAccesoAlumno extends Fragment {
         // Required empty public constructor
     }
 
-private TextView estadoPassword,passwordCoincidencia;
-
+    private String pass1 = "",nombreAlumno = "",paisAlumno = "";
+    private int edadAlumno = 0;
+    private TextView estadoPassword,passwordCoincidencia, errorPassword;
+    private boolean passwordsValidas = false, esValida = false;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View vista = inflater.inflate(R.layout.fragment_datos_acceso_alumno, container, false);
+
+        Bundle args = getArguments();
+        if (args != null) {
+            nombreAlumno = args.getString("nombreAlumno");
+            edadAlumno = args.getInt("edadAlumno");
+            paisAlumno = args.getString("paisAlumno");
+
+        }
 
         ProgressBar barraDeProgreso = vista.findViewById(R.id.barraProgreso);
         barraDeProgreso.setProgress(2);
@@ -47,6 +58,8 @@ private TextView estadoPassword,passwordCoincidencia;
         Button siguiente = vista.findViewById(R.id.boton_registrarse);
 
         EditText password = vista.findViewById(R.id.passwordAlumno);
+
+        errorPassword = vista.findViewById(R.id.errorPasswordEstudiante);
 
         estadoPassword = vista.findViewById(R.id.estadoPasswordAlumno);
 
@@ -73,15 +86,28 @@ private TextView estadoPassword,passwordCoincidencia;
             @Override
             public void onClick(View view) {
 
-                Fragment siguiente = new ConfirmacionDatosAlumnos();
+                if (passwordsValidas && esValida) {
 
-                FragmentManager fragmentManager = getParentFragmentManager();
+                    Fragment siguiente = new ConfirmacionDatosAlumnos();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("nombreAlumno", nombreAlumno);
+                    bundle.putInt("edadAlumno", edadAlumno);
+                    bundle.putString("paisAlumno", paisAlumno);
+                    bundle.putString("passwordAlumno", pass1);
+                    siguiente.setArguments(bundle);
 
-                FragmentTransaction cambioDeFragment = fragmentManager.beginTransaction();
 
-                cambioDeFragment.replace(R.id.frameLayout, siguiente);
 
-                cambioDeFragment.commit();
+                     FragmentManager fragmentManager = getParentFragmentManager();
+
+                     FragmentTransaction cambioDeFragment = fragmentManager.beginTransaction();
+
+                     cambioDeFragment.replace(R.id.frameLayout, siguiente);
+
+                     cambioDeFragment.commit();
+
+
+                }
             }
         });
 
@@ -90,12 +116,14 @@ private TextView estadoPassword,passwordCoincidencia;
         TextWatcher watcher = new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String pass1 = password.getText().toString();
+                pass1 = password.getText().toString();
                 String pass2 = coincidenciaPasswordAlumno.getText().toString();
 
 
-                boolean esValida = ValidacionesPassword.esPasswordValida(pass1);
-                ValidacionesPassword.mostrarEstadoPassword(estadoPassword, esValida);
+                esValida = ValidacionesPassword.esPasswordValida(pass1);
+
+
+                ValidacionesPassword.mostrarEstadoPassword(estadoPassword, esValida, errorPassword, pass1);
 
 
                 validarCoincidencia(pass1, pass2);
@@ -114,7 +142,7 @@ private TextView estadoPassword,passwordCoincidencia;
 
     private void validarCoincidencia(String pass1, String pass2) {
         boolean coinciden = ValidacionesPassword.sonPasswordsIguales(pass1, pass2);
-        ValidacionesPassword.mostrarCoincidenciaPasswords(
+        passwordsValidas =  ValidacionesPassword.mostrarCoincidenciaPasswords(
                 passwordCoincidencia,
                 coinciden,
                 "Coinciden",

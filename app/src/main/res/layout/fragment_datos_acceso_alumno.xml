@@ -36,15 +36,31 @@
         app:layout_constraintTop_toBottomOf="@+id/barraProgresoIncluida" />
 
     <TextView
+       android:id="@+id/errorPasswordEstudiante"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="@string/errorPassword"
+        android:textSize="14sp"
+        android:textColor="@color/rojoClaro"
+        android:visibility="gone"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/datosAcceso"
+        />
+
+
+    <TextView
         android:id="@+id/passwordEstudiante"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:text="@string/contraseña"
         android:textSize="14sp"
         android:layout_marginStart="20dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/datosAcceso" />
+        app:layout_constraintTop_toBottomOf="@+id/errorPasswordEstudiante" />
 
     <EditText
         android:id="@+id/passwordAlumno"
@@ -165,7 +181,7 @@
         android:inputType="textPassword"
         android:background="@drawable/fondo_edit_text_borde_gris_redondeado"
         android:drawableStart="@drawable/vector_qr"
-        android:hint="@string/edad"
+        android:hint="@string/codigoAula"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.132"
         app:layout_constraintStart_toStartOf="parent"

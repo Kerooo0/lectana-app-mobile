@@ -135,7 +135,7 @@
     <string name="malo">Mala</string>
     <string name="buena">Buena</string>
     <string name="coincidenciaPassword">Las contraseñas no coinciden</string>
-    
+
     <!-- Panel Docente -->
     <string name="panel_docente">Panel Docente</string>
     <string name="bienvenida_profesor">Bienvenida, Prof. García</string>
@@ -235,4 +235,10 @@
     <string name="crea_preguntas_respuestas_actividad">Crea las preguntas y respuestas para tu actividad. Marca al menos una respuesta correcta por pregunta.</string>
     <string name="tiempo_lectura">Tiempo de lectura</string>
     <string name="pregunta_numero">Pregunta %d</string>
+
+    <!-- Errores password -->
+
+    <string name="errorPassword">La contraseña debe contener al menos una mayúscula, un número y un carácter especial.</string>
+    <string name="LongitudPasswordError">La contraseña debe contener al menos 6 caracteres.</string>
+
 </resources>

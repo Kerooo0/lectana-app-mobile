@@ -60,52 +60,103 @@
         android:background="@drawable/card_confirmacion_datos_alumno"
         >
 
-        <TextView
-            android:id="@+id/emailAlumno"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:textStyle="bold"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:text="@string/email"
-            android:textSize="14sp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="6dp"
+            >
 
-        <TextView
+            <TextView
+                android:id="@+id/emailAlumno"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="@string/email"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/valorEmailAlumno"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text=""
+                android:textSize="14sp" />
+
+</LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="6dp"
+            >
+
+            <TextView
             android:id="@+id/edadAlumno"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginBottom="12dp"
+            android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
             android:text="@string/edad"
             android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/valorEdadAlumno"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text=""
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="6dp"
+            >
 
         <TextView
             android:id="@+id/paisAlumno"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginBottom="4dp"
+            android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
             android:text="@string/pais"
             android:textSize="14sp"/>
 
+            <TextView
+                android:id="@+id/valorPaisAlumno"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text=""
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="6dp"
+            >
         <TextView
             android:id="@+id/codigoAula"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="12dp"
+            android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
             android:text="@string/codigoAula"
             android:textSize="14sp"/>
 
+            <TextView
+                android:id="@+id/valorCodigoAulaAlumno"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text=""
+                android:textSize="14sp" />
+
+        </LinearLayout>
     </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
