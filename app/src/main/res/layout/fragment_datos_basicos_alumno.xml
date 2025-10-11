@@ -68,6 +68,36 @@
         />
 
     <TextView
+        android:id="@+id/apellidoEstudiante"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="@string/apellido"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.065"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextNombreAlumno" />
+
+    <EditText
+        android:id="@+id/editTextApellidoAlumno"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:inputType="text"
+        android:hint="@string/apellido"
+        android:background="@drawable/fondo_edit_text_borde_gris_redondeado"
+        android:drawableStart="@drawable/vector_persona"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.253"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/apellidoEstudiante"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        />
+
+    <TextView
         android:id="@+id/edadEstudiante"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -77,7 +107,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.062"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextNombreAlumno" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextApellidoAlumno" />
 
     <EditText
         android:id="@+id/editTextEdadAlumno"
@@ -98,6 +128,36 @@
         />
 
     <TextView
+        android:id="@+id/emailEstudiante"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="@string/email"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.062"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextEdadAlumno" />
+
+    <EditText
+        android:id="@+id/editTextEmailAlumno"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:inputType="textEmailAddress"
+        android:background="@drawable/fondo_edit_text_borde_gris_redondeado"
+        android:drawableStart="@drawable/vector_email"
+        android:hint="@string/email"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.132"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emailEstudiante"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        />
+
+    <TextView
         android:id="@+id/paisEstudiante"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -109,7 +169,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextEdadAlumno" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextEmailAlumno" />
 
 
     <Spinner
