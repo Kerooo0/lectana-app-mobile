@@ -6,8 +6,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.lectana.Login;
+import com.example.lectana.auth.SessionManager;
 
 public class PerfilDocenteActivity extends AppCompatActivity {
 
@@ -24,11 +28,22 @@ public class PerfilDocenteActivity extends AppCompatActivity {
     private TextView totalCuentosPerfil;
     private Button botonCambiarPassword;
     private Button botonCerrarSesion;
+    
+    // Gestión de sesión
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil_docente);
+
+        // Inicializar gestión de sesión
+        sessionManager = new SessionManager(this);
+        
+        // Verificar sesión antes de continuar
+        if (!verificarSesion()) {
+            return;
+        }
 
         inicializarVistas();
         cargarDatosDocente();
@@ -52,19 +67,51 @@ public class PerfilDocenteActivity extends AppCompatActivity {
     }
 
     private void cargarDatosDocente() {
-        // TODO: Cargar datos reales desde la base de datos
-        // Por ahora datos de ejemplo
-        nombreDocentePerfil.setText("Prof. María García");
-        especialidadDocentePerfil.setText("Lengua y Literatura");
-        emailDocentePerfil.setText("maria.garcia@colegio.edu");
-        telefonoDocentePerfil.setText("+54 11 1234-5678");
-        colegioDocentePerfil.setText("Colegio San Martín");
-        experienciaDocentePerfil.setText("8 años");
-        
-        // Estadísticas
-        totalAulasPerfil.setText("5");
-        totalEstudiantesPerfil.setText("120");
-        totalCuentosPerfil.setText("25");
+        try {
+            // Cargar datos reales del docente desde la sesión
+            org.json.JSONObject user = sessionManager.getUser();
+            if (user != null) {
+                String nombre = user.optString("nombre", "Docente");
+                String apellido = user.optString("apellido", "");
+                String nombreCompleto = "Prof. " + nombre + (apellido.isEmpty() ? "" : " " + apellido);
+                
+                nombreDocentePerfil.setText(nombreCompleto);
+                emailDocentePerfil.setText(user.optString("email", ""));
+                
+                // Datos que no están en el usuario base (TODO: obtener desde backend)
+                especialidadDocentePerfil.setText("Lengua y Literatura"); // TODO: Obtener desde backend
+                telefonoDocentePerfil.setText("Sin especificar"); // TODO: Obtener desde backend
+                colegioDocentePerfil.setText("Sin especificar"); // TODO: Obtener desde backend
+                experienciaDocentePerfil.setText("Sin especificar"); // TODO: Obtener desde backend
+                
+                // Estadísticas (TODO: Obtener desde backend)
+                totalAulasPerfil.setText("0");
+                totalEstudiantesPerfil.setText("0");
+                totalCuentosPerfil.setText("0");
+            } else {
+                // Datos por defecto si no hay sesión
+                nombreDocentePerfil.setText("Docente");
+                especialidadDocentePerfil.setText("Sin especificar");
+                emailDocentePerfil.setText("Sin especificar");
+                telefonoDocentePerfil.setText("Sin especificar");
+                colegioDocentePerfil.setText("Sin especificar");
+                experienciaDocentePerfil.setText("Sin especificar");
+                totalAulasPerfil.setText("0");
+                totalEstudiantesPerfil.setText("0");
+                totalCuentosPerfil.setText("0");
+            }
+        } catch (Exception e) {
+            // Datos por defecto en caso de error
+            nombreDocentePerfil.setText("Docente");
+            especialidadDocentePerfil.setText("Sin especificar");
+            emailDocentePerfil.setText("Sin especificar");
+            telefonoDocentePerfil.setText("Sin especificar");
+            colegioDocentePerfil.setText("Sin especificar");
+            experienciaDocentePerfil.setText("Sin especificar");
+            totalAulasPerfil.setText("0");
+            totalEstudiantesPerfil.setText("0");
+            totalCuentosPerfil.setText("0");
+        }
     }
 
     private void configurarListeners() {
@@ -98,13 +145,46 @@ public class PerfilDocenteActivity extends AppCompatActivity {
         botonCerrarSesion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Implementar cierre de sesión
-                // Por ahora solo regresa al login
+                // Realizar logout usando SessionManager
+                sessionManager.clearSession();
+                Toast.makeText(PerfilDocenteActivity.this, "Sesión cerrada correctamente", Toast.LENGTH_SHORT).show();
+                
+                // Volver al login
                 Intent intent = new Intent(PerfilDocenteActivity.this, Login.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();
             }
         });
+    }
+
+    /**
+     * Verificar si hay una sesión válida de docente
+     */
+    private boolean verificarSesion() {
+        if (!sessionManager.isLoggedIn()) {
+            Toast.makeText(this, "Sesión expirada. Inicia sesión nuevamente.", Toast.LENGTH_LONG).show();
+            irAlLogin();
+            return false;
+        }
+
+        if (!sessionManager.isDocente()) {
+            Toast.makeText(this, "Acceso denegado. Esta área es solo para docentes.", Toast.LENGTH_LONG).show();
+            irAlLogin();
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Redirigir al login y limpiar sesión
+     */
+    private void irAlLogin() {
+        sessionManager.clearSession();
+        Intent intent = new Intent(this, Login.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 }

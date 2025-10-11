@@ -6,17 +6,20 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.lectana.Login;
 import com.example.lectana.estudiante.fragments.BibliotecaFragment;
 import com.example.lectana.estudiante.fragments.InicioFragment;
 import com.example.lectana.estudiante.fragments.MiProgresoFragment;
 import com.example.lectana.estudiante.fragments.PerfilFragment;
 import com.example.lectana.estudiante.fragments.TiendaFragment;
 import com.example.lectana.R;
+import com.example.lectana.auth.SessionManager;
 
 public class PanelEstudianteActivity extends AppCompatActivity {
 
@@ -45,15 +48,28 @@ public class PanelEstudianteActivity extends AppCompatActivity {
     private TextView textoPerfil;
     
     private String tabActual = "inicio";
+    
+    // Gestión de sesión
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_panel_estudiante);
 
+        // Inicializar gestión de sesión
+        sessionManager = new SessionManager(this);
+        
+        // Verificar sesión antes de continuar
+        if (!verificarSesion()) {
+            return;
+        }
+
         inicializarVistas();
         configurarListeners();
-        saludoEstudiante.setText("¡Hola, Juanito!");
+        
+        // Mostrar nombre del usuario desde la sesión
+        mostrarSaludoPersonalizado();
 
         // Fragment inicial (Inicio)
         reemplazarFragment(new InicioFragment());
@@ -167,5 +183,70 @@ public class PanelEstudianteActivity extends AppCompatActivity {
         textoProgreso.setTextColor(getResources().getColor(R.color.gris_medio));
         textoTienda.setTextColor(getResources().getColor(R.color.gris_medio));
         textoPerfil.setTextColor(getResources().getColor(R.color.gris_medio));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Verificar sesión cada vez que se regrese a esta pantalla
+        if (!verificarSesion()) {
+            return;
+        }
+    }
+
+    /**
+     * Verificar si hay una sesión válida de estudiante
+     */
+    private boolean verificarSesion() {
+        if (!sessionManager.isLoggedIn()) {
+            Toast.makeText(this, "Sesión expirada. Inicia sesión nuevamente.", Toast.LENGTH_LONG).show();
+            irAlLogin();
+            return false;
+        }
+
+        if (!sessionManager.isEstudiante()) {
+            Toast.makeText(this, "Acceso denegado. Esta área es solo para estudiantes.", Toast.LENGTH_LONG).show();
+            irAlLogin();
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Redirigir al login y limpiar sesión
+     */
+    private void irAlLogin() {
+        sessionManager.clearSession();
+        Intent intent = new Intent(this, Login.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    /**
+     * Mostrar saludo personalizado con el nombre del usuario
+     */
+    private void mostrarSaludoPersonalizado() {
+        try {
+            org.json.JSONObject user = sessionManager.getUser();
+            if (user != null) {
+                String nombre = user.optString("nombre", "Estudiante");
+                saludoEstudiante.setText("¡Hola, " + nombre + "!");
+            } else {
+                saludoEstudiante.setText("¡Hola, Estudiante!");
+            }
+        } catch (Exception e) {
+            saludoEstudiante.setText("¡Hola, Estudiante!");
+        }
+    }
+
+    /**
+     * Realizar logout
+     */
+    public void logout() {
+        sessionManager.clearSession();
+        Toast.makeText(this, "Sesión cerrada correctamente", Toast.LENGTH_SHORT).show();
+        irAlLogin();
     }
 }

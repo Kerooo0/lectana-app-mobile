@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.lectana.Login;
 import com.example.lectana.R;
+import com.example.lectana.auth.SessionManager;
 import com.example.lectana.centro_ayuda;
 
 public class PerfilFragment extends Fragment {
@@ -29,6 +30,9 @@ public class PerfilFragment extends Fragment {
     private LinearLayout opcionCentroAyuda;
     private LinearLayout opcionCerrarSesion;
     private View botonIrTienda;
+    
+    // Gestión de sesión
+    private SessionManager sessionManager;
 
     @Nullable
     @Override
@@ -39,6 +43,9 @@ public class PerfilFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        
+        // Inicializar gestión de sesión
+        sessionManager = new SessionManager(requireContext());
         
         inicializarVistas(view);
         configurarListeners();
@@ -77,9 +84,11 @@ public class PerfilFragment extends Fragment {
         });
 
         opcionCerrarSesion.setOnClickListener(v -> {
-            // TODO: Implementar cerrar sesión
-            Toast.makeText(getContext(), "Cerrar sesión", Toast.LENGTH_SHORT).show();
-            // Por ahora, volver al login
+            // Realizar logout usando SessionManager
+            sessionManager.clearSession();
+            Toast.makeText(getContext(), "Sesión cerrada correctamente", Toast.LENGTH_SHORT).show();
+            
+            // Volver al login
             Intent intent = new Intent(getContext(), Login.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
@@ -94,10 +103,28 @@ public class PerfilFragment extends Fragment {
     }
 
     private void cargarDatosPerfil() {
-        // TODO: Cargar datos reales del estudiante desde la base de datos
-        // Por ahora, datos de ejemplo
-        nombreEstudiantePerfil.setText("Juanito Lector");
-        nivelEstudiantePerfil.setText("Lector Avanzado");
-        puntosEstudiantePerfil.setText("120 puntos");
+        try {
+            // Cargar datos reales del estudiante desde la sesión
+            org.json.JSONObject user = sessionManager.getUser();
+            if (user != null) {
+                String nombre = user.optString("nombre", "Estudiante");
+                String apellido = user.optString("apellido", "");
+                String nombreCompleto = nombre + (apellido.isEmpty() ? "" : " " + apellido);
+                
+                nombreEstudiantePerfil.setText(nombreCompleto);
+                nivelEstudiantePerfil.setText("Estudiante"); // TODO: Obtener nivel real desde backend
+                puntosEstudiantePerfil.setText("0 puntos"); // TODO: Obtener puntos reales desde backend
+            } else {
+                // Datos por defecto si no hay sesión
+                nombreEstudiantePerfil.setText("Estudiante");
+                nivelEstudiantePerfil.setText("Nivel Básico");
+                puntosEstudiantePerfil.setText("0 puntos");
+            }
+        } catch (Exception e) {
+            // Datos por defecto en caso de error
+            nombreEstudiantePerfil.setText("Estudiante");
+            nivelEstudiantePerfil.setText("Nivel Básico");
+            puntosEstudiantePerfil.setText("0 puntos");
+        }
     }
 }

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.lectana.Login;
 import com.example.lectana.VisualizarAulaActivity;
 import com.example.lectana.CrearNuevaAulaActivity;
 import com.example.lectana.AsignarCuentoActivity;
@@ -21,6 +23,7 @@ import com.example.lectana.CrearActividadActivity;
 import com.example.lectana.PerfilDocenteActivity;
 import com.example.lectana.R;
 import com.example.lectana.adaptadores.AdaptadorListaAulas;
+import com.example.lectana.auth.SessionManager;
 import com.example.lectana.modelos.ModeloAula;
 
 import java.util.ArrayList;
@@ -37,12 +40,23 @@ public class PantallaPrincipalDocente extends AppCompatActivity {
 
     // Datos de las Aulas
     private List<ModeloAula> lista_aulas_docente_datos;
+    
+    // Gestión de sesión
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.pantalla_principal_docente);
+
+        // Inicializar gestión de sesión
+        sessionManager = new SessionManager(this);
+        
+        // Verificar sesión antes de continuar
+        if (!verificarSesion()) {
+            return;
+        }
 
         inicializar_componentes_interfaz();
         configurar_lista_aulas();
@@ -157,7 +171,50 @@ public class PantallaPrincipalDocente extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        // Verificar sesión cada vez que se regrese a esta pantalla
+        if (!verificarSesion()) {
+            return;
+        }
         // Recargar datos cuando se regrese a esta pantalla
         cargar_datos_aulas();
+    }
+
+    /**
+     * Verificar si hay una sesión válida de docente
+     */
+    private boolean verificarSesion() {
+        if (!sessionManager.isLoggedIn()) {
+            Toast.makeText(this, "Sesión expirada. Inicia sesión nuevamente.", Toast.LENGTH_LONG).show();
+            irAlLogin();
+            return false;
+        }
+
+        if (!sessionManager.isDocente()) {
+            Toast.makeText(this, "Acceso denegado. Esta área es solo para docentes.", Toast.LENGTH_LONG).show();
+            irAlLogin();
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Redirigir al login y limpiar sesión
+     */
+    private void irAlLogin() {
+        sessionManager.clearSession();
+        Intent intent = new Intent(this, Login.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    /**
+     * Realizar logout
+     */
+    public void logout() {
+        sessionManager.clearSession();
+        Toast.makeText(this, "Sesión cerrada correctamente", Toast.LENGTH_SHORT).show();
+        irAlLogin();
     }
 }
