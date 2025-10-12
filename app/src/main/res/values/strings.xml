@@ -112,6 +112,7 @@
     <string name="confirmacionDatos">Confirmación de datos</string>
     <string name="textoConfirmacionDatos">¡Listo! Ya podés comenzar a leer y resolver actividades.
     </string>
+    <string name="btnCrearCuenta">Crear cuenta</string>
     <string name="progresoAlumnoDocente">Recorda que tú docente puede ver tú progreso.</string>
 
     <!-- Creación de cuenta exitosa -->

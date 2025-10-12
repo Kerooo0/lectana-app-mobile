@@ -1,12 +1,10 @@
 package com.example.lectana.registro.alumno;
 
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,17 +14,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.lectana.R;
-
+import com.example.lectana.model.DatosRegistroAlumno;
 
 public class ConfirmacionDatosAlumnos extends Fragment {
 
-    public ConfirmacionDatosAlumnos() {
+    private DatosRegistroAlumno datosRegistro;
 
-    }
+    private TextView valorEmail, valorEdad, valorPais, valorNombre, valorApellido;
 
-    private String nombre,pais,password,email,apellido;
-    private int edad=0;
-    private TextView valorEmail,valorEdad,valorPais;
+    public ConfirmacionDatosAlumnos() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -34,15 +30,16 @@ public class ConfirmacionDatosAlumnos extends Fragment {
 
         View vista = inflater.inflate(R.layout.fragment_confirmacion_datos_alumnos, container, false);
 
-        Bundle args = getArguments();
-        if (args != null) {
-            nombre = args.getString("nombreAlumno");
-            edad = args.getInt("edadAlumno");
-            pais = args.getString("paisAlumno");
-            password = args.getString("passwordAlumno");
-            email = args.getString("emailAlumno");
-            apellido = args.getString("apellidoAlumno");
+
+        if (getArguments() != null) {
+            datosRegistro = (DatosRegistroAlumno) getArguments().getSerializable("datosAlumno");
         }
+
+
+        if (datosRegistro == null) {
+            datosRegistro = new DatosRegistroAlumno();
+        }
+
 
         ProgressBar barraDeProgreso = vista.findViewById(R.id.barraProgreso);
         barraDeProgreso.setProgress(3);
@@ -51,58 +48,54 @@ public class ConfirmacionDatosAlumnos extends Fragment {
         barraProgresoPaso.setText(getText(R.string.pasoTres));
 
         ImageView volver = vista.findViewById(R.id.flechaVolverRegistro);
+        Button siguiente = vista.findViewById(R.id.Confirmar_registro);
 
-        Button siguiente = vista.findViewById(R.id.boton_registrarse);
 
         valorEmail = vista.findViewById(R.id.valorEmailAlumno);
-
         valorEdad = vista.findViewById(R.id.valorEdadAlumno);
-
         valorPais = vista.findViewById(R.id.valorPaisAlumno);
+        valorNombre = vista.findViewById(R.id.valorNombreAlumno);
+        valorApellido = vista.findViewById(R.id.valorApellidoAlumno);
 
-        datosAlumno(valorEmail,valorEdad,valorPais);
 
-        volver.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        mostrarDatosAlumno();
 
-                Fragment volver = new DatosAccesoAlumno();
-                FragmentManager fragmentManager = getParentFragmentManager();
-                FragmentTransaction cambioDeFragment = fragmentManager.beginTransaction();
 
-                cambioDeFragment.replace(R.id.frameLayout, volver);
+        volver.setOnClickListener(v -> {
+            Fragment volverFragment = new DatosAccesoAlumno();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("datosAlumno", datosRegistro); // ← Se mantiene el progreso
+            volverFragment.setArguments(bundle);
 
-                cambioDeFragment.commit();
-
-            }
+            FragmentManager fragmentManager = getParentFragmentManager();
+            FragmentTransaction cambioDeFragment = fragmentManager.beginTransaction();
+            cambioDeFragment.replace(R.id.frameLayout, volverFragment);
+            cambioDeFragment.commit();
         });
 
-        siguiente.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-                Fragment crear = new CuentaCreadaAlumnoFragment();
-                FragmentManager fragmentManager = getParentFragmentManager();
-                FragmentTransaction cambioDeFragment = fragmentManager.beginTransaction();
+        siguiente.setOnClickListener(v -> {
+            Fragment crear = new CuentaCreadaAlumnoFragment();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("datosAlumno", datosRegistro);
+            crear.setArguments(bundle);
 
-                cambioDeFragment.replace(R.id.frameLayout, crear);
-
-                cambioDeFragment.commit();
-
-            }
+            FragmentManager fragmentManager = getParentFragmentManager();
+            FragmentTransaction cambioDeFragment = fragmentManager.beginTransaction();
+            cambioDeFragment.replace(R.id.frameLayout, crear);
+            cambioDeFragment.commit();
         });
 
         return vista;
-
     }
 
-    private void datosAlumno(TextView valorEmail, TextView valorEdad, TextView valorPais){
 
-        valorEmail.setText(nombre);
 
-        valorEdad.setText(String.valueOf(edad));
-
-        valorPais.setText(pais);
+    private void mostrarDatosAlumno() {
+        valorNombre.setText(datosRegistro.getNombre());
+        valorApellido.setText(datosRegistro.getApellido());
+        valorEmail.setText(datosRegistro.getEmail());
+        valorEdad.setText(String.valueOf(datosRegistro.getEdad()));
+        valorPais.setText(datosRegistro.getNacionalidad());
     }
-
 }

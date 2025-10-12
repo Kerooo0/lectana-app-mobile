@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.lectana.R;
+import com.example.lectana.model.DatosRegistroAlumno;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,6 +36,7 @@ public class DatosBasicosAlumno extends Fragment {
     private Spinner spinnerPais;
     private  String nombreAlumno,paisAlumno,apellidoAlumno,emailAlumno;
     private int edadAlumno;
+    private DatosRegistroAlumno datosRegistro;
 
     public DatosBasicosAlumno() {
 
@@ -51,29 +53,15 @@ public class DatosBasicosAlumno extends Fragment {
 
         View vista = inflater.inflate(R.layout.fragment_datos_basicos_alumno, container, false);
 
-        Bundle args = getArguments();
-        if (args != null) {
-            String edadSeleccionada = args.getString("edadSeleccionada");
-            Log.d("DatosBasicosAlumno", "Edad seleccionada: " + edadSeleccionada);
+        if (getArguments() != null) {
+            datosRegistro = (DatosRegistroAlumno) getArguments().getSerializable("datosAlumno");
+        }
+        if (datosRegistro == null) {
+            datosRegistro = new DatosRegistroAlumno();
         }
 
+        inicializarCampos(vista);
 
-
-        FlechaVolver = vista.findViewById(R.id.flechaVolverRegistro);
-
-        siguiente = vista.findViewById(R.id.boton_registrarse);
-
-        nombre = vista.findViewById(R.id.editTextNombreAlumno);
-
-        edad = vista.findViewById(R.id.editTextEdadAlumno);
-
-        apellido = vista.findViewById(R.id.editTextApellidoAlumno);
-
-        email = vista.findViewById(R.id.editTextEmailAlumno);
-
-        spinnerPais = vista.findViewById(R.id.spinnerPais);
-
-        listaPaises(spinnerPais);
 
         FlechaVolver.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,37 +84,42 @@ public class DatosBasicosAlumno extends Fragment {
         });
 
 
-        siguiente.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            boolean resultado = validarDatosEditText();
-
-            if (resultado){
-
-                Bundle bundle = new Bundle();
-                bundle.putString("nombreAlumno", nombreAlumno);
-                bundle.putInt("edadAlumno", edadAlumno);
-                bundle.putString("paisAlumno", paisAlumno);
-                bundle.putString("emailAlumno",emailAlumno);
-                bundle.putString("apellidoAlumno",apellidoAlumno);
+        siguiente.setOnClickListener(v -> {
+            if (validarDatosEditText()) {
+                guardarDatos();
 
                 Fragment avanzar = new DatosAccesoAlumno();
-
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("datosAlumno", datosRegistro);
                 avanzar.setArguments(bundle);
 
-                FragmentManager fragmentManager = getParentFragmentManager();
-                FragmentTransaction cambioDeFragment = fragmentManager.beginTransaction();
-
-                cambioDeFragment.replace(R.id.frameLayout, avanzar);
-
-                cambioDeFragment.commit();
-                }
+                getParentFragmentManager().beginTransaction()
+                        .replace(R.id.frameLayout, avanzar)
+                        .commit();
             }
         });
 
 
         return vista;
+    }
+
+    private void inicializarCampos(View vista) {
+        nombre = vista.findViewById(R.id.editTextNombreAlumno);
+        edad = vista.findViewById(R.id.editTextEdadAlumno);
+        apellido = vista.findViewById(R.id.editTextApellidoAlumno);
+        email = vista.findViewById(R.id.editTextEmailAlumno);
+        spinnerPais = vista.findViewById(R.id.spinnerPais);
+        listaPaises(spinnerPais);
+        FlechaVolver = vista.findViewById(R.id.flechaVolverRegistro);
+        siguiente = vista.findViewById(R.id.boton_registrarse);
+    }
+
+    private void guardarDatos() {
+        datosRegistro.setNombre(nombre.getText().toString().trim());
+        datosRegistro.setApellido(apellido.getText().toString().trim());
+        datosRegistro.setEmail(email.getText().toString().trim());
+        datosRegistro.setEdad(Integer.parseInt(edad.getText().toString().trim()));
+        datosRegistro.setNacionalidad(spinnerPais.getSelectedItem().toString());
     }
 
     private void listaPaises(Spinner spinner) {

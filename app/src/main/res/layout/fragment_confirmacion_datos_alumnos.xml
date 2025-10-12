@@ -59,6 +59,55 @@
         android:padding="12dp"
         android:background="@drawable/card_confirmacion_datos_alumno"
         >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="6dp"
+            >
+
+            <TextView
+                android:id="@+id/nombreAlumno"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="@string/nombre"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/valorNombreAlumno"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text=""
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="6dp"
+            >
+
+            <TextView
+                android:id="@+id/ApellidoAlumno"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="@string/apellido"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/valorApellidoAlumno"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text=""
+                android:textSize="14sp" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -220,13 +269,13 @@
 
 
     <Button
-        android:id="@+id/boton_registrarse"
+        android:id="@+id/Confirmar_registro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="32dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/boton_verde"
-        android:text="@string/btn_registro"
+        android:text="@string/btnCrearCuenta"
         android:textColor="@color/white"
         android:textSize="16sp"
         app:backgroundTint="@null"

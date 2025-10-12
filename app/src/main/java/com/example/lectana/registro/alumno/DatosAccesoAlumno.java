@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.example.lectana.R;
 import com.example.lectana.clases.validaciones.ValidacionesPassword;
+import com.example.lectana.model.DatosRegistroAlumno;
 
 
 public class DatosAccesoAlumno extends Fragment {
@@ -33,19 +34,19 @@ public class DatosAccesoAlumno extends Fragment {
     private int edadAlumno = 0;
     private TextView estadoPassword,passwordCoincidencia, errorPassword;
     private boolean passwordsValidas = false, esValida = false;
+    private DatosRegistroAlumno datosRegistro = null;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View vista = inflater.inflate(R.layout.fragment_datos_acceso_alumno, container, false);
 
-        Bundle args = getArguments();
-        if (args != null) {
-            nombreAlumno = args.getString("nombreAlumno");
-            edadAlumno = args.getInt("edadAlumno");
-            paisAlumno = args.getString("paisAlumno");
-            emailAlumno = args.getString("emailAlumno");
-            apellidoAlumno = args.getString("apellidoAlumno");
+
+        if (getArguments() != null) {
+            datosRegistro = (DatosRegistroAlumno) getArguments().getSerializable("datosAlumno");
+        }
+        if (datosRegistro == null) {
+            datosRegistro = new DatosRegistroAlumno();
         }
 
         ProgressBar barraDeProgreso = vista.findViewById(R.id.barraProgreso);
@@ -87,11 +88,11 @@ public class DatosAccesoAlumno extends Fragment {
             @Override
             public void onClick(View view) {
 
-                {
-                    if (passwordsValidas && esValida) {
-                        confirmacionDatosAlumno();
-                    }
-            }
+                if (passwordsValidas && esValida) {
+                    datosRegistro.setPassword(pass1);
+
+                    confirmacionDatosAlumno(datosRegistro);
+                }
 
             }
         });
@@ -135,15 +136,10 @@ public class DatosAccesoAlumno extends Fragment {
         );
     }
 
-    private void confirmacionDatosAlumno() {
+    private void confirmacionDatosAlumno(DatosRegistroAlumno datosRegistro) {
         Fragment siguiente = new ConfirmacionDatosAlumnos();
         Bundle bundle = new Bundle();
-        bundle.putString("nombreAlumno", nombreAlumno);
-        bundle.putInt("edadAlumno", edadAlumno);
-        bundle.putString("paisAlumno", paisAlumno);
-        bundle.putString("passwordAlumno", pass1);
-        bundle.putString("emailAlumno", emailAlumno);
-        bundle.putString("apellidoAlumno", apellidoAlumno);
+        bundle.putSerializable("datosAlumno", datosRegistro);
         siguiente.setArguments(bundle);
 
         FragmentManager fragmentManager = getParentFragmentManager();
