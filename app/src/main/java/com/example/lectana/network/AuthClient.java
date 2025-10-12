@@ -49,6 +49,40 @@ public class AuthClient {
         });
     }
 
+    /**
+     * Método para probar la conectividad con el servidor
+     */
+    public void testConnection(LoginCallback callback) {
+        String url = baseUrl.endsWith("/") ? baseUrl + "api/auth/test" : baseUrl + "/api/auth/test";
+        
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .build();
+
+        Log.d(TAG, "Probando conexión a: " + url);
+
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e(TAG, "Error de conexión: " + e.getMessage());
+                callback.onError("Error de conexión: " + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseBody = response.body() != null ? response.body().string() : "";
+                Log.d(TAG, "Respuesta de prueba: " + response.code() + " - " + responseBody);
+                
+                if (response.isSuccessful()) {
+                    callback.onSuccess("OK", "test", new JSONObject());
+                } else {
+                    callback.onError("Servidor respondió con código: " + response.code());
+                }
+            }
+        });
+    }
+
     public void loginComplete(String email, String password, LoginCallbackComplete callback) {
         try {
             JSONObject json = new JSONObject();
@@ -80,6 +114,20 @@ public class AuthClient {
                 public void onResponse(Call call, Response response) throws IOException {
                     String responseBody = response.body() != null ? response.body().string() : "";
                     Log.d(TAG, "Respuesta del servidor: " + response.code() + " - " + responseBody);
+
+                    // Verificar si la respuesta está vacía
+                    if (responseBody.trim().isEmpty()) {
+                        Log.e(TAG, "Respuesta vacía del servidor");
+                        callback.onError("El servidor no respondió correctamente");
+                        return;
+                    }
+
+                    // Verificar si la respuesta parece ser HTML (error del servidor)
+                    if (responseBody.trim().startsWith("<")) {
+                        Log.e(TAG, "Respuesta HTML recibida en lugar de JSON: " + responseBody);
+                        callback.onError("Error del servidor: respuesta HTML recibida");
+                        return;
+                    }
 
                     try {
                         JSONObject jsonResponse = new JSONObject(responseBody);
@@ -113,8 +161,9 @@ public class AuthClient {
                             callback.onError(error);
                         }
                     } catch (JSONException e) {
-                        Log.e(TAG, "Error parseando respuesta: " + e.getMessage());
-                        callback.onError("Error procesando respuesta del servidor");
+                        Log.e(TAG, "Error parseando respuesta JSON: " + e.getMessage());
+                        Log.e(TAG, "Respuesta recibida: " + responseBody);
+                        callback.onError("Error procesando respuesta del servidor: " + e.getMessage());
                     }
                 }
             });

@@ -14,12 +14,16 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.lectana.Login;
 import com.example.lectana.R;
 import com.example.lectana.centro_ayuda;
+import com.example.lectana.model.DatosRegistroDocente;
 import com.example.lectana.registro.alumno.EdadAlumnoFragment;
 import com.example.lectana.registro.docente.DatosPersonalesDocenteFragment;
 
 public class RegistroActivity extends AppCompatActivity {
 
     TextView volverLogin, soporte, tenesCuenta;
+    
+    // Datos del formulario de registro de docente
+    private DatosRegistroDocente datosRegistroDocente;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,13 +54,22 @@ public class RegistroActivity extends AppCompatActivity {
             }
         });
 
+        // Inicializar datos de registro
+        datosRegistroDocente = new DatosRegistroDocente();
+
         if (savedInstanceState == null) {
             String seleccion = getIntent().getStringExtra("seleccion");
 
             if ("Docente".equalsIgnoreCase(seleccion)) {
                 //Fragment de docente
+                DatosPersonalesDocenteFragment fragment = new DatosPersonalesDocenteFragment();
+                // Pasar datos a través de Bundle
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("datosRegistro", datosRegistroDocente);
+                fragment.setArguments(bundle);
+                
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.frameLayout, new DatosPersonalesDocenteFragment())
+                        .replace(R.id.frameLayout, fragment)
                         .commit();
 
             } else {
@@ -72,6 +85,20 @@ public class RegistroActivity extends AppCompatActivity {
     public void setFooterVisibility(boolean mostrarVolver, boolean mostrarTenesCuenta) {
         volverLogin.setVisibility(mostrarVolver ? View.VISIBLE : View.GONE);
         tenesCuenta.setVisibility(mostrarTenesCuenta ? View.VISIBLE : View.GONE);
+    }
+    
+    /**
+     * Obtener los datos de registro de docente
+     */
+    public DatosRegistroDocente getDatosRegistroDocente() {
+        return datosRegistroDocente;
+    }
+    
+    /**
+     * Actualizar los datos de registro de docente
+     */
+    public void setDatosRegistroDocente(DatosRegistroDocente datos) {
+        this.datosRegistroDocente = datos;
     }
 
 }

@@ -214,6 +214,36 @@ android:layout_height="match_parent"
                 android:layout_marginEnd="24dp"
                 />
 
+            <TextView
+                android:id="@+id/edadDocente"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:textStyle="bold"
+                android:text="Edad"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.118"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editTextTelefonoDocente" />
+
+            <EditText
+                android:id="@+id/editTextEdadDocente"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="15dp"
+                android:ems="10"
+                android:inputType="number"
+                android:hint="Edad"
+                android:background="@drawable/fondo_edit_text_borde_gris_redondeado"
+                android:drawableStart="@drawable/vector_persona"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.253"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edadDocente"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                />
+
             <Button
                 android:id="@+id/btn_siguiente_datos_personales"
                 android:layout_width="0dp"
@@ -221,6 +251,7 @@ android:layout_height="match_parent"
                 android:layout_marginTop="15dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
                 android:textStyle="bold"
                 android:textSize="20sp"
                 android:text="@string/btn_registro"
@@ -229,7 +260,7 @@ android:layout_height="match_parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextTelefonoDocente" />
+                app:layout_constraintTop_toBottomOf="@+id/editTextEdadDocente" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
