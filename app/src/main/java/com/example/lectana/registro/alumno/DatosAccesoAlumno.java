@@ -29,23 +29,18 @@ public class DatosAccesoAlumno extends Fragment {
         // Required empty public constructor
     }
 
-    private String pass1 = "",nombreAlumno = "",paisAlumno = "";
-    private int edadAlumno = 0;
-    private TextView estadoPassword,passwordCoincidencia, errorPassword;
+    private String pass1 = "";
+    private TextView estadoPassword, passwordCoincidencia, errorPassword;
     private boolean passwordsValidas = false, esValida = false;
+    private RegistroAlumnoManager registroManager;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View vista = inflater.inflate(R.layout.fragment_datos_acceso_alumno, container, false);
 
-        Bundle args = getArguments();
-        if (args != null) {
-            nombreAlumno = args.getString("nombreAlumno");
-            edadAlumno = args.getInt("edadAlumno");
-            paisAlumno = args.getString("paisAlumno");
-
-        }
+        // Inicializar el manager
+        registroManager = RegistroAlumnoManager.getInstance(requireContext());
 
         ProgressBar barraDeProgreso = vista.findViewById(R.id.barraProgreso);
         barraDeProgreso.setProgress(2);
@@ -87,26 +82,17 @@ public class DatosAccesoAlumno extends Fragment {
             public void onClick(View view) {
 
                 if (passwordsValidas && esValida) {
+                    // Guardar email y password en el manager
+                    String email = registroManager.getAlumnoRegistro().getEmail();
+                    registroManager.guardarDatosAcceso(email, pass1);
+                    
+                    Log.d("DatosAccesoAlumno", "Password guardado para: " + email);
 
                     Fragment siguiente = new ConfirmacionDatosAlumnos();
-                    Bundle bundle = new Bundle();
-                    bundle.putString("nombreAlumno", nombreAlumno);
-                    bundle.putInt("edadAlumno", edadAlumno);
-                    bundle.putString("paisAlumno", paisAlumno);
-                    bundle.putString("passwordAlumno", pass1);
-                    siguiente.setArguments(bundle);
-
-
-
-                     FragmentManager fragmentManager = getParentFragmentManager();
-
-                     FragmentTransaction cambioDeFragment = fragmentManager.beginTransaction();
-
-                     cambioDeFragment.replace(R.id.frameLayout, siguiente);
-
-                     cambioDeFragment.commit();
-
-
+                    FragmentManager fragmentManager = getParentFragmentManager();
+                    FragmentTransaction cambioDeFragment = fragmentManager.beginTransaction();
+                    cambioDeFragment.replace(R.id.frameLayout, siguiente);
+                    cambioDeFragment.commit();
                 }
             }
         });
