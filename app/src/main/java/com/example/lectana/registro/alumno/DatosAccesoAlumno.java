@@ -20,7 +20,6 @@ import android.widget.TextView;
 
 import com.example.lectana.R;
 import com.example.lectana.clases.validaciones.ValidacionesPassword;
-import com.example.lectana.model.DatosRegistroAlumno;
 
 
 public class DatosAccesoAlumno extends Fragment {
@@ -30,24 +29,18 @@ public class DatosAccesoAlumno extends Fragment {
         // Required empty public constructor
     }
 
-    private String pass1 = "",nombreAlumno = "",paisAlumno = "",emailAlumno = "", apellidoAlumno = "";
-    private int edadAlumno = 0;
-    private TextView estadoPassword,passwordCoincidencia, errorPassword;
+    private String pass1 = "";
+    private TextView estadoPassword, passwordCoincidencia, errorPassword;
     private boolean passwordsValidas = false, esValida = false;
-    private DatosRegistroAlumno datosRegistro = null;
+    private RegistroAlumnoManager registroManager;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View vista = inflater.inflate(R.layout.fragment_datos_acceso_alumno, container, false);
 
-
-        if (getArguments() != null) {
-            datosRegistro = (DatosRegistroAlumno) getArguments().getSerializable("datosAlumno");
-        }
-        if (datosRegistro == null) {
-            datosRegistro = new DatosRegistroAlumno();
-        }
+        // Inicializar el manager
+        registroManager = RegistroAlumnoManager.getInstance(requireContext());
 
         ProgressBar barraDeProgreso = vista.findViewById(R.id.barraProgreso);
         barraDeProgreso.setProgress(2);
@@ -89,11 +82,18 @@ public class DatosAccesoAlumno extends Fragment {
             public void onClick(View view) {
 
                 if (passwordsValidas && esValida) {
-                    datosRegistro.setPassword(pass1);
+                    // Guardar email y password en el manager
+                    String email = registroManager.getAlumnoRegistro().getEmail();
+                    registroManager.guardarDatosAcceso(email, pass1);
+                    
+                    Log.d("DatosAccesoAlumno", "Password guardado para: " + email);
 
-                    confirmacionDatosAlumno(datosRegistro);
+                    Fragment siguiente = new ConfirmacionDatosAlumnos();
+                    FragmentManager fragmentManager = getParentFragmentManager();
+                    FragmentTransaction cambioDeFragment = fragmentManager.beginTransaction();
+                    cambioDeFragment.replace(R.id.frameLayout, siguiente);
+                    cambioDeFragment.commit();
                 }
-
             }
         });
 
@@ -134,17 +134,5 @@ public class DatosAccesoAlumno extends Fragment {
                 "Coinciden",
                 "No coinciden"
         );
-    }
-
-    private void confirmacionDatosAlumno(DatosRegistroAlumno datosRegistro) {
-        Fragment siguiente = new ConfirmacionDatosAlumnos();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("datosAlumno", datosRegistro);
-        siguiente.setArguments(bundle);
-
-        FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction cambioDeFragment = fragmentManager.beginTransaction();
-        cambioDeFragment.replace(R.id.frameLayout, siguiente);
-        cambioDeFragment.commit();
     }
 }

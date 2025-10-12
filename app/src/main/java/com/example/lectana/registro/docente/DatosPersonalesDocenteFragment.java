@@ -17,51 +17,40 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.lectana.R;
-import com.example.lectana.model.DatosRegistroDocente;
-import com.example.lectana.registro.RegistroActivity;
 import com.example.lectana.registro.registro_pregunta;
 
 public class DatosPersonalesDocenteFragment extends Fragment {
 
-    // Campos del formulario
-    private EditText edtNombreDocente;
-    private EditText edtApellidoDocente;
-    private EditText edtDniDocente;
-    private EditText edtEmailDocente;
-    private EditText edtTelefonoDocente;
-    private EditText edtEdadDocente;
-    
-    // Datos de registro
-    private DatosRegistroDocente datosRegistro;
+    private EditText editNombre, editApellido, editDni, editEmail, editTelefono;
+    private RegistroDocenteManager registroManager;
 
     public DatosPersonalesDocenteFragment() {
         // Required empty public constructor
     }
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View vista = inflater.inflate(R.layout.fragment_datos_personales_docente, container, false);
 
-        // Obtener datos de registro
-        if (getArguments() != null) {
-            datosRegistro = (DatosRegistroDocente) getArguments().getSerializable("datosRegistro");
-        }
-        
-        if (datosRegistro == null) {
-            datosRegistro = new DatosRegistroDocente();
-        }
-
-        // Inicializar campos
-        inicializarCampos(vista);
+        // Inicializar el manager
+        registroManager = RegistroDocenteManager.getInstance(requireContext());
 
         ImageView volver = vista.findViewById(R.id.flechaVolverRegistro);
         TextView textoRegistro = vista.findViewById(R.id.textoRegistro);
         Button siguiente = vista.findViewById(R.id.btn_siguiente_datos_personales);
 
+        // Obtener referencias a los EditText
+        editNombre = vista.findViewById(R.id.editTextNombreDocente);
+        editApellido = vista.findViewById(R.id.editTextApellidoDocente);
+        editDni = vista.findViewById(R.id.editTextDniDocente);
+        editEmail = vista.findViewById(R.id.editTextEmailDocente);
+        editTelefono = vista.findViewById(R.id.editTextTelefonoDocente);
+
         textoRegistro.setText(getString(R.string.registroDocente));
+
+        // Restaurar datos si existen
+        restaurarDatos();
 
         volver.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,113 +63,85 @@ public class DatosPersonalesDocenteFragment extends Fragment {
         siguiente.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (validarCampos()) {
+                if (validarDatos()) {
                     guardarDatos();
-                    navegarSiguiente();
+                    
+                    Fragment Siguiente = new DatosInstitucionalesFragment();
+                    FragmentManager fragmentManager = getParentFragmentManager();
+                    FragmentTransaction cambioDeFragment = fragmentManager.beginTransaction();
+                    cambioDeFragment.replace(R.id.frameLayout, Siguiente);
+                    cambioDeFragment.commit();
                 }
             }
         });
 
         return vista;
     }
-    
-    private void inicializarCampos(View vista) {
-        edtNombreDocente = vista.findViewById(R.id.editTextNombreDocente);
-        edtApellidoDocente = vista.findViewById(R.id.editTextApellidoDocente);
-        edtDniDocente = vista.findViewById(R.id.editTextDniDocente);
-        edtEmailDocente = vista.findViewById(R.id.editTextEmailDocente);
-        edtTelefonoDocente = vista.findViewById(R.id.editTextTelefonoDocente);
-        edtEdadDocente = vista.findViewById(R.id.editTextEdadDocente);
-    }
-    
-    private boolean validarCampos() {
-        String nombre = edtNombreDocente.getText().toString().trim();
-        String apellido = edtApellidoDocente.getText().toString().trim();
-        String dni = edtDniDocente.getText().toString().trim();
-        String email = edtEmailDocente.getText().toString().trim();
-        String edadStr = edtEdadDocente.getText().toString().trim();
-        
+
+    private boolean validarDatos() {
+        String nombre = editNombre.getText().toString().trim();
+        String apellido = editApellido.getText().toString().trim();
+        String dni = editDni.getText().toString().trim();
+        String email = editEmail.getText().toString().trim();
+
         if (nombre.isEmpty()) {
-            edtNombreDocente.setError("El nombre es obligatorio");
+            editNombre.setError("Ingresa tu nombre");
+            editNombre.requestFocus();
             return false;
         }
-        
+
         if (apellido.isEmpty()) {
-            edtApellidoDocente.setError("El apellido es obligatorio");
+            editApellido.setError("Ingresa tu apellido");
+            editApellido.requestFocus();
             return false;
         }
-        
+
         if (dni.isEmpty()) {
-            edtDniDocente.setError("El DNI es obligatorio");
+            editDni.setError("Ingresa tu DNI");
+            editDni.requestFocus();
             return false;
         }
-        
-        if (dni.length() < 7 || dni.length() > 15) {
-            edtDniDocente.setError("El DNI debe tener entre 7 y 15 caracteres");
+
+        if (!dni.matches("\\d+")) {
+            editDni.setError("El DNI solo debe contener números");
+            editDni.requestFocus();
             return false;
         }
-        
+
         if (email.isEmpty()) {
-            edtEmailDocente.setError("El email es obligatorio");
+            editEmail.setError("Ingresa tu email");
+            editEmail.requestFocus();
             return false;
         }
-        
+
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            edtEmailDocente.setError("Email inválido");
+            editEmail.setError("Ingresa un email válido");
+            editEmail.requestFocus();
             return false;
         }
-        
-        if (edadStr.isEmpty()) {
-            edtEdadDocente.setError("La edad es obligatoria");
-            return false;
-        }
-        
-        try {
-            int edad = Integer.parseInt(edadStr);
-            if (edad < 18 || edad > 120) {
-                edtEdadDocente.setError("La edad debe estar entre 18 y 120 años");
-                return false;
-            }
-        } catch (NumberFormatException e) {
-            edtEdadDocente.setError("Ingresa una edad válida");
-            return false;
-        }
-        
+
         return true;
     }
-    
+
     private void guardarDatos() {
-        datosRegistro.setNombre(edtNombreDocente.getText().toString().trim());
-        datosRegistro.setApellido(edtApellidoDocente.getText().toString().trim());
-        datosRegistro.setDni(edtDniDocente.getText().toString().trim());
-        datosRegistro.setEmail(edtEmailDocente.getText().toString().trim());
-        datosRegistro.setTelefono(edtTelefonoDocente.getText().toString().trim());
-        
-        // Guardar edad
-        try {
-            int edad = Integer.parseInt(edtEdadDocente.getText().toString().trim());
-            datosRegistro.setEdad(edad);
-        } catch (NumberFormatException e) {
-            datosRegistro.setEdad(30); // Valor por defecto
-        }
-        
-        // Actualizar datos en la actividad principal
-        if (getActivity() instanceof RegistroActivity) {
-            ((RegistroActivity) getActivity()).setDatosRegistroDocente(datosRegistro);
-        }
+        String nombre = editNombre.getText().toString().trim();
+        String apellido = editApellido.getText().toString().trim();
+        String dni = editDni.getText().toString().trim();
+        String email = editEmail.getText().toString().trim();
+        String telefono = editTelefono.getText().toString().trim();
+
+        registroManager.guardarDatosPersonales(nombre, apellido, dni, email, telefono);
+        Toast.makeText(requireContext(), "Datos personales guardados", Toast.LENGTH_SHORT).show();
     }
-    
-    private void navegarSiguiente() {
-        DatosInstitucionalesFragment siguiente = new DatosInstitucionalesFragment();
-        
-        // Pasar datos al siguiente fragmento
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("datosRegistro", datosRegistro);
-        siguiente.setArguments(bundle);
-        
-        FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction cambioDeFragment = fragmentManager.beginTransaction();
-        cambioDeFragment.replace(R.id.frameLayout, siguiente);
-        cambioDeFragment.commit();
+
+    private void restaurarDatos() {
+        if (registroManager.hayDatosGuardados()) {
+            registroManager.restaurarDatos();
+            editNombre.setText(registroManager.getDocenteRegistro().getNombre());
+            editApellido.setText(registroManager.getDocenteRegistro().getApellido());
+            editDni.setText(registroManager.getDocenteRegistro().getDni());
+            editEmail.setText(registroManager.getDocenteRegistro().getEmail());
+            editTelefono.setText(registroManager.getDocenteRegistro().getTelefono());
+        }
     }
 }

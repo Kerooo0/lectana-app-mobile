@@ -17,7 +17,8 @@ public class ValidacionesPassword {
             return false;
         }
 
-        String regex = "^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[@#$%^&+=!]).*$";
+        // Acepta letras, números y caracteres especiales comunes (incluyendo _ - . , ; : !)
+        String regex = "^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[@#$%^&+=!_\\-.,;:?*]).*$";
 
         return password.matches(regex);
     }
