@@ -99,6 +99,34 @@
         app:layout_constraintTop_toTopOf="@id/calidadPassword"/>
 
     <TextView
+        android:id="@+id/edadDocenteLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textStyle="bold"
+        android:text="Edad"
+        android:layout_marginStart="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/resultadoPassword" />
+
+    <EditText
+        android:id="@+id/editTextEdadDocente"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:inputType="number"
+        android:hint="Ej: 30"
+        android:background="@drawable/fondo_edit_text_borde_gris_redondeado"
+        android:drawableStart="@drawable/vector_persona"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edadDocenteLabel"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        />
+
+    <TextView
         android:id="@+id/repetirPasswordDocente"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -107,7 +135,7 @@
         android:text="@string/confirmaPassword"
         android:layout_marginStart="20dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/resultadoPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextEdadDocente" />
 
     <TextView
         android:id="@+id/coincidenciaPasswordDocente"

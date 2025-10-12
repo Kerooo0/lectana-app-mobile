@@ -37,8 +37,10 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
-    // Networking simple para prueba de /health
+    // Networking
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    // CardView para el layout de confirmación
+    implementation("androidx.cardview:cardview:1.0.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
