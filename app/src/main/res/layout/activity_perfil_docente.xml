@@ -209,13 +209,12 @@
 
                     </LinearLayout>
 
-                    <!-- Colegio -->
+                    <!-- Institución -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="12dp">
+                        android:gravity="center_vertical">
 
                         <ImageView
                             android:layout_width="24dp"
@@ -233,54 +232,15 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Colegio"
+                                android:text="Institución"
                                 android:textColor="@color/gris_medio"
                                 android:textSize="14sp" />
 
                             <TextView
-                                android:id="@+id/colegio_docente_perfil"
+                                android:id="@+id/institucion_docente_perfil"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Colegio San Martín"
-                                android:textColor="@color/gris_oscuro"
-                                android:textSize="16sp" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <!-- Años de experiencia -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_work"
-                            android:tint="@color/azul_claro"
-                            android:layout_marginEnd="12dp" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Experiencia"
-                                android:textColor="@color/gris_medio"
-                                android:textSize="14sp" />
-
-                            <TextView
-                                android:id="@+id/experiencia_docente_perfil"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="8 años"
+                                android:text="Sin especificar"
                                 android:textColor="@color/gris_oscuro"
                                 android:textSize="16sp" />
 

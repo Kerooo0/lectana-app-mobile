@@ -62,6 +62,7 @@ public class PantallaPrincipalDocente extends AppCompatActivity {
         configurar_lista_aulas();
         cargar_datos_aulas();
         configurar_botones_accion();
+        personalizar_interfaz_usuario();
     }
 
     private void inicializar_componentes_interfaz() {
@@ -177,6 +178,8 @@ public class PantallaPrincipalDocente extends AppCompatActivity {
         }
         // Recargar datos cuando se regrese a esta pantalla
         cargar_datos_aulas();
+        // Actualizar interfaz con datos actualizados
+        personalizar_interfaz_usuario();
     }
 
     /**
@@ -207,6 +210,40 @@ public class PantallaPrincipalDocente extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+    }
+
+    /**
+     * Personalizar interfaz con datos del usuario
+     */
+    private void personalizar_interfaz_usuario() {
+        try {
+            // Cambiar título a "Panel Docente"
+            texto_titulo_principal.setText("Panel Docente");
+            
+            // Obtener datos del usuario desde la sesión
+            org.json.JSONObject user = sessionManager.getUser();
+            if (user != null) {
+                String nombre = user.optString("nombre", "Docente");
+                String apellido = user.optString("apellido", "");
+                
+                // Crear mensaje de bienvenida personalizado
+                String mensajeBienvenida;
+                if (!apellido.isEmpty()) {
+                    mensajeBienvenida = "Bienvenido Prof. " + nombre + " " + apellido;
+                } else {
+                    mensajeBienvenida = "Bienvenido Prof. " + nombre;
+                }
+                
+                texto_bienvenida_docente.setText(mensajeBienvenida);
+            } else {
+                // Mensaje por defecto si no hay datos del usuario
+                texto_bienvenida_docente.setText("Bienvenido Profesor");
+            }
+        } catch (Exception e) {
+            // Mensaje por defecto en caso de error
+            texto_titulo_principal.setText("Panel Docente");
+            texto_bienvenida_docente.setText("Bienvenido Profesor");
+        }
     }
 
     /**

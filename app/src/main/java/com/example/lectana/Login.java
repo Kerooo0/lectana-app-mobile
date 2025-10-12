@@ -106,9 +106,9 @@ public class Login extends AppCompatActivity {
         boton_iniciar_sesion.setText("Iniciando sesión...");
 
         // Realizar login
-        authClient.login(email, password, new AuthClient.LoginCallback() {
+        authClient.loginComplete(email, password, new AuthClient.LoginCallbackComplete() {
             @Override
-            public void onSuccess(String token, String role, JSONObject user) {
+            public void onSuccess(String token, String role, JSONObject user, JSONObject docente) {
                 runOnUiThread(() -> {
                     boton_iniciar_sesion.setEnabled(true);
                     boton_iniciar_sesion.setText("Iniciar Sesión");
@@ -131,8 +131,9 @@ public class Login extends AppCompatActivity {
                         return;
                     }
                     
-                    // Guardar sesión (igual que localStorage en el frontend web)
-                    sessionManager.saveSession(token, role, user);
+                    // Guardar sesión completa con datos de usuario y docente
+                    // El backend ahora incluye todos los datos del docente en el login
+                    sessionManager.saveSession(token, role, user, docente);
                     
                     startActivity(intent);
                     finish(); // Cerrar la actividad de login

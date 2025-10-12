@@ -30,7 +30,26 @@ public class AuthClient {
         void onError(String message);
     }
 
+    public interface LoginCallbackComplete {
+        void onSuccess(String token, String role, JSONObject user, JSONObject docente);
+        void onError(String message);
+    }
+
     public void login(String email, String password, LoginCallback callback) {
+        loginComplete(email, password, new LoginCallbackComplete() {
+            @Override
+            public void onSuccess(String token, String role, JSONObject user, JSONObject docente) {
+                callback.onSuccess(token, role, user);
+            }
+
+            @Override
+            public void onError(String message) {
+                callback.onError(message);
+            }
+        });
+    }
+
+    public void loginComplete(String email, String password, LoginCallbackComplete callback) {
         try {
             JSONObject json = new JSONObject();
             json.put("email", email);
@@ -72,9 +91,22 @@ public class AuthClient {
                             String token = jsonResponse.getString("token");
                             String role = jsonResponse.getString("role");
                             JSONObject user = jsonResponse.getJSONObject("user");
+                            JSONObject docente = jsonResponse.optJSONObject("docente");
                             
-                            Log.d(TAG, "Login exitoso - Role: " + role + ", User: " + user.toString());
-                            callback.onSuccess(token, role, user);
+                            Log.d(TAG, "Login exitoso - Role: " + role);
+                            Log.d(TAG, "Token recibido: " + token);
+                            Log.d(TAG, "Token length: " + token.length());
+                            Log.d(TAG, "User: " + user.toString());
+                            if (docente != null) {
+                                Log.d(TAG, "Docente: " + docente.toString());
+                            }
+                            
+                            // Determinar qué callback usar
+                            if (callback instanceof LoginCallbackComplete) {
+                                ((LoginCallbackComplete) callback).onSuccess(token, role, user, docente);
+                            } else if (callback instanceof LoginCallback) {
+                                ((LoginCallback) callback).onSuccess(token, role, user);
+                            }
                         } else {
                             String error = jsonResponse.optString("error", "Error desconocido");
                             Log.e(TAG, "Error del servidor: " + error);

@@ -2,6 +2,7 @@ package com.example.lectana;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -21,8 +22,7 @@ public class PerfilDocenteActivity extends AppCompatActivity {
     private TextView especialidadDocentePerfil;
     private TextView emailDocentePerfil;
     private TextView telefonoDocentePerfil;
-    private TextView colegioDocentePerfil;
-    private TextView experienciaDocentePerfil;
+    private TextView institucionDocentePerfil;
     private TextView totalAulasPerfil;
     private TextView totalEstudiantesPerfil;
     private TextView totalCuentosPerfil;
@@ -57,8 +57,7 @@ public class PerfilDocenteActivity extends AppCompatActivity {
         especialidadDocentePerfil = findViewById(R.id.especialidad_docente_perfil);
         emailDocentePerfil = findViewById(R.id.email_docente_perfil);
         telefonoDocentePerfil = findViewById(R.id.telefono_docente_perfil);
-        colegioDocentePerfil = findViewById(R.id.colegio_docente_perfil);
-        experienciaDocentePerfil = findViewById(R.id.experiencia_docente_perfil);
+        institucionDocentePerfil = findViewById(R.id.institucion_docente_perfil);
         totalAulasPerfil = findViewById(R.id.total_aulas_perfil);
         totalEstudiantesPerfil = findViewById(R.id.total_estudiantes_perfil);
         totalCuentosPerfil = findViewById(R.id.total_cuentos_perfil);
@@ -78,11 +77,33 @@ public class PerfilDocenteActivity extends AppCompatActivity {
                 nombreDocentePerfil.setText(nombreCompleto);
                 emailDocentePerfil.setText(user.optString("email", ""));
                 
-                // Datos que no están en el usuario base (TODO: obtener desde backend)
-                especialidadDocentePerfil.setText("Lengua y Literatura"); // TODO: Obtener desde backend
-                telefonoDocentePerfil.setText("Sin especificar"); // TODO: Obtener desde backend
-                colegioDocentePerfil.setText("Sin especificar"); // TODO: Obtener desde backend
-                experienciaDocentePerfil.setText("Sin especificar"); // TODO: Obtener desde backend
+                // Cargar datos específicos del docente si están disponibles
+                org.json.JSONObject docente = sessionManager.getDocente();
+                Log.d("PerfilDocente", "Docente cargado: " + (docente != null ? docente.toString() : "NULL"));
+                
+                if (docente != null) {
+                    String telefono = docente.optString("telefono", "Sin especificar");
+                    String institucion = docente.optString("institucion_nombre", "Sin especificar");
+                    String nivelEducativo = docente.optString("nivel_educativo", "");
+                    
+                    telefonoDocentePerfil.setText(telefono);
+                    institucionDocentePerfil.setText(institucion);
+                    
+                    Log.d("PerfilDocente", "Datos cargados - Teléfono: " + telefono + ", Institución: " + institucion + ", Nivel: " + nivelEducativo);
+                    
+                    // Mostrar nivel educativo como especialidad
+                    if (!nivelEducativo.isEmpty()) {
+                        especialidadDocentePerfil.setText("Nivel: " + nivelEducativo);
+                    } else {
+                        especialidadDocentePerfil.setText("Docente");
+                    }
+                } else {
+                    // Valores por defecto si no hay datos del docente
+                    telefonoDocentePerfil.setText("Sin especificar");
+                    institucionDocentePerfil.setText("Sin especificar");
+                    especialidadDocentePerfil.setText("Docente");
+                    Log.w("PerfilDocente", "No hay datos del docente disponibles");
+                }
                 
                 // Estadísticas (TODO: Obtener desde backend)
                 totalAulasPerfil.setText("0");
@@ -94,8 +115,7 @@ public class PerfilDocenteActivity extends AppCompatActivity {
                 especialidadDocentePerfil.setText("Sin especificar");
                 emailDocentePerfil.setText("Sin especificar");
                 telefonoDocentePerfil.setText("Sin especificar");
-                colegioDocentePerfil.setText("Sin especificar");
-                experienciaDocentePerfil.setText("Sin especificar");
+                institucionDocentePerfil.setText("Sin especificar");
                 totalAulasPerfil.setText("0");
                 totalEstudiantesPerfil.setText("0");
                 totalCuentosPerfil.setText("0");
@@ -106,12 +126,22 @@ public class PerfilDocenteActivity extends AppCompatActivity {
             especialidadDocentePerfil.setText("Sin especificar");
             emailDocentePerfil.setText("Sin especificar");
             telefonoDocentePerfil.setText("Sin especificar");
-            colegioDocentePerfil.setText("Sin especificar");
-            experienciaDocentePerfil.setText("Sin especificar");
+            institucionDocentePerfil.setText("Sin especificar");
             totalAulasPerfil.setText("0");
             totalEstudiantesPerfil.setText("0");
             totalCuentosPerfil.setText("0");
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Verificar sesión cada vez que se regrese a esta pantalla
+        if (!verificarSesion()) {
+            return;
+        }
+        // Recargar datos para mostrar cambios en vivo
+        cargarDatosDocente();
     }
 
     private void configurarListeners() {
@@ -125,10 +155,9 @@ public class PerfilDocenteActivity extends AppCompatActivity {
         botonEditarPerfil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Implementar edición de perfil
-                android.widget.Toast.makeText(PerfilDocenteActivity.this, 
-                    "Funcionalidad de edición en desarrollo", 
-                    android.widget.Toast.LENGTH_SHORT).show();
+                // Navegar a la pantalla de edición de perfil
+                Intent intent = new Intent(PerfilDocenteActivity.this, EditarPerfilDocenteActivity.class);
+                startActivity(intent);
             }
         });
 

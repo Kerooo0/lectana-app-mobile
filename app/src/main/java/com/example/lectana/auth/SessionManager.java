@@ -13,6 +13,7 @@ public class SessionManager {
     private static final String PREF_NAME = "LectanaSession";
     private static final String KEY_TOKEN = "token";
     private static final String KEY_USER = "user";
+    private static final String KEY_DOCENTE = "docente";
     private static final String KEY_ROLE = "role";
     private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
     
@@ -40,6 +41,29 @@ public class SessionManager {
             Log.d(TAG, "Sesión guardada - Role: " + role);
         } catch (Exception e) {
             Log.e(TAG, "Error guardando sesión: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Guardar sesión completa con datos de docente
+     */
+    public void saveSession(String token, String role, JSONObject user, JSONObject docente) {
+        try {
+            editor.putString(KEY_TOKEN, token);
+            editor.putString(KEY_ROLE, role);
+            editor.putString(KEY_USER, user.toString());
+            if (docente != null) {
+                editor.putString(KEY_DOCENTE, docente.toString());
+                Log.d(TAG, "Datos de docente guardados: " + docente.toString());
+            } else {
+                Log.w(TAG, "Docente es null, no se guardan datos específicos");
+            }
+            editor.putBoolean(KEY_IS_LOGGED_IN, true);
+            editor.apply();
+            
+            Log.d(TAG, "Sesión completa guardada - Role: " + role);
+        } catch (Exception e) {
+            Log.e(TAG, "Error guardando sesión completa: " + e.getMessage());
         }
     }
     
@@ -74,6 +98,26 @@ public class SessionManager {
             return userStr != null ? new JSONObject(userStr) : null;
         } catch (JSONException e) {
             Log.e(TAG, "Error parseando usuario: " + e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Obtener datos del docente
+     */
+    public JSONObject getDocente() {
+        try {
+            String docenteStr = prefs.getString(KEY_DOCENTE, null);
+            if (docenteStr != null) {
+                JSONObject docente = new JSONObject(docenteStr);
+                Log.d(TAG, "Datos de docente recuperados: " + docente.toString());
+                return docente;
+            } else {
+                Log.w(TAG, "No hay datos de docente guardados");
+                return null;
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "Error parseando docente: " + e.getMessage());
             return null;
         }
     }
