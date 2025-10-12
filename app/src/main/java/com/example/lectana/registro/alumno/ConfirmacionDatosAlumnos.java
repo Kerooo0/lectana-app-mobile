@@ -35,7 +35,7 @@ public class ConfirmacionDatosAlumnos extends Fragment {
 
     private RegistroAlumnoManager registroManager;
     private RegistroAlumnoClient registroClient;
-    private TextView txtNombre, txtEdad, txtGrado;
+    private TextView txtNombre, txtEdad, txtGrado,txtEmail,txtApellido;
     private Button btnConfirmar;
     private ProgressBar progressBar;
     
@@ -61,12 +61,14 @@ public class ConfirmacionDatosAlumnos extends Fragment {
         ImageView volver = vista.findViewById(R.id.flechaVolverRegistro);
 
         // Referencias a los TextViews de confirmación existentes en el layout
-        txtNombre = vista.findViewById(R.id.valorEmailAlumno);
+        txtNombre = vista.findViewById(R.id.valorNombreAlumno);
         txtEdad = vista.findViewById(R.id.valorEdadAlumno);
+        txtApellido = vista.findViewById(R.id.valorApellidoAlumno);
+        txtEmail = vista.findViewById(R.id.valorEmailAlumno);
         txtGrado = vista.findViewById(R.id.valorPaisAlumno);
 
         // Botones
-        btnConfirmar = vista.findViewById(R.id.boton_registrarse);
+        btnConfirmar = vista.findViewById(R.id.Confirmar_registro);
         
         // Crear ProgressBar programáticamente (no existe en el layout)
         progressBar = new ProgressBar(requireContext());
@@ -109,17 +111,11 @@ public class ConfirmacionDatosAlumnos extends Fragment {
 
     private void mostrarDatosConfirmacion() {
         AlumnoRegistro alumno = registroManager.getAlumnoRegistro();
-        
-        Log.d("ConfirmacionAlumno", "Mostrando datos: " + alumno.getNombre() + " " + 
-              alumno.getApellido() + ", Email: " + alumno.getEmail());
-        
-        // Mostrar nombre completo y email en el primer TextView
-        txtNombre.setText(alumno.getNombre() + " " + alumno.getApellido() + "\n" + alumno.getEmail());
-        
-        // Mostrar edad
-        txtEdad.setText(String.valueOf(alumno.getEdad()) + " años");
-        
-        // Mostrar grado
+
+        txtNombre.setText(alumno.getNombre());
+        txtApellido.setText(alumno.getApellido());
+        txtEmail.setText(alumno.getEmail());
+        txtEdad.setText(alumno.getEdad() + " años");
         txtGrado.setText("Grado: " + alumno.getGrado());
     }
     

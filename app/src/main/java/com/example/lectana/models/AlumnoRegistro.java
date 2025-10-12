@@ -15,7 +15,8 @@ public class AlumnoRegistro {
     // Datos específicos de alumno
     private String fechaNacimiento;  // Formato: "YYYY-MM-DD" o "DD/MM/YYYY"
     private String grado;  // Ej: "1", "2", "3", "4", "5", "6" (primaria) o "1", "2", "3", "4", "5" (secundaria)
-    
+    private String nacionalidad;
+
     public AlumnoRegistro() {
     }
 
@@ -55,6 +56,10 @@ public class AlumnoRegistro {
     public int getEdad() {
         return edad;
     }
+
+    public void setNacionalidad(String nacionalidad){this.nacionalidad = nacionalidad;}
+
+    public String getNacionalidad(){return nacionalidad;}
 
     public void setEdad(int edad) {
         this.edad = edad;

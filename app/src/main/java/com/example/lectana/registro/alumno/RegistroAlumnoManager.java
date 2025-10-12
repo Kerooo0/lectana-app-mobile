@@ -40,6 +40,7 @@ public class RegistroAlumnoManager {
         alumnoRegistro.setEdad(edad);
         alumnoRegistro.setFechaNacimiento(fechaNacimiento);
         alumnoRegistro.setGrado(grado);
+
         
         // Guardar también en SharedPreferences por si la app se cierra
         SharedPreferences.Editor editor = prefs.edit();
