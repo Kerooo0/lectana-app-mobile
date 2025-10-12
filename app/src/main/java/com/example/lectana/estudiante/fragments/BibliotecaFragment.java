@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,24 +22,41 @@ import com.example.lectana.R;
 import com.example.lectana.ReproductorAudiolibroActivity;
 import com.example.lectana.adaptadores.AdaptadorBiblioteca;
 import com.example.lectana.modelos.ModeloCuento;
+import com.example.lectana.services.ApiClient;
+import com.example.lectana.services.CuentosApiService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class BibliotecaFragment extends Fragment implements AdaptadorBiblioteca.OnCuentoClickListener {
 
     private AdaptadorBiblioteca adaptador;
-    private final List<ModeloCuento> listaCuentos = new ArrayList<>();
+    private List<ModeloCuento> listaCuentos = new ArrayList<>();
+    private CuentosApiService apiService;
+    private ExecutorService executorService;
+    private ProgressBar progressBar;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_biblioteca, container, false);
 
+        // Inicializar API y threading
+        apiService = ApiClient.getCuentosApiService();
+        executorService = Executors.newSingleThreadExecutor();
+
         RecyclerView recycler = root.findViewById(R.id.recycler_biblioteca);
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
         adaptador = new AdaptadorBiblioteca(requireContext(), listaCuentos, this);
         recycler.setAdapter(adaptador);
+
+        progressBar = root.findViewById(R.id.progress_bar_biblioteca);
 
         EditText campoBusqueda = root.findViewById(R.id.campo_busqueda_biblioteca);
         ImageView botonFiltros = root.findViewById(R.id.boton_filtros_biblioteca);
@@ -68,16 +87,82 @@ public class BibliotecaFragment extends Fragment implements AdaptadorBiblioteca.
 
         botonFiltros.setOnClickListener(v -> mostrarDialogoFiltros());
 
-        cargarCuentosEjemplo();
+        // Cargar cuentos desde la API
+        cargarCuentosDesdeAPI();
         return root;
     }
 
-    private void cargarCuentosEjemplo() {
-        listaCuentos.clear();
-        listaCuentos.add(new ModeloCuento(1, "El Principito", "Antoine de Saint-Exupéry", "Clásicos", "8-12", "4.8", null, "45 min", "Un piloto se encuentra con un pequeño príncipe..."));
-        listaCuentos.add(new ModeloCuento(2, "La Abeja Haragana", "Horacio Quiroga", "Aventura", "8-12", "4.2", null, "12 min", "Una abeja perezosa aprende una lección..."));
-        listaCuentos.add(new ModeloCuento(3, "El Loro Pelado", "Horacio Quiroga", "Aventura", "8-12", "4.1", null, "10 min", "Las travesuras de un loro parlanchín..."));
-        adaptador.submitList(new ArrayList<>(listaCuentos));
+    private void cargarCuentosDesdeAPI() {
+        android.util.Log.d("BibliotecaFragment", "Iniciando carga de cuentos desde API...");
+        mostrarCargando(true);
+        
+        executorService.execute(() -> {
+            try {
+                Call<com.example.lectana.modelos.ApiResponse<com.example.lectana.modelos.CuentosResponse>> call = 
+                    apiService.getCuentosPublicos(1, 50, null, null, null, null);
+                
+                call.enqueue(new Callback<com.example.lectana.modelos.ApiResponse<com.example.lectana.modelos.CuentosResponse>>() {
+                    @Override
+                    public void onResponse(Call<com.example.lectana.modelos.ApiResponse<com.example.lectana.modelos.CuentosResponse>> call, 
+                                         Response<com.example.lectana.modelos.ApiResponse<com.example.lectana.modelos.CuentosResponse>> response) {
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                mostrarCargando(false);
+                                
+                                if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
+                                    com.example.lectana.modelos.CuentosResponse cuentosResponse = response.body().getData();
+                                    if (cuentosResponse != null && cuentosResponse.getCuentos() != null) {
+                                        listaCuentos.clear();
+                                        for (com.example.lectana.modelos.CuentoApi cuentoApi : cuentosResponse.getCuentos()) {
+                                            listaCuentos.add(cuentoApi.toModeloCuento());
+                                        }
+                                        adaptador.submitList(new ArrayList<>(listaCuentos));
+                                        android.util.Log.d("BibliotecaFragment", "Cuentos cargados desde API: " + listaCuentos.size());
+                                    } else {
+                                        android.util.Log.w("BibliotecaFragment", "API responde pero sin cuentos");
+                                        mostrarError("No se encontraron cuentos en el servidor");
+                                    }
+                                } else {
+                                    android.util.Log.w("BibliotecaFragment", "API no disponible: " + response.code());
+                                    mostrarError("Error del servidor: " + response.code());
+                                }
+                            });
+                        }
+                    }
+                    
+                    @Override
+                    public void onFailure(Call<com.example.lectana.modelos.ApiResponse<com.example.lectana.modelos.CuentosResponse>> call, Throwable t) {
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() -> {
+                                mostrarCargando(false);
+                                android.util.Log.e("BibliotecaFragment", "Error de conexión: " + t.getMessage());
+                                mostrarError("Error de conexión: " + t.getMessage());
+                            });
+                        }
+                    }
+                });
+            } catch (Exception e) {
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        mostrarCargando(false);
+                        android.util.Log.e("BibliotecaFragment", "Error inesperado: " + e.getMessage());
+                        mostrarError("Error inesperado: " + e.getMessage());
+                    });
+                }
+            }
+        });
+    }
+    
+    private void mostrarCargando(boolean mostrar) {
+        if (progressBar != null) {
+            progressBar.setVisibility(mostrar ? View.VISIBLE : View.GONE);
+        }
+    }
+    
+    private void mostrarError(String mensaje) {
+        if (getContext() != null) {
+            Toast.makeText(getContext(), mensaje, Toast.LENGTH_LONG).show();
+        }
     }
 
     private void mostrarDialogoFiltros() {
@@ -95,12 +180,28 @@ public class BibliotecaFragment extends Fragment implements AdaptadorBiblioteca.
 
     @Override
     public void onClickVerDetalle(ModeloCuento cuento) {
-        startActivity(new android.content.Intent(requireContext(), DetalleCuentoActivity.class).putExtra("cuentoId", cuento.getId()));
+        android.content.Intent intent = new android.content.Intent(requireContext(), DetalleCuentoActivity.class);
+        intent.putExtra("cuento_id", cuento.getId());
+        intent.putExtra("cuento_titulo", cuento.getTitulo());
+        intent.putExtra("cuento_autor", cuento.getAutor());
+        intent.putExtra("cuento_genero", cuento.getGenero());
+        intent.putExtra("cuento_edad", cuento.getEdadRecomendada());
+        intent.putExtra("cuento_duracion", cuento.getTiempoLectura());
+        intent.putExtra("cuento_descripcion", cuento.getDescripcion());
+        startActivity(intent);
     }
 
     @Override
     public void onClickReproducir(ModeloCuento cuento) {
         startActivity(new android.content.Intent(requireContext(), ReproductorAudiolibroActivity.class));
+    }
+    
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (executorService != null && !executorService.isShutdown()) {
+            executorService.shutdown();
+        }
     }
 }
 

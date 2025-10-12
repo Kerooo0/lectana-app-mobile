@@ -29,4 +29,7 @@ public interface CuentosApiService {
     
     @GET("generos/publicos")
     Call<ApiResponse<List<GeneroApi>>> getGenerosPublicos();
+    
+    @GET("cuentos/asignados/alumno/{alumnoId}")
+    Call<ApiResponse<CuentosResponse>> getCuentosAsignadosAlumno(@Path("alumnoId") int alumnoId);
 }

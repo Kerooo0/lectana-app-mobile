@@ -105,6 +105,10 @@ public class Login extends AppCompatActivity {
         boton_iniciar_sesion.setEnabled(false);
         boton_iniciar_sesion.setText("Iniciando sesión...");
 
+        // Log para diagnóstico
+        android.util.Log.d("Login", "Intentando login con email: " + email);
+        android.util.Log.d("Login", "Backend URL: " + BASE_URL);
+
         // Realizar login
         authClient.loginComplete(email, password, new AuthClient.LoginCallbackComplete() {
             @Override

@@ -1,5 +1,8 @@
 package com.example.lectana.services;
 
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -8,10 +11,19 @@ public class ApiClient {
     private static Retrofit retrofit;
     private static CuentosApiService cuentosApiService;
 
+    private static OkHttpClient getOkHttpClient() {
+        return new OkHttpClient.Builder()
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
+                .build();
+    }
+
     public static Retrofit getRetrofitInstance() {
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
+                    .client(getOkHttpClient())
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
