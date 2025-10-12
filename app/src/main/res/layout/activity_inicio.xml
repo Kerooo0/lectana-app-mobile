@@ -66,37 +66,5 @@
         app:layout_constraintTop_toBottomOf="@+id/textView2"
         app:layout_constraintVertical_bias="0.0" />
 
-    <!-- Botón temporal para ir al Panel Estudiante -->
-    <Button
-        android:id="@+id/boton_ir_panel_estudiante"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/boton_azul_rectangular"
-        android:text="Ir al Panel Estudiante (temporal)"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"
-        app:backgroundTint="@null"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/boton_ir_panel_docente" />
-
-    <!-- Botón temporal para ir al Panel Docente -->
-    <Button
-        android:id="@+id/boton_ir_panel_docente"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="24dp"
-        android:background="@drawable/boton_verde"
-        android:text="Ir al Panel Docente (temporal)"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"
-        app:backgroundTint="@null"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

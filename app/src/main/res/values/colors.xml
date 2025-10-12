@@ -23,6 +23,8 @@
     <color name="gris_oscuro">#424242</color>
     <color name="fondo_claro">#F5F5F5</color>
     <color name="morado_claro">#F3E5F5</color>
+    <color name="morado">#9C27B0</color>
+    <color name="azul">#2196F3</color>
     <color name="rojo">#F44336</color>
     <color name="naranja">#FF9800</color>
     <color name="verde_claro">#E8F5E8</color>

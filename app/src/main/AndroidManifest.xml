@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -33,7 +35,7 @@
             android:name=".VisualizarAulaActivity"
             android:exported="false" />
         <activity
-            android:name=".AsignarCuentoActivity"
+            android:name=".BibliotecaCuentosActivity"
             android:exported="false" />
         <activity
             android:name=".CrearActividadActivity"
@@ -41,6 +43,10 @@
         <activity
             android:name=".DetalleCuentoActivity"
             android:exported="false" />
+        <activity
+            android:name=".VisualizarPdfActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".SeleccionarAulaActivity"
             android:exported="false" />

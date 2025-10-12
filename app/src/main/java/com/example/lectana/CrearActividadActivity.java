@@ -85,11 +85,11 @@ public class CrearActividadActivity extends AppCompatActivity {
     }
 
     private void crearActividad() {
-        // TODO: Implementar lógica para crear actividad
+        // Implementar lógica para crear actividad
         // Validar campos, guardar en base de datos, etc.
     }
 
     private void mostrarVistaPrevia() {
-        // TODO: Implementar vista previa de la actividad
+        // Implementar vista previa de la actividad
     }
 }

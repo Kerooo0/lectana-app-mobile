@@ -11,6 +11,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.lectana.R;
 import com.example.lectana.DetalleCuentoActivity;
 import com.example.lectana.modelos.ModeloCuento;
@@ -21,14 +24,16 @@ public class AdaptadorCuentosDisponibles extends RecyclerView.Adapter<AdaptadorC
 
     private List<ModeloCuento> listaCuentos;
     private OnCuentoSeleccionadoListener listener;
+    private String modo; // "asignar" o "explorar"
 
     public interface OnCuentoSeleccionadoListener {
         void onCuentoSeleccionado(ModeloCuento cuento, boolean seleccionado);
     }
 
-    public AdaptadorCuentosDisponibles(List<ModeloCuento> listaCuentos, OnCuentoSeleccionadoListener listener) {
+    public AdaptadorCuentosDisponibles(List<ModeloCuento> listaCuentos, OnCuentoSeleccionadoListener listener, String modo) {
         this.listaCuentos = listaCuentos;
         this.listener = listener;
+        this.modo = modo;
     }
 
     @NonNull
@@ -82,35 +87,64 @@ public class AdaptadorCuentosDisponibles extends RecyclerView.Adapter<AdaptadorC
             tiempoLectura.setText(cuento.getTiempoLectura());
             generoCuento.setText(cuento.getGenero());
             
-            checkboxCuento.setChecked(cuento.isSeleccionado());
+            // Cargar imagen del cuento desde Supabase
+            if (cuento.getImagenUrl() != null && !cuento.getImagenUrl().isEmpty()) {
+                Glide.with(itemView.getContext())
+                    .load(cuento.getImagenUrl())
+                    .apply(RequestOptions.bitmapTransform(new RoundedCorners(12)))
+                    .placeholder(R.drawable.imagen_cuento_placeholder) // Imagen mientras carga
+                    .error(R.drawable.imagen_cuento_placeholder) // Imagen si falla
+                    .into(imagenCuento);
+            } else {
+                // Si no hay URL, usar imagen placeholder
+                imagenCuento.setImageResource(R.drawable.imagen_cuento_placeholder);
+            }
 
-            // TODO: Cargar imagen del cuento si imagenUrl no es vacío
-            // Glide.with(itemView.getContext()).load(cuento.getImagenUrl()).into(imagenCuento);
-
-            checkboxCuento.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                cuento.setSeleccionado(isChecked);
+            if ("asignar".equals(modo)) {
+                // Modo asignar: mostrar checkbox y permitir selección
+                checkboxCuento.setVisibility(View.VISIBLE);
+                checkboxCuento.setChecked(cuento.isSeleccionado());
                 
-                if (listener != null) {
-                    listener.onCuentoSeleccionado(cuento, isChecked);
-                }
-            });
+                checkboxCuento.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    cuento.setSeleccionado(isChecked);
+                    if (listener != null) {
+                        listener.onCuentoSeleccionado(cuento, isChecked);
+                    }
+                });
 
-            // Click en toda la tarjeta para seleccionar/deseleccionar
-            itemView.setOnClickListener(v -> {
-                checkboxCuento.setChecked(!checkboxCuento.isChecked());
-            });
+                // Click en toda la tarjeta para seleccionar/deseleccionar
+                itemView.setOnClickListener(v -> {
+                    checkboxCuento.setChecked(!checkboxCuento.isChecked());
+                });
+                
+            } else {
+                // Modo explorar: ocultar checkbox y navegar directamente al detalle
+                checkboxCuento.setVisibility(View.GONE);
+                
+                // Click en toda la tarjeta para abrir detalle
+                itemView.setOnClickListener(v -> {
+                    Intent intent = new Intent(itemView.getContext(), DetalleCuentoActivity.class);
+                    intent.putExtra("cuento_id", cuento.getId());
+                    intent.putExtra("cuento_titulo", cuento.getTitulo());
+                    intent.putExtra("cuento_autor", cuento.getAutor());
+                    intent.putExtra("cuento_genero", cuento.getGenero());
+                    intent.putExtra("cuento_edad", cuento.getEdadRecomendada());
+                    intent.putExtra("cuento_duracion", cuento.getTiempoLectura());
+                    intent.putExtra("cuento_descripcion", cuento.getDescripcion());
+                    itemView.getContext().startActivity(intent);
+                });
+            }
 
-            // Click en botón de vista previa
+            // Click en botón de vista previa (siempre disponible)
             botonVistaPrevia.setOnClickListener(v -> {
                 Intent intent = new Intent(itemView.getContext(), DetalleCuentoActivity.class);
-                intent.putExtra("id_cuento", cuento.getId());
-                intent.putExtra("titulo_cuento", cuento.getTitulo());
-                intent.putExtra("autor_cuento", cuento.getAutor());
-                intent.putExtra("genero_cuento", cuento.getGenero());
-                intent.putExtra("edad_cuento", cuento.getEdadRecomendada());
-                intent.putExtra("rating_cuento", cuento.getRating());
-                intent.putExtra("tiempo_cuento", cuento.getTiempoLectura());
-                intent.putExtra("descripcion_cuento", cuento.getDescripcion());
+                intent.putExtra("cuento_id", cuento.getId());
+                intent.putExtra("cuento_titulo", cuento.getTitulo());
+                intent.putExtra("cuento_autor", cuento.getAutor());
+                intent.putExtra("cuento_genero", cuento.getGenero());
+                intent.putExtra("cuento_edad", cuento.getEdadRecomendada());
+                intent.putExtra("cuento_duracion", cuento.getTiempoLectura());
+                intent.putExtra("cuento_descripcion", cuento.getDescripcion());
                 itemView.getContext().startActivity(intent);
             });
         }

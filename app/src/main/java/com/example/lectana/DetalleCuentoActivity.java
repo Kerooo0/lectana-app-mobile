@@ -6,10 +6,21 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.lectana.modelos.ModeloCuento;
+import com.example.lectana.services.ApiClient;
+import com.example.lectana.services.CuentosApiService;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DetalleCuentoActivity extends AppCompatActivity {
 
@@ -19,6 +30,8 @@ public class DetalleCuentoActivity extends AppCompatActivity {
     private TextView descripcionCuento;
     private ImageView imagenPrincipalCuento;
     private Button botonSeleccionarCuento, botonCancelarDetalle, botonVerPdf;
+    private ProgressBar progressBarDetalle;
+    private CuentosApiService apiService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +39,7 @@ public class DetalleCuentoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detalle_cuento);
 
         inicializarVistas();
+        apiService = ApiClient.getCuentosApiService();
         recibirDatosCuento();
         mostrarInformacionCuento();
         configurarListeners();
@@ -43,23 +57,73 @@ public class DetalleCuentoActivity extends AppCompatActivity {
         botonSeleccionarCuento = findViewById(R.id.boton_seleccionar_cuento);
         botonCancelarDetalle = findViewById(R.id.boton_cancelar_detalle);
         botonVerPdf = findViewById(R.id.boton_ver_pdf);
+        progressBarDetalle = findViewById(R.id.progress_bar_detalle);
     }
 
     private void recibirDatosCuento() {
-        // Recibir datos del cuento desde la actividad anterior
         Intent intent = getIntent();
         if (intent != null) {
-            int idCuento = intent.getIntExtra("id_cuento", 0);
-            String titulo = intent.getStringExtra("titulo_cuento");
-            String autor = intent.getStringExtra("autor_cuento");
-            String genero = intent.getStringExtra("genero_cuento");
-            String edad = intent.getStringExtra("edad_cuento");
-            String rating = intent.getStringExtra("rating_cuento");
-            String tiempo = intent.getStringExtra("tiempo_cuento");
-            String descripcion = intent.getStringExtra("descripcion_cuento");
+            int idCuento = intent.getIntExtra("cuento_id", 0);
+            
+            if (idCuento > 0) {
+                // Cargar datos completos desde la API
+                cargarDetalleCuentoDesdeAPI(idCuento);
+            } else {
+                // Fallback: usar datos básicos del Intent
+                String titulo = intent.getStringExtra("cuento_titulo");
+                String autor = intent.getStringExtra("cuento_autor");
+                String genero = intent.getStringExtra("cuento_genero");
+                String edad = intent.getStringExtra("cuento_edad");
+                String duracion = intent.getStringExtra("cuento_duracion");
+                String descripcion = intent.getStringExtra("cuento_descripcion");
 
-            cuentoSeleccionado = new ModeloCuento(idCuento, titulo, autor, genero, edad, rating, "", tiempo, descripcion);
+                cuentoSeleccionado = new ModeloCuento(idCuento, titulo, autor, genero, edad, "4.5★", "", duracion, descripcion);
+            }
         }
+    }
+
+    private void cargarDetalleCuentoDesdeAPI(int idCuento) {
+        mostrarCargando(true);
+        
+        Call<com.example.lectana.modelos.ApiResponse<com.example.lectana.modelos.CuentoApi>> call = 
+            apiService.getCuentoDetalle(idCuento);
+        
+        call.enqueue(new Callback<com.example.lectana.modelos.ApiResponse<com.example.lectana.modelos.CuentoApi>>() {
+            @Override
+            public void onResponse(Call<com.example.lectana.modelos.ApiResponse<com.example.lectana.modelos.CuentoApi>> call, 
+                                 Response<com.example.lectana.modelos.ApiResponse<com.example.lectana.modelos.CuentoApi>> response) {
+                mostrarCargando(false);
+                
+                if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
+                    com.example.lectana.modelos.CuentoApi cuentoApi = response.body().getData();
+                    if (cuentoApi != null) {
+                        cuentoSeleccionado = cuentoApi.toModeloCuento();
+                        mostrarInformacionCuento();
+                    } else {
+                        mostrarError("No se encontró el cuento");
+                    }
+                } else {
+                    mostrarError("Error al cargar detalles del cuento");
+                }
+            }
+            
+            @Override
+            public void onFailure(Call<com.example.lectana.modelos.ApiResponse<com.example.lectana.modelos.CuentoApi>> call, Throwable t) {
+                mostrarCargando(false);
+                android.util.Log.w("DetalleCuento", "API no disponible: " + t.getMessage() + ", usando datos del Intent");
+                // No mostrar error, usar datos del Intent que ya tenemos
+            }
+        });
+    }
+
+    private void mostrarCargando(boolean mostrar) {
+        if (progressBarDetalle != null) {
+            progressBarDetalle.setVisibility(mostrar ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    private void mostrarError(String mensaje) {
+        Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show();
     }
 
     private void mostrarInformacionCuento() {
@@ -72,8 +136,18 @@ public class DetalleCuentoActivity extends AppCompatActivity {
             tiempoPrincipalCuento.setText(cuentoSeleccionado.getTiempoLectura());
             descripcionCuento.setText(cuentoSeleccionado.getDescripcion());
 
-            // TODO: Cargar imagen del cuento si imagenUrl no es vacío
-            // Glide.with(this).load(cuentoSeleccionado.getImagenUrl()).into(imagenPrincipalCuento);
+            // Cargar imagen principal del cuento desde Supabase
+            if (cuentoSeleccionado.getImagenUrl() != null && !cuentoSeleccionado.getImagenUrl().isEmpty()) {
+                Glide.with(this)
+                    .load(cuentoSeleccionado.getImagenUrl())
+                    .apply(RequestOptions.bitmapTransform(new RoundedCorners(16)))
+                    .placeholder(R.drawable.imagen_cuento_placeholder) // Imagen mientras carga
+                    .error(R.drawable.imagen_cuento_placeholder) // Imagen si falla
+                    .into(imagenPrincipalCuento);
+            } else {
+                // Si no hay URL, usar imagen placeholder
+                imagenPrincipalCuento.setImageResource(R.drawable.imagen_cuento_placeholder);
+            }
         }
     }
 
@@ -107,12 +181,30 @@ public class DetalleCuentoActivity extends AppCompatActivity {
         botonVerPdf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Implementar visualización de PDF
-                // Por ahora solo mostrar mensaje
-                android.widget.Toast.makeText(DetalleCuentoActivity.this, 
-                    "Funcionalidad de PDF en desarrollo", 
-                    android.widget.Toast.LENGTH_SHORT).show();
+                if (cuentoSeleccionado != null) {
+                    // Obtener URL del PDF desde la API o usar URL por defecto
+                    String pdfUrl = obtenerUrlPdf();
+                    
+                    if (pdfUrl != null && !pdfUrl.isEmpty()) {
+                        Intent intent = new Intent(DetalleCuentoActivity.this, VisualizarPdfActivity.class);
+                        intent.putExtra("pdf_url", pdfUrl);
+                        intent.putExtra("cuento_titulo", cuentoSeleccionado.getTitulo());
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(DetalleCuentoActivity.this, "PDF no disponible", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         });
+    }
+
+    private String obtenerUrlPdf() {
+        // URL basada en el patrón de Supabase
+        if (cuentoSeleccionado != null) {
+            int idCuento = cuentoSeleccionado.getId();
+            return "https://kutpsehgzxmnyrujmnxo.supabase.co/storage/v1/object/public/cuentos-pdfs/2025/09/cuento-" + idCuento + ".pdf";
+        }
+        
+        return null;
     }
 }

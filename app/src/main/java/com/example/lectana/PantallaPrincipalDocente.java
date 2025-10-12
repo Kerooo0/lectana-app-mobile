@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.lectana.Login;
 import com.example.lectana.VisualizarAulaActivity;
 import com.example.lectana.CrearNuevaAulaActivity;
-import com.example.lectana.AsignarCuentoActivity;
+import com.example.lectana.BibliotecaCuentosActivity;
 import com.example.lectana.CrearActividadActivity;
 import com.example.lectana.PerfilDocenteActivity;
 import com.example.lectana.R;
@@ -153,8 +153,9 @@ public class PantallaPrincipalDocente extends AppCompatActivity {
         findViewById(R.id.boton_asignar_cuento_aula).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View vista) {
-                // Navegar a asignar cuento
-                Intent intento_navegacion = new Intent(PantallaPrincipalDocente.this, AsignarCuentoActivity.class);
+                // Navegar a asignar cuento (modo asignar)
+                Intent intento_navegacion = new Intent(PantallaPrincipalDocente.this, BibliotecaCuentosActivity.class);
+                intento_navegacion.putExtra("modo", BibliotecaCuentosActivity.MODO_ASIGNAR);
                 startActivity(intento_navegacion);
             }
         });
@@ -164,6 +165,16 @@ public class PantallaPrincipalDocente extends AppCompatActivity {
             public void onClick(View vista) {
                 // Navegar a crear actividad
                 Intent intento_navegacion = new Intent(PantallaPrincipalDocente.this, CrearActividadActivity.class);
+                startActivity(intento_navegacion);
+            }
+        });
+
+        findViewById(R.id.boton_explorar_cuentos).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View vista) {
+                // Navegar a explorar cuentos (modo explorar)
+                Intent intento_navegacion = new Intent(PantallaPrincipalDocente.this, BibliotecaCuentosActivity.class);
+                intento_navegacion.putExtra("modo", BibliotecaCuentosActivity.MODO_EXPLORAR);
                 startActivity(intento_navegacion);
             }
         });

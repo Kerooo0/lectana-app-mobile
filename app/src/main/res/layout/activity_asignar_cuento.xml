@@ -52,7 +52,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="3°A - Lengua"
+                    android:text="Selecciona cuentos para asignar"
                     android:textColor="@android:color/white"
                     android:textSize="14sp" />
 
@@ -160,6 +160,31 @@
         </LinearLayout>
 
     </HorizontalScrollView>
+
+    <!-- ProgressBar para carga -->
+    <ProgressBar
+        android:id="@+id/progress_bar_cuentos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/scroll_filtros"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Contador de cuentos -->
+    <TextView
+        android:id="@+id/texto_contador_cuentos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="0 cuentos encontrados"
+        android:textColor="@color/gris_medio"
+        android:textSize="14sp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/progress_bar_cuentos"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Lista de cuentos -->
     <androidx.recyclerview.widget.RecyclerView

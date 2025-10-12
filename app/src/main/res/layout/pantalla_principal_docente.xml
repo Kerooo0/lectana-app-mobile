@@ -288,20 +288,46 @@
 
         </LinearLayout>
 
-        <!-- Segunda fila - Botón Crear Actividad -->
-        <Button
-            android:id="@+id/boton_crear_actividad"
+        <!-- Segunda fila de botones -->
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:background="@drawable/boton_naranja_rectangular"
-            android:drawableStart="@drawable/ic_check_circle"
-            android:drawablePadding="10dp"
-            android:text="@string/crear_actividad"
-            android:textColor="@android:color/white"
-            android:textSize="15sp"
-            android:gravity="center"
-            android:paddingHorizontal="12dp"
-            app:backgroundTint="@null" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/boton_explorar_cuentos"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/boton_morado_rectangular"
+                android:drawableStart="@drawable/ic_library"
+                android:drawablePadding="10dp"
+                android:text="@string/explorar_cuentos"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"
+                android:gravity="center"
+                android:paddingHorizontal="12dp"
+                app:backgroundTint="@null" />
+
+            <Button
+                android:id="@+id/boton_crear_actividad"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/boton_naranja_rectangular"
+                android:drawableStart="@drawable/ic_check_circle"
+                android:drawablePadding="10dp"
+                android:text="@string/crear_actividad"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"
+                android:gravity="center"
+                android:paddingHorizontal="12dp"
+                app:backgroundTint="@null" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

@@ -66,7 +66,7 @@ public class SeleccionarCuentosActivity extends AppCompatActivity implements Ada
 
     private void configurarRecyclerView() {
         listaCuentos = new ArrayList<>();
-        adaptadorCuentos = new AdaptadorCuentosDisponibles(listaCuentos, this);
+        adaptadorCuentos = new AdaptadorCuentosDisponibles(listaCuentos, this, "asignar");
         
         recyclerCuentosDisponibles.setLayoutManager(new LinearLayoutManager(this));
         recyclerCuentosDisponibles.setAdapter(adaptadorCuentos);
