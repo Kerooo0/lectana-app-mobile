@@ -29,11 +29,11 @@ import java.util.Locale;
 
 public class DatosBasicosAlumno extends Fragment {
 
-    private EditText nombre,edad;
+    private EditText nombre,edad,apellido,email;
     private ImageView FlechaVolver;
     private Button siguiente;
     private Spinner spinnerPais;
-    private  String nombreAlumno,paisAlumno;
+    private  String nombreAlumno,paisAlumno,apellidoAlumno,emailAlumno;
     private int edadAlumno;
 
     public DatosBasicosAlumno() {
@@ -66,6 +66,10 @@ public class DatosBasicosAlumno extends Fragment {
         nombre = vista.findViewById(R.id.editTextNombreAlumno);
 
         edad = vista.findViewById(R.id.editTextEdadAlumno);
+
+        apellido = vista.findViewById(R.id.editTextApellidoAlumno);
+
+        email = vista.findViewById(R.id.editTextEmailAlumno);
 
         spinnerPais = vista.findViewById(R.id.spinnerPais);
 
@@ -104,6 +108,8 @@ public class DatosBasicosAlumno extends Fragment {
                 bundle.putString("nombreAlumno", nombreAlumno);
                 bundle.putInt("edadAlumno", edadAlumno);
                 bundle.putString("paisAlumno", paisAlumno);
+                bundle.putString("emailAlumno",emailAlumno);
+                bundle.putString("apellidoAlumno",apellidoAlumno);
 
                 Fragment avanzar = new DatosAccesoAlumno();
 
@@ -148,10 +154,10 @@ public class DatosBasicosAlumno extends Fragment {
         nombreAlumno = nombre.getText().toString().trim();
         String edadAlumnoTexto =  edad.getText().toString().trim();
         paisAlumno = spinnerPais.getSelectedItem().toString();
+        apellidoAlumno = apellido.getText().toString().trim();
+        emailAlumno = email.getText().toString().trim();
 
-
-
-        if(nombreAlumno.isEmpty() || edadAlumnoTexto.isEmpty()) {
+        if(nombreAlumno.isEmpty() || edadAlumnoTexto.isEmpty() || apellidoAlumno.isEmpty() || emailAlumno.isEmpty()) {
             Toast.makeText(getContext(), "Por favor completa todos los campos", Toast.LENGTH_SHORT).show();
             return false;
         }

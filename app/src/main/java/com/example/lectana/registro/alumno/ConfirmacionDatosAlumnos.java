@@ -24,7 +24,7 @@ public class ConfirmacionDatosAlumnos extends Fragment {
 
     }
 
-    private String nombre,pais,password;
+    private String nombre,pais,password,email,apellido;
     private int edad=0;
     private TextView valorEmail,valorEdad,valorPais;
 
@@ -40,6 +40,8 @@ public class ConfirmacionDatosAlumnos extends Fragment {
             edad = args.getInt("edadAlumno");
             pais = args.getString("paisAlumno");
             password = args.getString("passwordAlumno");
+            email = args.getString("emailAlumno");
+            apellido = args.getString("apellidoAlumno");
         }
 
         ProgressBar barraDeProgreso = vista.findViewById(R.id.barraProgreso);

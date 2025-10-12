@@ -29,7 +29,7 @@ public class DatosAccesoAlumno extends Fragment {
         // Required empty public constructor
     }
 
-    private String pass1 = "",nombreAlumno = "",paisAlumno = "";
+    private String pass1 = "",nombreAlumno = "",paisAlumno = "",emailAlumno = "", apellidoAlumno = "";
     private int edadAlumno = 0;
     private TextView estadoPassword,passwordCoincidencia, errorPassword;
     private boolean passwordsValidas = false, esValida = false;
@@ -44,7 +44,8 @@ public class DatosAccesoAlumno extends Fragment {
             nombreAlumno = args.getString("nombreAlumno");
             edadAlumno = args.getInt("edadAlumno");
             paisAlumno = args.getString("paisAlumno");
-
+            emailAlumno = args.getString("emailAlumno");
+            apellidoAlumno = args.getString("apellidoAlumno");
         }
 
         ProgressBar barraDeProgreso = vista.findViewById(R.id.barraProgreso);
@@ -86,28 +87,12 @@ public class DatosAccesoAlumno extends Fragment {
             @Override
             public void onClick(View view) {
 
-                if (passwordsValidas && esValida) {
+                {
+                    if (passwordsValidas && esValida) {
+                        confirmacionDatosAlumno();
+                    }
+            }
 
-                    Fragment siguiente = new ConfirmacionDatosAlumnos();
-                    Bundle bundle = new Bundle();
-                    bundle.putString("nombreAlumno", nombreAlumno);
-                    bundle.putInt("edadAlumno", edadAlumno);
-                    bundle.putString("paisAlumno", paisAlumno);
-                    bundle.putString("passwordAlumno", pass1);
-                    siguiente.setArguments(bundle);
-
-
-
-                     FragmentManager fragmentManager = getParentFragmentManager();
-
-                     FragmentTransaction cambioDeFragment = fragmentManager.beginTransaction();
-
-                     cambioDeFragment.replace(R.id.frameLayout, siguiente);
-
-                     cambioDeFragment.commit();
-
-
-                }
             }
         });
 
@@ -148,5 +133,22 @@ public class DatosAccesoAlumno extends Fragment {
                 "Coinciden",
                 "No coinciden"
         );
+    }
+
+    private void confirmacionDatosAlumno() {
+        Fragment siguiente = new ConfirmacionDatosAlumnos();
+        Bundle bundle = new Bundle();
+        bundle.putString("nombreAlumno", nombreAlumno);
+        bundle.putInt("edadAlumno", edadAlumno);
+        bundle.putString("paisAlumno", paisAlumno);
+        bundle.putString("passwordAlumno", pass1);
+        bundle.putString("emailAlumno", emailAlumno);
+        bundle.putString("apellidoAlumno", apellidoAlumno);
+        siguiente.setArguments(bundle);
+
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction cambioDeFragment = fragmentManager.beginTransaction();
+        cambioDeFragment.replace(R.id.frameLayout, siguiente);
+        cambioDeFragment.commit();
     }
 }
