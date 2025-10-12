@@ -116,7 +116,7 @@ public class ConfirmacionDatosAlumnos extends Fragment {
         txtApellido.setText(alumno.getApellido());
         txtEmail.setText(alumno.getEmail());
         txtEdad.setText(alumno.getEdad() + " años");
-        txtGrado.setText("Grado: " + alumno.getGrado());
+        txtGrado.setText(alumno.getPais());
     }
     
     private void realizarRegistro() {

@@ -57,9 +57,9 @@ public class AlumnoRegistro {
         return edad;
     }
 
-    public void setNacionalidad(String nacionalidad){this.nacionalidad = nacionalidad;}
+    public void setPais(String nacionalidad){this.nacionalidad = nacionalidad;}
 
-    public String getNacionalidad(){return nacionalidad;}
+    public String getPais(){return nacionalidad;}
 
     public void setEdad(int edad) {
         this.edad = edad;

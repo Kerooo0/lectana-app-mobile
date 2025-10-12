@@ -167,8 +167,8 @@ public class RegistroAlumnoClient {
             alumnoJson.put("usuario_id_usuario", idUsuario);
             
             // Campos opcionales - usar valores por defecto si no existen
-            if (alumno.getGrado() != null && !alumno.getGrado().isEmpty()) {
-                alumnoJson.put("nacionalidad", alumno.getGrado()); // Usando grado temporalmente
+            if (alumno.getPais() != null && !alumno.getPais().isEmpty()) {
+                alumnoJson.put("nacionalidad", alumno.getPais()); // Usando grado temporalmente
             }
             // alumno_col y aula_id_aula son opcionales (nullable), no los enviamos por ahora
 

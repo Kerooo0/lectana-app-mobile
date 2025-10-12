@@ -12,7 +12,7 @@ public class ValidacionesPassword {
 
     public static boolean esPasswordValida(String password) {
 
-        if (password.length() < 6) {
+        if (password.length() < 8) {
 
             return false;
         }
@@ -26,10 +26,10 @@ public class ValidacionesPassword {
 
     public static void mostrarEstadoPassword(TextView estadoPassword, boolean esValida, TextView errorPassword, String pass1) {
 
-        if (pass1.length()<6){
+        if (pass1.length()<8){
             estadoPassword.setText("Mala");
             estadoPassword.setTextColor(Color.RED);
-            errorPassword.setText("La contraseña debe tener al menos 6 caracteres");
+            errorPassword.setText("La contraseña debe tener al menos 8 caracteres");
             errorPassword.setVisibility(View.VISIBLE);
             return;
         }

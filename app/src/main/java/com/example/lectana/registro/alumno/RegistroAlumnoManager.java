@@ -37,6 +37,7 @@ public class RegistroAlumnoManager {
                                    String fechaNacimiento, String grado) {
         alumnoRegistro.setNombre(nombre);
         alumnoRegistro.setApellido(apellido);
+        alumnoRegistro.setPais(pais);
         alumnoRegistro.setEdad(edad);
         alumnoRegistro.setFechaNacimiento(fechaNacimiento);
         alumnoRegistro.setGrado(grado);
@@ -83,6 +84,7 @@ public class RegistroAlumnoManager {
             alumnoRegistro.setNombre(prefs.getString("nombre", ""));
             alumnoRegistro.setApellido(prefs.getString("apellido", ""));
             alumnoRegistro.setEdad(prefs.getInt("edad", 0));
+            alumnoRegistro.setPais(prefs.getString("pais",""));
             alumnoRegistro.setEmail(prefs.getString("email", ""));
             alumnoRegistro.setFechaNacimiento(prefs.getString("fechaNacimiento", ""));
             alumnoRegistro.setGrado(prefs.getString("grado", ""));
@@ -95,6 +97,7 @@ public class RegistroAlumnoManager {
                 && alumnoRegistro.getApellido() != null && !alumnoRegistro.getApellido().isEmpty()
                 && alumnoRegistro.getEmail() != null && !alumnoRegistro.getEmail().isEmpty()
                 && alumnoRegistro.getPassword() != null && !alumnoRegistro.getPassword().isEmpty()
+                && alumnoRegistro.getPais() != null && !alumnoRegistro.getPais().isEmpty()
                 && alumnoRegistro.getFechaNacimiento() != null && !alumnoRegistro.getFechaNacimiento().isEmpty()
                 && alumnoRegistro.getGrado() != null && !alumnoRegistro.getGrado().isEmpty()
                 && alumnoRegistro.getEdad() >= 3 && alumnoRegistro.getEdad() <= 25;
