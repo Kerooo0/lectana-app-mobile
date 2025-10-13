@@ -37,8 +37,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="24 estudiantes • Código: ABC123"
-                android:textColor="@color/grisClaro"
-                android:textSize="12sp" />
+                android:textColor="@color/azul_semi_oscuro"
+                android:textStyle="bold"
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/texto_estudiantes_activos_hoy"
@@ -65,7 +66,8 @@
                 android:layout_marginEnd="12dp"
                 android:contentDescription="@string/descripcion_estadisticas"
                 android:src="@drawable/ic_bar_chart"
-                android:tint="@color/azul_claro" />
+                android:tint="@color/azul_claro"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/boton_ver_detalles_aula"

@@ -273,7 +273,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="[DEMO] Aquí se mostraría la previsualización del PDF del cuento"
+                        android:text="Presionando el botón de ver PDF se puede visualizar en otra página el PDF completo del cuento."
                         android:textColor="@color/gris_medio"
                         android:textSize="14sp"
                         android:background="@color/gris_claro"
@@ -320,7 +320,7 @@
                     android:layout_height="56dp"
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
-                    android:text="@string/cancelar"
+                    android:text="Volver"
                     android:background="@drawable/boton_blanco_rectangular"
                     android:textColor="@color/gris_oscuro"
                     android:textSize="16sp"

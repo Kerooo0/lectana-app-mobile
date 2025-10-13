@@ -58,7 +58,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/configurar_aula"
+                android:text="Aula"
                 android:textColor="@color/azul_semi_oscuro"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -78,7 +78,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Grado 3° • Sección A"
+                android:text="Grado"
                 android:textColor="@color/gris_medio"
                 android:textSize="14sp" />
 
@@ -99,6 +99,17 @@
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/card_info_aula" />
+
+    <!-- Progress Bar -->
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/texto_titulo_cuentos"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- RecyclerView para lista de cuentos -->
     <androidx.recyclerview.widget.RecyclerView
@@ -142,7 +153,7 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:background="@drawable/boton_azul_rectangular"
-            android:text="@string/finalizar_aula"
+            android:text="Agregar cuento"
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:textStyle="bold"

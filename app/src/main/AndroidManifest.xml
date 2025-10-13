@@ -57,6 +57,12 @@
             android:name=".ConfiguracionAulaActivity"
             android:exported="false" />
         <activity
+            android:name=".GestionarCuentosAulaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MostrarCodigoAulaActivity"
+            android:exported="false" />
+        <activity
             android:name=".estudiante.PanelEstudianteActivity"
             android:exported="false" />
         <activity
@@ -86,6 +92,9 @@
             android:exported="false" />
         <activity
             android:name=".EditarPerfilDocenteActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DebugSessionActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

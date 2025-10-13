@@ -19,7 +19,7 @@ public class TestConnectionActivity extends AppCompatActivity {
     private Button btnTestBasic;
     private ConnectionTest connectionTest;
     
-    private static final String BASE_URL = "https://lectana-backend.onrender.com";
+    private static final String BASE_URL = "http://192.168.1.33:3000";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

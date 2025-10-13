@@ -178,11 +178,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:layout_marginHorizontal="16dp"
         android:text="0 cuentos encontrados"
         android:textColor="@color/gris_medio"
         android:textSize="14sp"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/progress_bar_cuentos"
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@id/scroll_filtros"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -191,10 +192,10 @@
         android:id="@+id/recycler_view_cuentos_disponibles"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginHorizontal="16dp"
         android:layout_marginBottom="80dp"
-        app:layout_constraintTop_toBottomOf="@id/scroll_filtros"
+        app:layout_constraintTop_toBottomOf="@id/texto_contador_cuentos"
         app:layout_constraintBottom_toTopOf="@id/boton_confirmar_asignaciones"
         android:paddingBottom="16dp"
         android:clipToPadding="false" />

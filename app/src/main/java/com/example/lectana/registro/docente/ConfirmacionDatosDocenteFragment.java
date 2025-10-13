@@ -35,7 +35,7 @@ public class ConfirmacionDatosDocenteFragment extends Fragment {
     private ProgressBar progressBar;
     
     // URL del backend (mismo que en Login)
-    private static final String BASE_URL = "https://lectana-backend.onrender.com";
+    private static final String BASE_URL = "http://192.168.1.33:3000";
 
     public ConfirmacionDatosDocenteFragment() {
         // Required empty public constructor

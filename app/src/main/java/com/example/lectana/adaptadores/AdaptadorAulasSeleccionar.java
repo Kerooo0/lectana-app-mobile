@@ -69,18 +69,18 @@ public class AdaptadorAulasSeleccionar extends RecyclerView.Adapter<AdaptadorAul
 
         public void configurarAula(ModeloAula aula) {
             nombreAulaItem.setText(aula.getNombre_aula());
-            codigoAulaItem.setText("Código: " + aula.getCodigo_aula());
-            numeroEstudiantesItem.setText(aula.getNumero_estudiantes_aula() + " estudiantes");
-            numeroCuentosItem.setText("5 cuentos"); // TODO: Agregar campo numero_cuentos al modelo
+            codigoAulaItem.setText("Código: " + aula.getCodigo_acceso());
+            numeroEstudiantesItem.setText(aula.getTotal_estudiantes() + " estudiantes");
+            numeroCuentosItem.setText(aula.getTotal_cuentos() + " cuentos");
             
             // Configurar selección
-            boolean isSelected = aula.getId_aula().equals(String.valueOf(aulaSeleccionadaId));
+            boolean isSelected = aula.getId_aula() == aulaSeleccionadaId;
             radioButtonAula.setChecked(isSelected);
             iconoAulaSeleccionada.setVisibility(isSelected ? View.VISIBLE : View.GONE);
 
             radioButtonAula.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 if (isChecked) {
-                    aulaSeleccionadaId = Integer.parseInt(aula.getId_aula());
+                    aulaSeleccionadaId = aula.getId_aula();
                     notifyDataSetChanged(); // Actualizar todas las vistas
                     
                     if (listener != null) {

@@ -135,6 +135,15 @@
 
         </LinearLayout>
 
+        <!-- Botón quitar -->
+        <ImageView
+            android:id="@+id/boton_quitar"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:tint="@android:color/holo_red_dark"
+            android:contentDescription="Quitar cuento"/>
+
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

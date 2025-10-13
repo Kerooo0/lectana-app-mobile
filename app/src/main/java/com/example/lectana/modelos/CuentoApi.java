@@ -2,6 +2,7 @@ package com.example.lectana.modelos;
 
 public class CuentoApi {
     private int id_cuento;
+    private int id_asignacion; // opcional: relación aula_has_cuento
     private String titulo;
     private int edad_publico;
     private String url_img;
@@ -16,6 +17,14 @@ public class CuentoApi {
 
     public void setId_cuento(int id_cuento) {
         this.id_cuento = id_cuento;
+    }
+
+    public int getId_asignacion() {
+        return id_asignacion;
+    }
+
+    public void setId_asignacion(int id_asignacion) {
+        this.id_asignacion = id_asignacion;
     }
 
     public String getTitulo() {

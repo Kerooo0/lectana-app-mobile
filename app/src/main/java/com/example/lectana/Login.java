@@ -28,7 +28,7 @@ public class Login extends AppCompatActivity {
     private AuthClient authClient;
     private SessionManager sessionManager;
     
-    private static final String BASE_URL = "https://lectana-backend.onrender.com";
+    private static final String BASE_URL = "http://192.168.1.33:3000";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

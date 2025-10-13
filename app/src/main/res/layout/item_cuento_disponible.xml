@@ -117,6 +117,20 @@
                 android:textSize="12sp"
                 android:layout_marginTop="2dp" />
 
+            <!-- Badge ya asignado -->
+            <TextView
+                android:id="@+id/badge_ya_asignado"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="Ya asignado"
+                android:textColor="@android:color/white"
+                android:textSize="11sp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="3dp"
+                android:background="@color/verde"
+                android:visibility="gone"/>
+
         </LinearLayout>
 
         <!-- Botón de vista previa -->

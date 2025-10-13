@@ -4,13 +4,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.lectana.auth.SessionManager;
+import com.example.lectana.modelos.ModeloAula;
+import com.example.lectana.repository.AulasRepository;
 
 public class ConfiguracionAulaActivity extends AppCompatActivity {
 
@@ -28,6 +35,12 @@ public class ConfiguracionAulaActivity extends AppCompatActivity {
     private String nombreAulaOriginal;
     private String gradoAulaOriginal;
     private String codigoAula;
+    private int aulaId;
+    
+    // Repositorio y sesión
+    private AulasRepository aulasRepository;
+    private SessionManager sessionManager;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +49,7 @@ public class ConfiguracionAulaActivity extends AppCompatActivity {
 
         recibirDatosAula();
         inicializarVistas();
+        inicializarRepositorio();
         configurarListeners();
         cargarDatosActuales();
     }
@@ -46,6 +60,7 @@ public class ConfiguracionAulaActivity extends AppCompatActivity {
             nombreAulaOriginal = intent.getStringExtra("nombre_aula");
             gradoAulaOriginal = intent.getStringExtra("grado_aula");
             codigoAula = intent.getStringExtra("codigo_aula");
+            aulaId = intent.getIntExtra("aula_id", -1);
         }
     }
 
@@ -60,6 +75,12 @@ public class ConfiguracionAulaActivity extends AppCompatActivity {
         textoVistaPreviaGrado = findViewById(R.id.texto_vista_previa_grado);
         botonCancelarConfiguracion = findViewById(R.id.boton_cancelar_configuracion);
         botonGuardarCambios = findViewById(R.id.boton_guardar_cambios);
+        progressBar = findViewById(R.id.progress_bar);
+    }
+
+    private void inicializarRepositorio() {
+        sessionManager = new SessionManager(this);
+        aulasRepository = new AulasRepository(sessionManager);
     }
 
     private void configurarListeners() {
@@ -88,6 +109,18 @@ public class ConfiguracionAulaActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 guardarCambios();
+            }
+        });
+
+        // Atajo desde tuerca: gestionar cuentos
+        botonGuardarConfiguracion.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Intent intent = new Intent(ConfiguracionAulaActivity.this, GestionarCuentosAulaActivity.class);
+                intent.putExtra("aula_id", aulaId);
+                intent.putExtra("nombre_aula", nombreAulaOriginal);
+                startActivity(intent);
+                return true;
             }
         });
 
@@ -156,28 +189,66 @@ public class ConfiguracionAulaActivity extends AppCompatActivity {
 
         // Validaciones
         if (nuevoNombre.isEmpty()) {
-            android.widget.Toast.makeText(this, "El nombre del aula no puede estar vacío", 
-                android.widget.Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "El nombre del aula no puede estar vacío", 
+                Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (nuevoGrado.isEmpty()) {
-            android.widget.Toast.makeText(this, "El grado no puede estar vacío", 
-                android.widget.Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "El grado no puede estar vacío", 
+                Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // TODO: Implementar guardado en la base de datos
-        // Por ahora solo mostrar mensaje de éxito
-        android.widget.Toast.makeText(this, 
-            "¡Cambios guardados exitosamente!", 
-            android.widget.Toast.LENGTH_LONG).show();
+        if (aulaId == -1) {
+            Toast.makeText(this, "Error: ID de aula no válido", 
+                Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        // Regresar a la pantalla anterior con los datos actualizados
-        Intent intent = new Intent();
-        intent.putExtra("nombre_aula_actualizado", nuevoNombre);
-        intent.putExtra("grado_aula_actualizado", nuevoGrado);
-        setResult(RESULT_OK, intent);
-        finish();
+        // Mostrar loading
+        mostrarCargando(true);
+
+        // Actualizar aula en el backend
+        aulasRepository.actualizarAula(aulaId, nuevoNombre, nuevoGrado, new AulasRepository.AulasCallback<ModeloAula>() {
+            @Override
+            public void onSuccess(ModeloAula aulaActualizada) {
+                runOnUiThread(() -> {
+                    mostrarCargando(false);
+                    Toast.makeText(ConfiguracionAulaActivity.this, 
+                        "¡Cambios guardados exitosamente!", 
+                        Toast.LENGTH_LONG).show();
+
+                    // Regresar a la pantalla anterior con los datos actualizados
+                    Intent intent = new Intent();
+                    intent.putExtra("nombre_aula_actualizado", nuevoNombre);
+                    intent.putExtra("grado_aula_actualizado", nuevoGrado);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                });
+            }
+
+            @Override
+            public void onError(String message) {
+                runOnUiThread(() -> {
+                    mostrarCargando(false);
+                    Toast.makeText(ConfiguracionAulaActivity.this, 
+                        "Error al guardar cambios: " + message, 
+                        Toast.LENGTH_LONG).show();
+                });
+            }
+        });
+    }
+
+    private void mostrarCargando(boolean mostrar) {
+        if (progressBar != null) {
+            progressBar.setVisibility(mostrar ? View.VISIBLE : View.GONE);
+        }
+        
+        // Deshabilitar botones mientras carga
+        botonGuardarCambios.setEnabled(!mostrar);
+        botonGuardarConfiguracion.setEnabled(!mostrar);
+        campoNombreAulaConfigurar.setEnabled(!mostrar);
+        campoGradoAulaConfigurar.setEnabled(!mostrar);
     }
 }

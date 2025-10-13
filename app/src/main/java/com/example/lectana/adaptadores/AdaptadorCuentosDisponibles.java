@@ -64,6 +64,7 @@ public class AdaptadorCuentosDisponibles extends RecyclerView.Adapter<AdaptadorC
         private TextView ratingCuento;
         private TextView tiempoLectura;
         private TextView generoCuento;
+        private TextView badgeYaAsignado;
         private ImageView botonVistaPrevia;
 
         public ViewHolderCuento(@NonNull View itemView) {
@@ -76,6 +77,7 @@ public class AdaptadorCuentosDisponibles extends RecyclerView.Adapter<AdaptadorC
             ratingCuento = itemView.findViewById(R.id.rating_cuento);
             tiempoLectura = itemView.findViewById(R.id.tiempo_lectura);
             generoCuento = itemView.findViewById(R.id.genero_cuento);
+            badgeYaAsignado = itemView.findViewById(R.id.badge_ya_asignado);
             botonVistaPrevia = itemView.findViewById(R.id.boton_vista_previa);
         }
 
@@ -105,6 +107,17 @@ public class AdaptadorCuentosDisponibles extends RecyclerView.Adapter<AdaptadorC
                 checkboxCuento.setVisibility(View.VISIBLE);
                 checkboxCuento.setChecked(cuento.isSeleccionado());
                 
+                // Si el cuento ya está asignado, deshabilitar selección y mostrar badge
+                if (cuento.getDescripcion() != null && cuento.getDescripcion().startsWith("YA_ASIGNADO")) {
+                    checkboxCuento.setEnabled(false);
+                    badgeYaAsignado.setVisibility(View.VISIBLE);
+                    itemView.setAlpha(0.6f);
+                } else {
+                    checkboxCuento.setEnabled(true);
+                    badgeYaAsignado.setVisibility(View.GONE);
+                    itemView.setAlpha(1f);
+                }
+                
                 checkboxCuento.setOnCheckedChangeListener((buttonView, isChecked) -> {
                     cuento.setSeleccionado(isChecked);
                     if (listener != null) {
@@ -131,6 +144,7 @@ public class AdaptadorCuentosDisponibles extends RecyclerView.Adapter<AdaptadorC
                     intent.putExtra("cuento_edad", cuento.getEdadRecomendada());
                     intent.putExtra("cuento_duracion", cuento.getTiempoLectura());
                     intent.putExtra("cuento_descripcion", cuento.getDescripcion());
+                    intent.putExtra("modo", modo); // Pasar el modo
                     itemView.getContext().startActivity(intent);
                 });
             }
@@ -145,6 +159,7 @@ public class AdaptadorCuentosDisponibles extends RecyclerView.Adapter<AdaptadorC
                 intent.putExtra("cuento_edad", cuento.getEdadRecomendada());
                 intent.putExtra("cuento_duracion", cuento.getTiempoLectura());
                 intent.putExtra("cuento_descripcion", cuento.getDescripcion());
+                intent.putExtra("modo", modo); // Pasar el modo
                 itemView.getContext().startActivity(intent);
             });
         }

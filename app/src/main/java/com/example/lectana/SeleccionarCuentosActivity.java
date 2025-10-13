@@ -5,17 +5,30 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.lectana.adaptadores.AdaptadorCuentosDisponibles;
+import com.example.lectana.auth.SessionManager;
+import com.example.lectana.modelos.ApiResponse;
+import com.example.lectana.modelos.AsignarCuentosResponse;
+import com.example.lectana.modelos.CuentoApi;
+import com.example.lectana.modelos.CuentosResponse;
 import com.example.lectana.modelos.ModeloCuento;
+import com.example.lectana.repository.AulasRepository;
+import com.example.lectana.services.ApiClient;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SeleccionarCuentosActivity extends AppCompatActivity implements AdaptadorCuentosDisponibles.OnCuentoSeleccionadoListener {
 
@@ -26,32 +39,48 @@ public class SeleccionarCuentosActivity extends AppCompatActivity implements Ada
     private Button botonFinalizarAula;
     private Button botonCancelar;
     private ImageView botonVolver;
+    private ProgressBar progressBar;
 
     private AdaptadorCuentosDisponibles adaptadorCuentos;
     private List<ModeloCuento> listaCuentos;
+    private java.util.Set<Integer> idsAsignadosActuales = new java.util.HashSet<>();
+    private List<Integer> cuentosSeleccionadosIds = new ArrayList<>();
     private int cuentosSeleccionados = 0;
 
     // Datos del aula recibidos del Paso 1
+    private int aulaId;
     private String nombreAula;
     private String grado;
+    private String codigoAcceso;
+
+    private AulasRepository aulasRepository;
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seleccionar_cuentos);
         
+        inicializarRepositorio();
         recibirDatosAula();
         inicializarVistas();
         configurarRecyclerView();
-        cargarCuentosDisponibles();
+        cargarIdsCuentosAsignados();
         configurarListeners();
         actualizarInformacionAula();
     }
 
+    private void inicializarRepositorio() {
+        sessionManager = new SessionManager(this);
+        aulasRepository = new AulasRepository(sessionManager);
+    }
+
     private void recibirDatosAula() {
         Intent intent = getIntent();
+        aulaId = intent.getIntExtra("aula_id", -1);
         nombreAula = intent.getStringExtra("nombre_aula");
         grado = intent.getStringExtra("grado");
+        codigoAcceso = intent.getStringExtra("codigo_acceso");
     }
 
     private void inicializarVistas() {
@@ -60,8 +89,10 @@ public class SeleccionarCuentosActivity extends AppCompatActivity implements Ada
         textoCuentosSeleccionados = findViewById(R.id.texto_cuentos_seleccionados);
         recyclerCuentosDisponibles = findViewById(R.id.recycler_cuentos_disponibles);
         botonFinalizarAula = findViewById(R.id.boton_finalizar_aula);
+        botonFinalizarAula.setText("Agregar cuento");
         botonCancelar = findViewById(R.id.boton_cancelar);
         botonVolver = findViewById(R.id.boton_volver);
+        progressBar = findViewById(R.id.progress_bar);
     }
 
     private void configurarRecyclerView() {
@@ -73,25 +104,64 @@ public class SeleccionarCuentosActivity extends AppCompatActivity implements Ada
     }
 
     private void cargarCuentosDisponibles() {
-        // Datos de ejemplo - aquí se conectaría con la API
-        listaCuentos.add(new ModeloCuento(1, "El Principito", "Antoine de Saint-Exupéry", "Fantasía", 
-            "8-12", "4.8★", "", "25 min", "Un clásico de la literatura infantil"));
-        listaCuentos.add(new ModeloCuento(2, "Caperucita Roja", "Charles Perrault", "Clásico", 
-            "4-6", "4.5★", "", "15 min", "La historia de la niña y el lobo"));
-        listaCuentos.add(new ModeloCuento(3, "Los Tres Cerditos", "Anónimo", "Clásico", 
-            "3-5", "4.2★", "", "12 min", "La fábula de los tres hermanos"));
-        listaCuentos.add(new ModeloCuento(4, "Alicia en el País de las Maravillas", "Lewis Carroll", "Fantasía", 
-            "8-12", "4.6★", "", "45 min", "Las aventuras de Alicia"));
-        listaCuentos.add(new ModeloCuento(5, "El Patito Feo", "Hans Christian Andersen", "Clásico", 
-            "4-7", "4.7★", "", "18 min", "La historia del patito diferente"));
-        listaCuentos.add(new ModeloCuento(6, "Pinocho", "Carlo Collodi", "Aventura", 
-            "6-10", "4.4★", "", "35 min", "Las aventuras del muñeco de madera"));
-        listaCuentos.add(new ModeloCuento(7, "La Bella y la Bestia", "Gabrielle-Suzanne Barbot", "Romance", 
-            "6-10", "4.5★", "", "30 min", "Una historia de amor y transformación"));
-        listaCuentos.add(new ModeloCuento(8, "Blancanieves", "Hermanos Grimm", "Clásico", 
-            "4-6", "4.3★", "", "20 min", "La historia de la princesa y los siete enanitos"));
+        mostrarCargando(true);
         
-        adaptadorCuentos.notifyDataSetChanged();
+        Call<ApiResponse<CuentosResponse>> call = ApiClient.getCuentosApiService().getCuentosPublicos(1, 50, null, null, null, null);
+        
+        call.enqueue(new Callback<ApiResponse<CuentosResponse>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<CuentosResponse>> call, Response<ApiResponse<CuentosResponse>> response) {
+                mostrarCargando(false);
+                
+                if (response.isSuccessful() && response.body() != null) {
+                    ApiResponse<CuentosResponse> apiResponse = response.body();
+                    if (apiResponse.isOk()) {
+                        CuentosResponse cuentosResponse = apiResponse.getData();
+                        convertirCuentosApiAModelo(cuentosResponse.getCuentos());
+                        adaptadorCuentos.notifyDataSetChanged();
+                    } else {
+                        Toast.makeText(SeleccionarCuentosActivity.this, "Error al cargar cuentos: " + apiResponse.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(SeleccionarCuentosActivity.this, "Error del servidor: " + response.code(), Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<CuentosResponse>> call, Throwable t) {
+                mostrarCargando(false);
+                Toast.makeText(SeleccionarCuentosActivity.this, "Error de conexión: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void convertirCuentosApiAModelo(List<CuentoApi> cuentosApi) {
+        listaCuentos.clear();
+        for (CuentoApi cuentoApi : cuentosApi) {
+            if (idsAsignadosActuales.contains(cuentoApi.getId_cuento())) {
+                continue; // omitir ya asignados
+            }
+            ModeloCuento modeloCuento = new ModeloCuento(
+                cuentoApi.getId_cuento(),
+                cuentoApi.getTitulo(),
+                cuentoApi.getAutor().getNombre() + " " + cuentoApi.getAutor().getApellido(),
+                cuentoApi.getGenero().getNombre(),
+                String.valueOf(cuentoApi.getEdad_publico()),
+                "4.5★", // Rating por defecto
+                cuentoApi.getUrl_img(),
+                cuentoApi.getDuracion() + " min",
+                (idsAsignadosActuales.contains(cuentoApi.getId_cuento()) ? "YA_ASIGNADO" : "Cuento disponible para el aula")
+            );
+            listaCuentos.add(modeloCuento);
+        }
+    }
+
+    private void mostrarCargando(boolean mostrar) {
+        progressBar.setVisibility(mostrar ? View.VISIBLE : View.GONE);
+        recyclerCuentosDisponibles.setVisibility(mostrar ? View.GONE : View.VISIBLE);
+        botonFinalizarAula.setEnabled(!mostrar);
+        botonCancelar.setEnabled(!mostrar);
+        botonVolver.setEnabled(!mostrar);
     }
 
     private void configurarListeners() {
@@ -105,10 +175,10 @@ public class SeleccionarCuentosActivity extends AppCompatActivity implements Ada
             finish();
         });
 
-        // Botón Finalizar Aula
+        // Botón Finalizar Aula (agregar incremental por POST)
         botonFinalizarAula.setOnClickListener(v -> {
             if (cuentosSeleccionados > 0) {
-                finalizarCreacionAula();
+                asignarIncrementalSeleccionados();
             } else {
                 // Mostrar mensaje de que debe seleccionar al menos un cuento
                 textoCuentosSeleccionados.setText("Debe seleccionar al menos un cuento");
@@ -132,19 +202,88 @@ public class SeleccionarCuentosActivity extends AppCompatActivity implements Ada
     public void onCuentoSeleccionado(ModeloCuento cuento, boolean seleccionado) {
         if (seleccionado) {
             cuentosSeleccionados++;
+            cuentosSeleccionadosIds.add(cuento.getId());
         } else {
             cuentosSeleccionados--;
+            cuentosSeleccionadosIds.remove(Integer.valueOf(cuento.getId()));
         }
         actualizarContadorCuentos();
     }
 
-    private void finalizarCreacionAula() {
-        // Aquí se haría la llamada a la API para crear el aula con los cuentos seleccionados
-        // Por ahora, solo navegamos de vuelta al Panel Docente
-        
-        Intent intent = new Intent(this, com.example.lectana.docente.PantallaPrincipalDocente.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finish();
+    private void asignarIncrementalSeleccionados() {
+        if (aulaId == -1) {
+            Toast.makeText(this, "Error: ID del aula no válido", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        // Filtrar solo los que no están actualmente
+        java.util.List<Integer> porAgregar = new java.util.ArrayList<>();
+        for (Integer idSel : cuentosSeleccionadosIds) {
+            if (!idsAsignadosActuales.contains(idSel)) porAgregar.add(idSel);
+        }
+        if (porAgregar.isEmpty()) {
+            Toast.makeText(this, "No hay nuevos cuentos para agregar", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        mostrarCargando(true);
+        agregarSecuencial(porAgregar, 0);
+    }
+
+    private void agregarSecuencial(java.util.List<Integer> ids, int idx) {
+        if (idx >= ids.size()) {
+            runOnUiThread(() -> {
+                mostrarCargando(false);
+                Toast.makeText(SeleccionarCuentosActivity.this, "¡Cuentos asignados exitosamente! Actualizando lista...", Toast.LENGTH_LONG).show();
+                
+                // Pequeño delay antes de regresar para que el usuario vea el mensaje
+                new android.os.Handler().postDelayed(() -> {
+                    // Volver al aula que inició el flujo
+                    Intent result = new Intent();
+                    result.putExtra("cuentos_actualizados", true);
+                    result.putExtra("aula_id", aulaId);
+                    setResult(RESULT_OK, result);
+                    finish();
+                }, 1000); // 1 segundo para que vea el mensaje
+            });
+            return;
+        }
+
+        int idCuento = ids.get(idx);
+        aulasRepository.agregarCuentoAula(aulaId, idCuento, new AulasRepository.AulasCallback<AsignarCuentosResponse>() {
+            @Override
+            public void onSuccess(AsignarCuentosResponse response) {
+                idsAsignadosActuales.add(idCuento);
+                agregarSecuencial(ids, idx + 1);
+            }
+
+            @Override
+            public void onError(String message) {
+                runOnUiThread(() -> Toast.makeText(SeleccionarCuentosActivity.this, "Error al agregar cuento: " + message, Toast.LENGTH_SHORT).show());
+                agregarSecuencial(ids, idx + 1); // continuar con los restantes
+            }
+        });
+    }
+
+    private void cargarIdsCuentosAsignados() {
+        if (aulaId == -1) return;
+        mostrarCargando(true);
+        aulasRepository.getAulaDetalle(aulaId, new AulasRepository.AulasCallback<com.example.lectana.modelos.ModeloAula>() {
+            @Override
+            public void onSuccess(com.example.lectana.modelos.ModeloAula aula) {
+                if (aula != null && aula.getCuentos() != null) {
+                    for (CuentoApi c : aula.getCuentos()) {
+                        idsAsignadosActuales.add(c.getId_cuento());
+                    }
+                }
+                cargarCuentosDisponibles();
+            }
+
+            @Override
+            public void onError(String message) {
+                // Si falla, igual intentamos cargar y no filtrar
+                cargarCuentosDisponibles();
+            }
+        });
     }
 }

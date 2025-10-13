@@ -65,8 +65,17 @@ public class AdaptadorListaAulas extends RecyclerView.Adapter<AdaptadorListaAula
 
         public void configurar_aula(ModeloAula aula_actual, OnClickListenerAula listener_aula) {
             texto_nombre_aula.setText(aula_actual.getNombre_aula());
-            texto_detalles_aula.setText(aula_actual.getNumero_estudiantes_aula() + " estudiantes • Código: " + aula_actual.getCodigo_aula());
-            texto_estudiantes_activos_hoy.setText(aula_actual.getEstudiantes_activos_hoy() + " estudiantes activos hoy");
+            
+            // Construir detalles del aula
+            String detalles = aula_actual.getTotal_estudiantes() + " estudiantes";
+            if (aula_actual.getCodigo_acceso() != null && !aula_actual.getCodigo_acceso().isEmpty()) {
+                detalles += " • Código: " + aula_actual.getCodigo_acceso();
+            }
+            texto_detalles_aula.setText(detalles);
+            
+            // Mostrar información de cuentos asignados
+            String infoCuentos = aula_actual.getTotal_cuentos() + " cuentos asignados";
+            texto_estudiantes_activos_hoy.setText(infoCuentos);
 
             // Configurar click listeners
             itemView.setOnClickListener(vista -> listener_aula.onClicAula(aula_actual));

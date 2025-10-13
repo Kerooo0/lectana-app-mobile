@@ -64,6 +64,12 @@ public class DetalleCuentoActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null) {
             int idCuento = intent.getIntExtra("cuento_id", 0);
+            String modo = intent.getStringExtra("modo");
+            
+            // Ocultar botón "Seleccionar Cuento" si viene del modo explorar
+            if ("explorar".equals(modo)) {
+                botonSeleccionarCuento.setVisibility(View.GONE);
+            }
             
             if (idCuento > 0) {
                 // Cargar datos completos desde la API

@@ -151,4 +151,19 @@ public class SessionManager {
     public boolean isEstudiante() {
         return "alumno".equals(getRole());
     }
+    
+    /**
+     * Verificar si la sesión es válida para docentes
+     */
+    public boolean isDocenteSessionValid() {
+        return isLoggedIn() && isDocente() && getToken() != null;
+    }
+    
+    /**
+     * Limpiar sesión y mostrar mensaje de error
+     */
+    public void clearSessionWithMessage(String message) {
+        Log.w(TAG, "Limpiando sesión: " + message);
+        clearSession();
+    }
 }

@@ -8,9 +8,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.lectana.auth.SessionManager;
+import com.example.lectana.modelos.ModeloAula;
+import com.example.lectana.repository.AulasRepository;
 
 public class CrearNuevaAulaActivity extends AppCompatActivity {
 
@@ -23,6 +29,10 @@ public class CrearNuevaAulaActivity extends AppCompatActivity {
     private Button botonCrearAula;
     private Button botonCancelar;
     private ImageView botonVolver;
+    private ProgressBar progressBar;
+
+    private AulasRepository aulasRepository;
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +40,7 @@ public class CrearNuevaAulaActivity extends AppCompatActivity {
         setContentView(R.layout.activity_crear_nueva_aula);
         
         inicializarVistas();
+        inicializarRepositorio();
         configurarListeners();
         actualizarVistaPrevia();
     }
@@ -44,6 +55,12 @@ public class CrearNuevaAulaActivity extends AppCompatActivity {
         botonCrearAula = findViewById(R.id.boton_crear_aula);
         botonCancelar = findViewById(R.id.boton_cancelar);
         botonVolver = findViewById(R.id.boton_volver);
+        progressBar = findViewById(R.id.progress_bar);
+    }
+
+    private void inicializarRepositorio() {
+        sessionManager = new SessionManager(this);
+        aulasRepository = new AulasRepository(sessionManager);
     }
 
     private void configurarListeners() {
@@ -60,7 +77,7 @@ public class CrearNuevaAulaActivity extends AppCompatActivity {
         // Botón Crear Aula
         botonCrearAula.setOnClickListener(v -> {
             if (validarCampos()) {
-                navegarASeleccionarCuentos();
+                crearAula();
             }
         });
 
@@ -119,14 +136,74 @@ public class CrearNuevaAulaActivity extends AppCompatActivity {
         return esValido;
     }
 
-    private void navegarASeleccionarCuentos() {
-        // Crear Intent para pasar datos a la siguiente pantalla
+    private void crearAula() {
+        String nombreAula = campoNombreAula.getText().toString().trim();
+        String grado = campoGrado.getText().toString().trim();
+
+        // Verificar sesión y rol antes de crear aula
+        if (!verificarSesionYRole()) {
+            return;
+        }
+
+        mostrarCargando(true);
+
+        aulasRepository.crearAula(nombreAula, grado, new AulasRepository.AulasCallback<ModeloAula>() {
+            @Override
+            public void onSuccess(ModeloAula aula) {
+                runOnUiThread(() -> {
+                    mostrarCargando(false);
+                    Toast.makeText(CrearNuevaAulaActivity.this, "¡Aula creada exitosamente!", Toast.LENGTH_SHORT).show();
+                    
+                    // Navegar a seleccionar cuentos con los datos del aula creada
+                    navegarASeleccionarCuentos(aula);
+                });
+            }
+
+            @Override
+            public void onError(String message) {
+                runOnUiThread(() -> {
+                    mostrarCargando(false);
+                    Toast.makeText(CrearNuevaAulaActivity.this, "Error al crear aula: " + message, Toast.LENGTH_LONG).show();
+                });
+            }
+        });
+    }
+
+    private boolean verificarSesionYRole() {
+        if (!sessionManager.isLoggedIn()) {
+            Toast.makeText(this, "Sesión expirada. Inicia sesión nuevamente.", Toast.LENGTH_LONG).show();
+            finish();
+            return false;
+        }
+
+        String role = sessionManager.getRole();
+        String token = sessionManager.getToken();
+        
+        android.util.Log.d("CrearNuevaAula", "Rol actual: " + role);
+        android.util.Log.d("CrearNuevaAula", "Token presente: " + (token != null ? "Sí" : "No"));
+        
+        if (!"docente".equals(role)) {
+            Toast.makeText(this, "Acceso denegado. Solo los docentes pueden crear aulas.", Toast.LENGTH_LONG).show();
+            finish();
+            return false;
+        }
+
+        return true;
+    }
+
+    private void mostrarCargando(boolean mostrar) {
+        progressBar.setVisibility(mostrar ? View.VISIBLE : View.GONE);
+        botonCrearAula.setEnabled(!mostrar);
+        botonCancelar.setEnabled(!mostrar);
+        botonVolver.setEnabled(!mostrar);
+    }
+
+    private void navegarASeleccionarCuentos(ModeloAula aula) {
         Intent intent = new Intent(this, SeleccionarCuentosActivity.class);
-        
-        // Pasar solo los datos necesarios
-        intent.putExtra("nombre_aula", campoNombreAula.getText().toString().trim());
-        intent.putExtra("grado", campoGrado.getText().toString().trim());
-        
+        intent.putExtra("aula_id", aula.getId_aula());
+        intent.putExtra("nombre_aula", aula.getNombre_aula());
+        intent.putExtra("grado", aula.getGrado());
+        intent.putExtra("codigo_acceso", aula.getCodigo_acceso());
         startActivity(intent);
         finish();
     }

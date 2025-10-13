@@ -92,11 +92,30 @@ public class SeleccionarAulaActivity extends AppCompatActivity implements Adapta
         listaAulas = new ArrayList<>();
         
         // Datos de ejemplo - aquí se conectaría con la API
-        listaAulas.add(new ModeloAula("1", "3°A - Lengua y Literatura", "24", "ABC123", "5"));
-        listaAulas.add(new ModeloAula("2", "3°B - Lengua y Literatura", "22", "DEF456", "3"));
-        listaAulas.add(new ModeloAula("3", "4°A - Literatura", "26", "GHI789", "7"));
-        listaAulas.add(new ModeloAula("4", "4°B - Literatura", "20", "JKL012", "4"));
-        listaAulas.add(new ModeloAula("5", "5°A - Lengua", "28", "MNO345", "6"));
+        ModeloAula aula1 = new ModeloAula(1, "3°A - Lengua y Literatura", "3°", "ABC123", 1);
+        aula1.setTotal_estudiantes(24);
+        aula1.setTotal_cuentos(5);
+        listaAulas.add(aula1);
+        
+        ModeloAula aula2 = new ModeloAula(2, "3°B - Lengua y Literatura", "3°", "DEF456", 1);
+        aula2.setTotal_estudiantes(22);
+        aula2.setTotal_cuentos(3);
+        listaAulas.add(aula2);
+        
+        ModeloAula aula3 = new ModeloAula(3, "4°A - Literatura", "4°", "GHI789", 1);
+        aula3.setTotal_estudiantes(26);
+        aula3.setTotal_cuentos(7);
+        listaAulas.add(aula3);
+        
+        ModeloAula aula4 = new ModeloAula(4, "4°B - Literatura", "4°", "JKL012", 1);
+        aula4.setTotal_estudiantes(20);
+        aula4.setTotal_cuentos(4);
+        listaAulas.add(aula4);
+        
+        ModeloAula aula5 = new ModeloAula(5, "5°A - Lengua", "5°", "MNO345", 1);
+        aula5.setTotal_estudiantes(28);
+        aula5.setTotal_cuentos(6);
+        listaAulas.add(aula5);
     }
 
     private void configurarRecyclerView() {
