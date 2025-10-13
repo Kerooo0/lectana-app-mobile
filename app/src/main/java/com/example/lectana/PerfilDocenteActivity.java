@@ -13,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.lectana.Login;
 import com.example.lectana.auth.SessionManager;
+import com.example.lectana.modelos.ModeloAula;
+import com.example.lectana.repository.AulasRepository;
 
 public class PerfilDocenteActivity extends AppCompatActivity {
 
@@ -29,16 +31,18 @@ public class PerfilDocenteActivity extends AppCompatActivity {
     private Button botonCambiarPassword;
     private Button botonCerrarSesion;
     
-    // Gestión de sesión
+    // Gestión de sesión y repositorio
     private SessionManager sessionManager;
+    private AulasRepository aulasRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil_docente);
 
-        // Inicializar gestión de sesión
+        // Inicializar gestión de sesión y repositorio
         sessionManager = new SessionManager(this);
+        aulasRepository = new AulasRepository(sessionManager);
         
         // Verificar sesión antes de continuar
         if (!verificarSesion()) {
@@ -47,6 +51,7 @@ public class PerfilDocenteActivity extends AppCompatActivity {
 
         inicializarVistas();
         cargarDatosDocente();
+        cargarEstadisticasReales();
         configurarListeners();
     }
 
@@ -105,10 +110,7 @@ public class PerfilDocenteActivity extends AppCompatActivity {
                     Log.w("PerfilDocente", "No hay datos del docente disponibles");
                 }
                 
-                // Estadísticas (TODO: Obtener desde backend)
-                totalAulasPerfil.setText("0");
-                totalEstudiantesPerfil.setText("0");
-                totalCuentosPerfil.setText("0");
+                // Las estadísticas se cargarán en cargarEstadisticasReales()
             } else {
                 // Datos por defecto si no hay sesión
                 nombreDocentePerfil.setText("Docente");
@@ -116,9 +118,7 @@ public class PerfilDocenteActivity extends AppCompatActivity {
                 emailDocentePerfil.setText("Sin especificar");
                 telefonoDocentePerfil.setText("Sin especificar");
                 institucionDocentePerfil.setText("Sin especificar");
-                totalAulasPerfil.setText("0");
-                totalEstudiantesPerfil.setText("0");
-                totalCuentosPerfil.setText("0");
+                // Las estadísticas se cargarán en cargarEstadisticasReales()
             }
         } catch (Exception e) {
             // Datos por defecto en caso de error
@@ -127,6 +127,47 @@ public class PerfilDocenteActivity extends AppCompatActivity {
             emailDocentePerfil.setText("Sin especificar");
             telefonoDocentePerfil.setText("Sin especificar");
             institucionDocentePerfil.setText("Sin especificar");
+            // Las estadísticas se cargarán en cargarEstadisticasReales()
+        }
+    }
+
+    private void cargarEstadisticasReales() {
+        try {
+            aulasRepository.getAulasDocente(new AulasRepository.AulasCallback<java.util.List<ModeloAula>>() {
+                @Override
+                public void onSuccess(java.util.List<ModeloAula> aulas) {
+                    runOnUiThread(() -> {
+                        int totalAulas = aulas.size();
+                        int totalEstudiantes = 0;
+                        int totalCuentos = 0;
+
+                        for (ModeloAula aula : aulas) {
+                            totalEstudiantes += aula.getTotal_estudiantes();
+                            totalCuentos += aula.getTotal_cuentos();
+                        }
+
+                        totalAulasPerfil.setText(String.valueOf(totalAulas));
+                        totalEstudiantesPerfil.setText(String.valueOf(totalEstudiantes));
+                        totalCuentosPerfil.setText(String.valueOf(totalCuentos));
+                        
+                        Log.d("PerfilDocente", "Estadísticas cargadas - Aulas: " + totalAulas + 
+                              ", Estudiantes: " + totalEstudiantes + ", Cuentos: " + totalCuentos);
+                    });
+                }
+
+                @Override
+                public void onError(String message) {
+                    runOnUiThread(() -> {
+                        Log.e("PerfilDocente", "Error cargando estadísticas: " + message);
+                        // Mantener valores por defecto en caso de error
+                        totalAulasPerfil.setText("0");
+                        totalEstudiantesPerfil.setText("0");
+                        totalCuentosPerfil.setText("0");
+                    });
+                }
+            });
+        } catch (Exception e) {
+            Log.e("PerfilDocente", "Error cargando estadísticas: " + e.getMessage(), e);
             totalAulasPerfil.setText("0");
             totalEstudiantesPerfil.setText("0");
             totalCuentosPerfil.setText("0");
@@ -142,6 +183,7 @@ public class PerfilDocenteActivity extends AppCompatActivity {
         }
         // Recargar datos para mostrar cambios en vivo
         cargarDatosDocente();
+        cargarEstadisticasReales();
     }
 
     private void configurarListeners() {
