@@ -23,6 +23,7 @@ public class AdaptadorListaAulas extends RecyclerView.Adapter<AdaptadorListaAula
     public interface OnClickListenerAula {
         void onClicAula(ModeloAula aula_seleccionada);
         void onClicEstadisticas(ModeloAula aula_seleccionada);
+        void onClicEliminarAula(ModeloAula aula_seleccionada);
     }
 
     public AdaptadorListaAulas(List<ModeloAula> lista_aulas_docente, OnClickListenerAula listener_aula) {
@@ -51,7 +52,7 @@ public class AdaptadorListaAulas extends RecyclerView.Adapter<AdaptadorListaAula
 
     public static class ViewHolderAula extends RecyclerView.ViewHolder {
         private TextView texto_nombre_aula, texto_detalles_aula, texto_estudiantes_activos_hoy;
-        private ImageView icono_ver_estadisticas;
+        private ImageView icono_ver_estadisticas, icono_eliminar_aula;
         private Button boton_ver_detalles_aula;
 
         public ViewHolderAula(@NonNull View vista_item) {
@@ -60,6 +61,7 @@ public class AdaptadorListaAulas extends RecyclerView.Adapter<AdaptadorListaAula
             texto_detalles_aula = vista_item.findViewById(R.id.texto_detalles_aula);
             texto_estudiantes_activos_hoy = vista_item.findViewById(R.id.texto_estudiantes_activos_hoy);
             icono_ver_estadisticas = vista_item.findViewById(R.id.icono_ver_estadisticas);
+            icono_eliminar_aula = vista_item.findViewById(R.id.icono_eliminar_aula);
             boton_ver_detalles_aula = vista_item.findViewById(R.id.boton_ver_detalles_aula);
         }
 
@@ -80,6 +82,7 @@ public class AdaptadorListaAulas extends RecyclerView.Adapter<AdaptadorListaAula
             // Configurar click listeners
             itemView.setOnClickListener(vista -> listener_aula.onClicAula(aula_actual));
             icono_ver_estadisticas.setOnClickListener(vista -> listener_aula.onClicEstadisticas(aula_actual));
+            icono_eliminar_aula.setOnClickListener(vista -> listener_aula.onClicEliminarAula(aula_actual));
             boton_ver_detalles_aula.setOnClickListener(vista -> listener_aula.onClicAula(aula_actual));
         }
     }

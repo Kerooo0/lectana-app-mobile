@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.appcompat.app.AlertDialog;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,7 +24,6 @@ import com.example.lectana.CrearNuevaAulaActivity;
 import com.example.lectana.BibliotecaCuentosActivity;
 import com.example.lectana.CrearActividadActivity;
 import com.example.lectana.PerfilDocenteActivity;
-import com.example.lectana.SeleccionarAulaActivity;
 import com.example.lectana.R;
 import com.example.lectana.adaptadores.AdaptadorListaAulas;
 import com.example.lectana.auth.SessionManager;
@@ -112,6 +112,11 @@ public class PantallaPrincipalDocente extends AppCompatActivity {
                 public void onClicEstadisticas(ModeloAula aula_seleccionada) {
                     // TODO: Implementar estadísticas
                     Toast.makeText(PantallaPrincipalDocente.this, "Estadísticas próximamente", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onClicEliminarAula(ModeloAula aula_seleccionada) {
+                    mostrarDialogoConfirmacionEliminar(aula_seleccionada);
                 }
             });
 
@@ -266,13 +271,6 @@ public class PantallaPrincipalDocente extends AppCompatActivity {
                 }
             });
 
-            findViewById(R.id.boton_asignar_cuento_aula).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View vista) {
-                    Intent intento_navegacion = new Intent(PantallaPrincipalDocente.this, SeleccionarAulaActivity.class);
-                    startActivity(intento_navegacion);
-                }
-            });
 
             findViewById(R.id.boton_crear_actividad).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -408,5 +406,45 @@ public class PantallaPrincipalDocente extends AppCompatActivity {
         } catch (Exception e) {
             Log.e("PantallaPrincipalDocente", "Error en onResume: " + e.getMessage(), e);
         }
+    }
+
+    private void mostrarDialogoConfirmacionEliminar(ModeloAula aula) {
+        new AlertDialog.Builder(this)
+                .setTitle("Eliminar Aula")
+                .setMessage("¿Estás seguro de que quieres eliminar el aula '" + aula.getNombre_aula() + "'?\n\n" +
+                           "Esta acción eliminará:\n" +
+                           "• Todos los estudiantes del aula\n" +
+                           "• Todas las asignaciones de cuentos\n" +
+                           "• Todo el historial de actividades\n\n" +
+                           "Esta acción NO se puede deshacer.")
+                .setPositiveButton("Eliminar", (dialog, which) -> {
+                    eliminarAula(aula);
+                })
+                .setNegativeButton("Cancelar", null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    private void eliminarAula(ModeloAula aula) {
+        mostrarCargando(true);
+        aulasRepository.eliminarAula(aula.getId_aula(), new AulasRepository.AulasCallback<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                runOnUiThread(() -> {
+                    mostrarCargando(false);
+                    Toast.makeText(PantallaPrincipalDocente.this, "Aula eliminada correctamente", Toast.LENGTH_SHORT).show();
+                    // Recargar la lista de aulas
+                    cargar_datos_aulas_seguro();
+                });
+            }
+
+            @Override
+            public void onError(String message) {
+                runOnUiThread(() -> {
+                    mostrarCargando(false);
+                    Toast.makeText(PantallaPrincipalDocente.this, "Error al eliminar aula: " + message, Toast.LENGTH_LONG).show();
+                });
+            }
+        });
     }
 }

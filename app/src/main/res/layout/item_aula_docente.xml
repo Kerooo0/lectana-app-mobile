@@ -63,11 +63,21 @@
                 android:id="@+id/icono_ver_estadisticas"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_marginEnd="12dp"
+                android:layout_marginEnd="8dp"
                 android:contentDescription="@string/descripcion_estadisticas"
                 android:src="@drawable/ic_bar_chart"
                 android:tint="@color/azul_claro"
                 android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/icono_eliminar_aula"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="8dp"
+                android:contentDescription="Eliminar aula"
+                android:src="@drawable/ic_delete"
+                android:tint="@color/rojo"
+                android:padding="2dp" />
 
             <Button
                 android:id="@+id/boton_ver_detalles_aula"

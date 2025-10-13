@@ -66,4 +66,10 @@ public interface AulasApiService {
      */
     @DELETE("aulas/docente/{id}/cuentos/asignacion/{idAsignacion}")
     Call<ApiResponse<AsignarCuentosResponse>> quitarCuentoAulaPorAsignacion(@Header("Authorization") String token, @Path("id") int aulaId, @Path("idAsignacion") int idAsignacion);
+
+    /**
+     * Eliminar un aula completa
+     */
+    @DELETE("aulas/docente/{id}")
+    Call<ApiResponse<Void>> eliminarAula(@Header("Authorization") String token, @Path("id") int aulaId);
 }

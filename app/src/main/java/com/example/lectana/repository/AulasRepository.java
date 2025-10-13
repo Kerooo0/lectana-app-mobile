@@ -372,6 +372,40 @@ public class AulasRepository {
         });
     }
 
+    /** Eliminar un aula completa */
+    public void eliminarAula(int aulaId, AulasCallback<Void> callback) {
+        String token = sessionManager.getToken();
+        if (token == null || token.isEmpty()) {
+            callback.onError("Token de autenticación no encontrado");
+            return;
+        }
+        String authHeader = "Bearer " + token;
+        Call<ApiResponse<Void>> call = ApiClient.getAulasApiService().eliminarAula(authHeader, aulaId);
+        call.enqueue(new Callback<ApiResponse<Void>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<Void>> call, Response<ApiResponse<Void>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    ApiResponse<Void> apiResponse = response.body();
+                    if (apiResponse.isOk()) {
+                        callback.onSuccess(null);
+                    } else {
+                        callback.onError(apiResponse.getMessage() != null ? apiResponse.getMessage() : "Error desconocido");
+                    }
+                } else {
+                    String errorMessage = "Error del servidor: " + response.code();
+                    if (response.errorBody() != null) {
+                        try { errorMessage = response.errorBody().string(); } catch (Exception ignored) {}
+                    }
+                    callback.onError(errorMessage);
+                }
+            }
+            @Override
+            public void onFailure(Call<ApiResponse<Void>> call, Throwable t) {
+                callback.onError("Error de conexión: " + t.getMessage());
+            }
+        });
+    }
+
     /** Quitar por id de asignación (fallback opcional) */
     public void quitarCuentoAulaPorAsignacion(int aulaId, int idAsignacion, AulasCallback<AsignarCuentosResponse> callback) {
         String token = sessionManager.getToken();
