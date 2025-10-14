@@ -19,9 +19,9 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginEnd="16dp"
-            android:src="@drawable/ic_students"
+            android:src="@drawable/ic_assignment"
             android:tint="@color/gris_medio"
-            android:contentDescription="@string/estudiantes" />
+            android:contentDescription="Actividades" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -30,22 +30,31 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/texto_nombre_estudiante"
+                android:id="@+id/texto_titulo_actividad"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ana García"
+                android:text="Lectura de 'La Bella y la Bestia'"
                 android:textColor="@color/gris_oscuro"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/texto_ultima_actividad"
+                android:id="@+id/texto_estado"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Hace 2 min"
-                android:textColor="@color/gris_medio"
+                android:text="Completada"
+                android:textColor="@color/verde"
                 android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/texto_fecha"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Hace 2 horas"
+                android:textColor="@color/gris_medio"
+                android:textSize="12sp" />
 
         </LinearLayout>
 
@@ -66,20 +75,10 @@
                 android:id="@+id/texto_progreso"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="12dp"
-                android:text="85%"
+                android:text="100%"
                 android:textColor="@color/gris_oscuro"
                 android:textSize="16sp"
                 android:textStyle="bold" />
-
-            <ImageView
-                android:id="@+id/icono_quitar_estudiante"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:contentDescription="Quitar estudiante del aula"
-                android:src="@drawable/ic_delete"
-                android:tint="@color/rojo"
-                android:padding="2dp" />
 
         </LinearLayout>
 

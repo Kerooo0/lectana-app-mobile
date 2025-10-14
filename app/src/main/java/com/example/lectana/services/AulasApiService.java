@@ -5,6 +5,7 @@ import com.example.lectana.modelos.AsignarCuentosRequest;
 import com.example.lectana.modelos.AsignarCuentosResponse;
 import com.example.lectana.modelos.CrearAulaRequest;
 import com.example.lectana.modelos.ModeloAula;
+import com.example.lectana.modelos.ActividadesEstudianteResponse;
 
 import java.util.List;
 
@@ -72,4 +73,16 @@ public interface AulasApiService {
      */
     @DELETE("aulas/docente/{id}")
     Call<ApiResponse<Void>> eliminarAula(@Header("Authorization") String token, @Path("id") int aulaId);
+
+    /**
+     * Remover un estudiante del aula
+     */
+    @DELETE("aulas/docente/{id}/estudiantes/{idEstudiante}")
+    Call<ApiResponse<Void>> removerEstudianteAula(@Header("Authorization") String token, @Path("id") int aulaId, @Path("idEstudiante") int idEstudiante);
+
+    /**
+     * Obtener actividades de un estudiante específico
+     */
+    @GET("aulas/docente/{id}/estudiantes/{idEstudiante}/actividades")
+    Call<ApiResponse<ActividadesEstudianteResponse>> getActividadesEstudiante(@Header("Authorization") String token, @Path("id") int aulaId, @Path("idEstudiante") int idEstudiante);
 }

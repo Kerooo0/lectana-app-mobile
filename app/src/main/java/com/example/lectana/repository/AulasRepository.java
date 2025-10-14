@@ -8,6 +8,7 @@ import com.example.lectana.modelos.AsignarCuentosRequest;
 import com.example.lectana.modelos.AsignarCuentosResponse;
 import com.example.lectana.modelos.CrearAulaRequest;
 import com.example.lectana.modelos.ModeloAula;
+import com.example.lectana.modelos.ActividadesEstudianteResponse;
 import com.example.lectana.services.ApiClient;
 
 import java.util.List;
@@ -435,6 +436,78 @@ public class AulasRepository {
             }
             @Override
             public void onFailure(Call<ApiResponse<AsignarCuentosResponse>> call, Throwable t) {
+                callback.onError("Error de conexión: " + t.getMessage());
+            }
+        });
+    }
+
+    /**
+     * Remover un estudiante del aula
+     */
+    public void removerEstudianteAula(int aulaId, int idEstudiante, AulasCallback<Void> callback) {
+        String token = sessionManager.getToken();
+        if (token == null || token.isEmpty()) {
+            callback.onError("Token de autenticación no encontrado");
+            return;
+        }
+        String authHeader = "Bearer " + token;
+        Call<ApiResponse<Void>> call = ApiClient.getAulasApiService().removerEstudianteAula(authHeader, aulaId, idEstudiante);
+        call.enqueue(new Callback<ApiResponse<Void>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<Void>> call, Response<ApiResponse<Void>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    ApiResponse<Void> apiResponse = response.body();
+                    if (apiResponse.isOk()) {
+                        callback.onSuccess(null);
+                    } else {
+                        callback.onError(apiResponse.getMessage() != null ? apiResponse.getMessage() : "Error desconocido");
+                    }
+                } else {
+                    String errorMessage = "Error del servidor: " + response.code();
+                    if (response.errorBody() != null) {
+                        try { errorMessage = response.errorBody().string(); } catch (Exception ignored) {}
+                    }
+                    callback.onError(errorMessage);
+                }
+            }
+            @Override
+            public void onFailure(Call<ApiResponse<Void>> call, Throwable t) {
+                callback.onError("Error de conexión: " + t.getMessage());
+            }
+        });
+    }
+
+    /**
+     * Obtener actividades de un estudiante específico
+     */
+    public void getActividadesEstudiante(int aulaId, int idEstudiante, AulasCallback<ActividadesEstudianteResponse> callback) {
+        String token = sessionManager.getToken();
+        if (token == null || token.isEmpty()) {
+            callback.onError("Token de autenticación no encontrado");
+            return;
+        }
+        String authHeader = "Bearer " + token;
+        Call<ApiResponse<ActividadesEstudianteResponse>> call = ApiClient.getAulasApiService().getActividadesEstudiante(authHeader, aulaId, idEstudiante);
+        call.enqueue(new Callback<ApiResponse<ActividadesEstudianteResponse>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<ActividadesEstudianteResponse>> call, Response<ApiResponse<ActividadesEstudianteResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    ApiResponse<ActividadesEstudianteResponse> apiResponse = response.body();
+                    if (apiResponse.isOk()) {
+                        callback.onSuccess(apiResponse.getData());
+                    } else {
+                        callback.onError(apiResponse.getMessage() != null ? apiResponse.getMessage() : "Error desconocido");
+                    }
+                } else {
+                    String errorMessage = "Error del servidor: " + response.code();
+                    if (response.errorBody() != null) {
+                        try { errorMessage = response.errorBody().string(); } catch (Exception ignored) {}
+                    }
+                    callback.onError(errorMessage);
+                }
+            }
+            @Override
+            public void onFailure(Call<ApiResponse<ActividadesEstudianteResponse>> call, Throwable t) {
                 callback.onError("Error de conexión: " + t.getMessage());
             }
         });

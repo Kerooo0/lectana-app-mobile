@@ -106,7 +106,7 @@ public class VisualizarAulaActivity extends AppCompatActivity {
         inicializarVistas();
         configurarListeners();
         cargarDatosAula();
-        mostrarPestanaEstudiantes();
+        // mostrarPestanaEstudiantes() se llamará después de cargar los datos
     }
 
     private void inicializarVistas() {
@@ -142,6 +142,17 @@ public class VisualizarAulaActivity extends AppCompatActivity {
         
         // Inicializar adaptadores
         adaptadorEstudiantes = new AdaptadorEstudiantesAula(listaEstudiantes);
+        adaptadorEstudiantes.setOnClickListenerEstudiante(new AdaptadorEstudiantesAula.OnClickListenerEstudiante() {
+            @Override
+            public void onClicEstudiante(ModeloEstudianteAula estudiante) {
+                irADetalleEstudiante(estudiante);
+            }
+
+            @Override
+            public void onClicQuitarEstudiante(ModeloEstudianteAula estudiante) {
+                mostrarDialogoConfirmacionRemoverEstudiante(estudiante);
+            }
+        });
         adaptadorCuentosDetallados = new AdaptadorCuentosDetallados(listaCuentosDetallados, new AdaptadorCuentosDetallados.OnCuentoClickListener() {
             @Override
             public void onClickCuento(ModeloCuentoDetallado cuento) {
@@ -236,9 +247,17 @@ public class VisualizarAulaActivity extends AppCompatActivity {
             @Override
             public void onSuccess(ModeloAula aula) {
                 runOnUiThread(() -> {
+                    Log.d(TAG, "=== DATOS DEL AULA OBTENIDOS ===");
+                    Log.d(TAG, "aula.getEstudiantes(): " + (aula.getEstudiantes() != null ? "No nulo" : "NULO"));
+                    if (aula.getEstudiantes() != null) {
+                        Log.d(TAG, "Cantidad de estudiantes en respuesta: " + aula.getEstudiantes().size());
+                    }
                     mostrarCargando(false);
                     aulaActual = aula;
                     actualizarInterfazConDatosReales();
+                    
+                    // Mostrar la pestaña de estudiantes después de cargar los datos
+                    mostrarPestanaEstudiantes();
                 });
             }
 
@@ -280,14 +299,25 @@ public class VisualizarAulaActivity extends AppCompatActivity {
     
     private void convertirEstudiantesApiAModelo() {
         listaEstudiantes.clear();
-        if (aulaActual.getEstudiantes() != null) {
+        Log.d(TAG, "=== CONVERTIR ESTUDIANTES API A MODELO ===");
+        Log.d(TAG, "aulaActual: " + (aulaActual != null ? "No nulo" : "NULO"));
+        Log.d(TAG, "aulaActual.getEstudiantes(): " + (aulaActual != null && aulaActual.getEstudiantes() != null ? "No nulo" : "NULO"));
+        
+        if (aulaActual != null && aulaActual.getEstudiantes() != null) {
+            Log.d(TAG, "Cantidad de estudiantes en API: " + aulaActual.getEstudiantes().size());
+            
             for (ModeloAula.Estudiante estudianteApi : aulaActual.getEstudiantes()) {
+                Log.d(TAG, "Procesando estudiante API - ID: " + estudianteApi.getId());
+                
                 // Convertir datos de la API al modelo local
                 String nombreCompleto = "Estudiante";
                 if (estudianteApi.getUsuario() != null) {
                     String nombre = estudianteApi.getUsuario().getNombre() != null ? estudianteApi.getUsuario().getNombre() : "";
                     String apellido = estudianteApi.getUsuario().getApellido() != null ? estudianteApi.getUsuario().getApellido() : "";
                     nombreCompleto = nombre + " " + apellido;
+                    Log.d(TAG, "Nombre completo: " + nombreCompleto);
+                } else {
+                    Log.d(TAG, "Usuario del estudiante es NULO");
                 }
                 
                 ModeloEstudianteAula estudiante = new ModeloEstudianteAula(
@@ -298,8 +328,13 @@ public class VisualizarAulaActivity extends AppCompatActivity {
                     true // Por ahora usar valor por defecto
                 );
                 listaEstudiantes.add(estudiante);
+                Log.d(TAG, "Estudiante agregado a lista local: " + estudiante.getNombre());
             }
+        } else {
+            Log.d(TAG, "No hay estudiantes para procesar");
         }
+        
+        Log.d(TAG, "Cantidad final en listaEstudiantes: " + listaEstudiantes.size());
     }
     
     private void convertirCuentosApiAModelo() {
@@ -390,16 +425,57 @@ public class VisualizarAulaActivity extends AppCompatActivity {
         pestanaActual = "estudiantes";
         actualizarBotonesPestanas();
         if (barraAccionesCuentos != null) barraAccionesCuentos.setVisibility(View.GONE);
+        
+        // Mostrar barra de acciones para estudiantes
+        mostrarBarraAccionesEstudiantes();
+        
+        Log.d(TAG, "=== MOSTRAR PESTANA ESTUDIANTES ===");
+        Log.d(TAG, "listaEstudiantes: " + (listaEstudiantes != null ? "No nulo" : "NULO"));
+        Log.d(TAG, "listaEstudiantes.isEmpty(): " + (listaEstudiantes != null ? listaEstudiantes.isEmpty() : "NULO"));
+        Log.d(TAG, "listaEstudiantes.size(): " + (listaEstudiantes != null ? listaEstudiantes.size() : "NULO"));
+        
+        // Verificar si hay datos del aula pero la lista local está vacía
+        boolean hayEstudiantesEnAula = aulaActual != null && aulaActual.getEstudiantes() != null && !aulaActual.getEstudiantes().isEmpty();
+        boolean listaLocalVacia = listaEstudiantes == null || listaEstudiantes.isEmpty();
+        
+        Log.d(TAG, "hayEstudiantesEnAula: " + hayEstudiantesEnAula);
+        Log.d(TAG, "listaLocalVacia: " + listaLocalVacia);
+        
+        if (listaLocalVacia && hayEstudiantesEnAula) {
+            // Hay estudiantes en el aula pero la lista local está vacía - reconvertir
+            Log.d(TAG, "Reconvirtiendo estudiantes de la API");
+            convertirEstudiantesApiAModelo();
+        }
+        
         if (listaEstudiantes == null || listaEstudiantes.isEmpty()) {
+            Log.d(TAG, "Mostrando estado vacío - No hay estudiantes");
             mostrarEstadoVacio(true);
             textoEstadoVacio.setText("Por ahora no hay alumnos");
             botonAccionEstadoVacio.setText("Compartir código del aula");
             botonAccionEstadoVacio.setVisibility(View.VISIBLE);
             botonAccionEstadoVacio.setOnClickListener(v -> compartirCodigoAula());
         } else {
+            Log.d(TAG, "Mostrando lista de estudiantes - Cantidad: " + listaEstudiantes.size());
             mostrarEstadoVacio(false);
+            Log.d(TAG, "Configurando adaptador de estudiantes");
             recyclerViewContenido.setAdapter(adaptadorEstudiantes);
             adaptadorEstudiantes.notifyDataSetChanged();
+            Log.d(TAG, "Adaptador configurado y notificado");
+        }
+    }
+
+    private void mostrarBarraAccionesEstudiantes() {
+        // Usar la misma barra de acciones que los cuentos pero con botones diferentes
+        if (barraAccionesCuentos != null) {
+            barraAccionesCuentos.setVisibility(View.VISIBLE);
+            
+            // Cambiar texto de los botones para estudiantes
+            botonAgregarCuento.setText("Compartir Código");
+            botonGestionarCuentos.setText("Gestionar Estudiantes");
+            
+            // Configurar listeners para estudiantes
+            botonAgregarCuento.setOnClickListener(v -> compartirCodigoAula());
+            botonGestionarCuentos.setOnClickListener(v -> mostrarOpcionesGestionEstudiantes());
         }
     }
 
@@ -407,6 +483,11 @@ public class VisualizarAulaActivity extends AppCompatActivity {
         pestanaActual = "cuentos";
         actualizarBotonesPestanas();
         barraAccionesCuentos.setVisibility(View.VISIBLE);
+        
+        // Restaurar botones para cuentos
+        botonAgregarCuento.setText("Agregar Cuento");
+        botonGestionarCuentos.setText("Gestionar Cuentos");
+        
         botonAgregarCuento.setOnClickListener(v -> {
             // Ir a seleccionar cuentos públicos
             Intent intento = new Intent(VisualizarAulaActivity.this, SeleccionarCuentosActivity.class);
@@ -429,8 +510,14 @@ public class VisualizarAulaActivity extends AppCompatActivity {
             
             startActivityForResult(intento, 2);
         });
-        // Ocultar botón gestionar cuentos según solicitud
-        botonGestionarCuentos.setVisibility(View.GONE);
+        
+        botonGestionarCuentos.setOnClickListener(v -> {
+            // Ir a gestionar cuentos del aula
+            Intent intento = new Intent(VisualizarAulaActivity.this, GestionarCuentosAulaActivity.class);
+            intento.putExtra("aula_id", aulaId);
+            intento.putExtra("nombre_aula", aulaActual != null ? aulaActual.getNombre_aula() : "");
+            startActivityForResult(intento, 3);
+        });
 
         if (listaCuentosDetallados == null || listaCuentosDetallados.isEmpty()) {
             mostrarEstadoVacio(true);
@@ -468,13 +555,6 @@ public class VisualizarAulaActivity extends AppCompatActivity {
         mostrarEstadoVacio(true);
         textoEstadoVacio.setText("PRÓXIMAMENTE");
         botonAccionEstadoVacio.setVisibility(View.GONE);
-    }
-
-    private void compartirCodigoAula() {
-        String codigo = textoCodigoAula.getText().toString().replace("Código: ", "");
-        Intent intent = new Intent(VisualizarAulaActivity.this, MostrarCodigoAulaActivity.class);
-        intent.putExtra("codigo_aula", codigo);
-        startActivity(intent);
     }
 
     private void mostrarEstadoVacio(boolean mostrar) {
@@ -554,11 +634,141 @@ public class VisualizarAulaActivity extends AppCompatActivity {
         }
     }
 
+    private void irADetalleEstudiante(ModeloEstudianteAula estudiante) {
+        Intent intent = new Intent(this, DetalleEstudianteActivity.class);
+        intent.putExtra("estudiante_id", Integer.parseInt(estudiante.getId()));
+        intent.putExtra("aula_id", aulaId);
+        intent.putExtra("nombre_estudiante", estudiante.getNombre());
+        intent.putExtra("ultima_actividad", estudiante.getUltimaActividad());
+        intent.putExtra("progreso", estudiante.getProgreso());
+        intent.putExtra("activo", estudiante.isActivo());
+        startActivity(intent);
+    }
+
+    private void compartirCodigoAula() {
+        String codigoAula = aulaActual != null ? aulaActual.getCodigo_acceso() : "N/A";
+        String mensajeCompartir = "¡Únete a mi aula!\n\n" +
+                                "Código del aula: " + codigoAula + "\n\n" +
+                                "Usa este código en la app Lectana para unirte a la clase.";
+        
+        Intent intentCompartir = new Intent(Intent.ACTION_SEND);
+        intentCompartir.setType("text/plain");
+        intentCompartir.putExtra(Intent.EXTRA_TEXT, mensajeCompartir);
+        intentCompartir.putExtra(Intent.EXTRA_SUBJECT, "Código del aula - Lectana");
+        
+        startActivity(Intent.createChooser(intentCompartir, "Compartir código del aula"));
+    }
+
+    private void mostrarOpcionesGestionEstudiantes() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Gestionar Estudiantes");
+        
+        String[] opciones = {"Remover estudiante del aula"};
+        
+        builder.setItems(opciones, (dialog, which) -> {
+            switch (which) {
+                case 0:
+                    // Remover estudiante
+                    mostrarListaEstudiantesParaRemover();
+                    break;
+                default:
+                    break;
+            }
+        });
+        
+        builder.show();
+    }
+
+    private void mostrarListaEstudiantesParaRemover() {
+        if (listaEstudiantes == null || listaEstudiantes.isEmpty()) {
+            Toast.makeText(this, "No hay estudiantes para remover", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Seleccionar Estudiante a Remover");
+        
+        // Crear array de nombres de estudiantes
+        String[] nombresEstudiantes = new String[listaEstudiantes.size()];
+        for (int i = 0; i < listaEstudiantes.size(); i++) {
+            nombresEstudiantes[i] = listaEstudiantes.get(i).getNombre();
+        }
+        
+        builder.setItems(nombresEstudiantes, (dialog, which) -> {
+            ModeloEstudianteAula estudianteSeleccionado = listaEstudiantes.get(which);
+            mostrarDialogoConfirmacionRemoverEstudiante(estudianteSeleccionado);
+        });
+        
+        builder.setNegativeButton("Cancelar", null);
+        builder.show();
+    }
+
+    private void mostrarDialogoConfirmacionRemoverEstudiante(ModeloEstudianteAula estudiante) {
+        new AlertDialog.Builder(this)
+                .setTitle("Remover Estudiante")
+                .setMessage("¿Estás seguro de que quieres remover a '" + estudiante.getNombre() + "' del aula?\n\n" +
+                           "Esta acción:\n" +
+                           "• Eliminará al estudiante del aula\n" +
+                           "• Perderá acceso a todos los cuentos asignados\n" +
+                           "• Se perderá su historial de progreso\n\n" +
+                           "El estudiante podrá volver a unirse usando el código del aula.")
+                .setPositiveButton("Remover", (dialog, which) -> {
+                    removerEstudianteDelAula(estudiante);
+                })
+                .setNegativeButton("Cancelar", null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    private void removerEstudianteDelAula(ModeloEstudianteAula estudiante) {
+        mostrarCargando(true);
+        
+        // Convertir ID de String a int
+        int idEstudiante;
+        try {
+            idEstudiante = Integer.parseInt(estudiante.getId());
+        } catch (NumberFormatException e) {
+            mostrarCargando(false);
+            Toast.makeText(this, "Error: ID de estudiante no válido", Toast.LENGTH_LONG).show();
+            return;
+        }
+        
+        aulasRepository.removerEstudianteAula(aulaId, idEstudiante, new AulasRepository.AulasCallback<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                runOnUiThread(() -> {
+                    mostrarCargando(false);
+                    Toast.makeText(VisualizarAulaActivity.this, "Estudiante removido del aula correctamente", Toast.LENGTH_SHORT).show();
+                    
+                    // Remover estudiante de la lista local
+                    listaEstudiantes.remove(estudiante);
+                    adaptadorEstudiantes.notifyDataSetChanged();
+                    
+                    // Actualizar contador
+                    numeroEstudiantesAula.setText(String.valueOf(listaEstudiantes.size()));
+                    
+                    // Si no quedan estudiantes, mostrar estado vacío
+                    if (listaEstudiantes.isEmpty()) {
+                        mostrarPestanaEstudiantes();
+                    }
+                });
+            }
+
+            @Override
+            public void onError(String message) {
+                runOnUiThread(() -> {
+                    mostrarCargando(false);
+                    Toast.makeText(VisualizarAulaActivity.this, "Error al remover estudiante: " + message, Toast.LENGTH_LONG).show();
+                });
+            }
+        });
+    }
+
     private void mostrarOpcionesConfiguracion() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Opciones de Configuración");
         
-        String[] opciones = {"Editar información del aula"};
+        String[] opciones = {"Editar información del aula", "Eliminar aula"};
         
         builder.setItems(opciones, (dialog, which) -> {
             switch (which) {
@@ -577,12 +787,58 @@ public class VisualizarAulaActivity extends AppCompatActivity {
                     intentConfig.putExtra("grado_aula", grado);
                     startActivityForResult(intentConfig, 1);
                     break;
+                case 1:
+                    // Eliminar aula
+                    mostrarDialogoConfirmacionEliminar();
+                    break;
                 default:
                     break;
             }
         });
         
         builder.show();
+    }
+
+    private void mostrarDialogoConfirmacionEliminar() {
+        String nombreAula = aulaActual != null ? aulaActual.getNombre_aula() : "esta aula";
+        
+        new AlertDialog.Builder(this)
+                .setTitle("Eliminar Aula")
+                .setMessage("¿Estás seguro de que quieres eliminar el aula '" + nombreAula + "'?\n\n" +
+                           "Esta acción eliminará:\n" +
+                           "• Todos los estudiantes del aula\n" +
+                           "• Todas las asignaciones de cuentos\n" +
+                           "• Todo el historial de actividades\n\n" +
+                           "Esta acción NO se puede deshacer.")
+                .setPositiveButton("Eliminar", (dialog, which) -> {
+                    eliminarAula();
+                })
+                .setNegativeButton("Cancelar", null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    private void eliminarAula() {
+        mostrarCargando(true);
+        aulasRepository.eliminarAula(aulaId, new AulasRepository.AulasCallback<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                runOnUiThread(() -> {
+                    mostrarCargando(false);
+                    Toast.makeText(VisualizarAulaActivity.this, "Aula eliminada correctamente", Toast.LENGTH_SHORT).show();
+                    // Regresar al Panel Docente
+                    finish();
+                });
+            }
+
+            @Override
+            public void onError(String message) {
+                runOnUiThread(() -> {
+                    mostrarCargando(false);
+                    Toast.makeText(VisualizarAulaActivity.this, "Error al eliminar aula: " + message, Toast.LENGTH_LONG).show();
+                });
+            }
+        });
     }
 
     private int obtenerIdCuentoDirecto(ModeloCuentoDetallado cuento) {

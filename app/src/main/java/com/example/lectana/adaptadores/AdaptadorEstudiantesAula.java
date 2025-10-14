@@ -3,6 +3,7 @@ package com.example.lectana.adaptadores;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,9 +17,19 @@ import java.util.List;
 public class AdaptadorEstudiantesAula extends RecyclerView.Adapter<AdaptadorEstudiantesAula.ViewHolderEstudiante> {
 
     private List<ModeloEstudianteAula> listaEstudiantes;
+    private OnClickListenerEstudiante listenerEstudiante;
+
+    public interface OnClickListenerEstudiante {
+        void onClicEstudiante(ModeloEstudianteAula estudiante);
+        void onClicQuitarEstudiante(ModeloEstudianteAula estudiante);
+    }
 
     public AdaptadorEstudiantesAula(List<ModeloEstudianteAula> listaEstudiantes) {
         this.listaEstudiantes = listaEstudiantes;
+    }
+
+    public void setOnClickListenerEstudiante(OnClickListenerEstudiante listener) {
+        this.listenerEstudiante = listener;
     }
 
     @NonNull
@@ -42,6 +53,19 @@ public class AdaptadorEstudiantesAula extends RecyclerView.Adapter<AdaptadorEstu
         } else {
             holder.indicadorEstado.setBackgroundResource(R.drawable.circulo_gris);
         }
+        
+        // Configurar click listeners
+        holder.itemView.setOnClickListener(v -> {
+            if (listenerEstudiante != null) {
+                listenerEstudiante.onClicEstudiante(estudiante);
+            }
+        });
+        
+        holder.iconoQuitarEstudiante.setOnClickListener(v -> {
+            if (listenerEstudiante != null) {
+                listenerEstudiante.onClicQuitarEstudiante(estudiante);
+            }
+        });
     }
 
     @Override
@@ -54,6 +78,7 @@ public class AdaptadorEstudiantesAula extends RecyclerView.Adapter<AdaptadorEstu
         TextView textoUltimaActividad;
         TextView textoProgreso;
         View indicadorEstado;
+        ImageView iconoQuitarEstudiante;
 
         public ViewHolderEstudiante(@NonNull View itemView) {
             super(itemView);
@@ -61,6 +86,7 @@ public class AdaptadorEstudiantesAula extends RecyclerView.Adapter<AdaptadorEstu
             textoUltimaActividad = itemView.findViewById(R.id.texto_ultima_actividad);
             textoProgreso = itemView.findViewById(R.id.texto_progreso);
             indicadorEstado = itemView.findViewById(R.id.indicador_estado);
+            iconoQuitarEstudiante = itemView.findViewById(R.id.icono_quitar_estudiante);
         }
     }
 }
