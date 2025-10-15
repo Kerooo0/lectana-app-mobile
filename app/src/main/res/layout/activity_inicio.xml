@@ -59,7 +59,7 @@
         android:textSize="16sp"
         android:layout_marginHorizontal="32dp"
         app:backgroundTint="@null"
-        app:layout_constraintBottom_toTopOf="@+id/boton_ir_panel_estudiante"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"

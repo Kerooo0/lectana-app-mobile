@@ -108,7 +108,8 @@ public class CuentoApi {
             "4.5★", // Rating por defecto hasta que esté disponible
             url_img != null ? url_img : "",
             duracionFormato,
-            "Descripción no disponible" // Descripción por defecto
+            "Descripción no disponible", // Descripción por defecto
+            pdf_url != null ? pdf_url : "" // URL del PDF
         );
     }
 }

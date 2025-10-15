@@ -83,7 +83,7 @@ public class DetalleCuentoActivity extends AppCompatActivity {
                 String duracion = intent.getStringExtra("cuento_duracion");
                 String descripcion = intent.getStringExtra("cuento_descripcion");
 
-                cuentoSeleccionado = new ModeloCuento(idCuento, titulo, autor, genero, edad, "4.5★", "", duracion, descripcion);
+                cuentoSeleccionado = new ModeloCuento(idCuento, titulo, autor, genero, edad, "4.5★", "", duracion, descripcion, "");
             }
         }
     }
@@ -205,7 +205,12 @@ public class DetalleCuentoActivity extends AppCompatActivity {
     }
 
     private String obtenerUrlPdf() {
-        // URL basada en el patrón de Supabase
+        // Usar la URL del PDF que viene del backend
+        if (cuentoSeleccionado != null && cuentoSeleccionado.getPdfUrl() != null && !cuentoSeleccionado.getPdfUrl().isEmpty()) {
+            return cuentoSeleccionado.getPdfUrl();
+        }
+        
+        // Fallback: URL basada en el patrón de Supabase (solo si no hay URL en el modelo)
         if (cuentoSeleccionado != null) {
             int idCuento = cuentoSeleccionado.getId();
             return "https://kutpsehgzxmnyrujmnxo.supabase.co/storage/v1/object/public/cuentos-pdfs/2025/09/cuento-" + idCuento + ".pdf";

@@ -60,9 +60,9 @@ public class SeleccionarAulaActivity extends AppCompatActivity implements Adapta
             // Por ahora, simular cuentos seleccionados
             // En una implementación real, se recibirían desde la actividad anterior
             cuentosSeleccionados.add(new ModeloCuento(1, "Caperucita Roja", "Hermanos Grimm", "Clásico", 
-                "4-6", "4.5★", "", "15 min", "Un cuento clásico sobre una niña que lleva comida a su abuela enferma."));
+                "4-6", "4.5★", "", "15 min", "Un cuento clásico sobre una niña que lleva comida a su abuela enferma.", ""));
             cuentosSeleccionados.add(new ModeloCuento(2, "Los Tres Cerditos", "Cuento tradicional", "Clásico", 
-                "3-5", "4.2★", "", "12 min", "La historia de tres cerditos que construyen casas de diferentes materiales."));
+                "3-5", "4.2★", "", "12 min", "La historia de tres cerditos que construyen casas de diferentes materiales.", ""));
         }
     }
 

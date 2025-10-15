@@ -150,7 +150,8 @@ public class SeleccionarCuentosActivity extends AppCompatActivity implements Ada
                 "4.5★", // Rating por defecto
                 cuentoApi.getUrl_img(),
                 cuentoApi.getDuracion() + " min",
-                (idsAsignadosActuales.contains(cuentoApi.getId_cuento()) ? "YA_ASIGNADO" : "Cuento disponible para el aula")
+                (idsAsignadosActuales.contains(cuentoApi.getId_cuento()) ? "YA_ASIGNADO" : "Cuento disponible para el aula"),
+                cuentoApi.getPdf_url() != null ? cuentoApi.getPdf_url() : ""
             );
             listaCuentos.add(modeloCuento);
         }

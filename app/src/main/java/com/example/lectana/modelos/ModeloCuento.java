@@ -10,13 +10,14 @@ public class ModeloCuento {
     private String imagenUrl;
     private String tiempoLectura;
     private String descripcion;
+    private String pdfUrl;
     private boolean seleccionado;
 
     public ModeloCuento() {}
 
     public ModeloCuento(int id, String titulo, String autor, String genero, 
                        String edadRecomendada, String rating, String imagenUrl, 
-                       String tiempoLectura, String descripcion) {
+                       String tiempoLectura, String descripcion, String pdfUrl) {
         this.id = id;
         this.titulo = titulo;
         this.autor = autor;
@@ -26,6 +27,7 @@ public class ModeloCuento {
         this.imagenUrl = imagenUrl;
         this.tiempoLectura = tiempoLectura;
         this.descripcion = descripcion;
+        this.pdfUrl = pdfUrl;
         this.seleccionado = false;
     }
 
@@ -108,5 +110,13 @@ public class ModeloCuento {
 
     public void setSeleccionado(boolean seleccionado) {
         this.seleccionado = seleccionado;
+    }
+
+    public String getPdfUrl() {
+        return pdfUrl;
+    }
+
+    public void setPdfUrl(String pdfUrl) {
+        this.pdfUrl = pdfUrl;
     }
 }

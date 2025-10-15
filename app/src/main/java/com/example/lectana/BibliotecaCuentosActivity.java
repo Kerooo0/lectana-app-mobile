@@ -172,23 +172,23 @@ public class BibliotecaCuentosActivity extends AppCompatActivity implements Adap
         
         // Cuentos clásicos
         listaCuentosCompleta.add(new ModeloCuento(1, "Caperucita Roja", "Hermanos Grimm", "Clásico", 
-            "4-6", "4.5★", "", "15 min", "Un cuento clásico sobre una niña que lleva comida a su abuela enferma."));
+            "4-6", "4.5★", "", "15 min", "Un cuento clásico sobre una niña que lleva comida a su abuela enferma.", ""));
         listaCuentosCompleta.add(new ModeloCuento(2, "Los Tres Cerditos", "Cuento tradicional", "Clásico", 
-            "3-5", "4.2★", "", "12 min", "La historia de tres cerditos que construyen casas de diferentes materiales."));
+            "3-5", "4.2★", "", "12 min", "La historia de tres cerditos que construyen casas de diferentes materiales.", ""));
         listaCuentosCompleta.add(new ModeloCuento(3, "El Patito Feo", "Hans Christian Andersen", "Clásico", 
-            "4-7", "4.7★", "", "18 min", "Un patito diferente que descubre su verdadera identidad."));
+            "4-7", "4.7★", "", "18 min", "Un patito diferente que descubre su verdadera identidad.", ""));
         
         // Cuentos de aventura
         listaCuentosCompleta.add(new ModeloCuento(4, "La Isla del Tesoro", "Robert Louis Stevenson", "Aventura", 
-            "8-12", "4.3★", "", "45 min", "Una emocionante aventura pirata en busca de un tesoro oculto."));
+            "8-12", "4.3★", "", "45 min", "Una emocionante aventura pirata en busca de un tesoro oculto.", ""));
         listaCuentosCompleta.add(new ModeloCuento(5, "Las Aventuras de Tom Sawyer", "Mark Twain", "Aventura", 
-            "9-13", "4.4★", "", "60 min", "Las travesuras y aventuras de un niño travieso en el Mississippi."));
+            "9-13", "4.4★", "", "60 min", "Las travesuras y aventuras de un niño travieso en el Mississippi.", ""));
         
         // Cuentos para 8-12 años
         listaCuentosCompleta.add(new ModeloCuento(6, "Matilda", "Roald Dahl", "Fantasía", 
-            "8-12", "4.6★", "", "35 min", "Una niña con poderes especiales que ama la lectura."));
+            "8-12", "4.6★", "", "35 min", "Una niña con poderes especiales que ama la lectura.", ""));
         listaCuentosCompleta.add(new ModeloCuento(7, "Charlie y la Fábrica de Chocolate", "Roald Dahl", "Fantasía", 
-            "8-12", "4.8★", "", "40 min", "Un niño pobre que gana un tour por la fábrica de chocolate más famosa."));
+            "8-12", "4.8★", "", "40 min", "Un niño pobre que gana un tour por la fábrica de chocolate más famosa.", ""));
         
         listaCuentosFiltrada = new ArrayList<>(listaCuentosCompleta);
     }

@@ -96,59 +96,77 @@ public class BibliotecaFragment extends Fragment implements AdaptadorBiblioteca.
         android.util.Log.d("BibliotecaFragment", "Iniciando carga de cuentos desde API...");
         mostrarCargando(true);
         
-        executorService.execute(() -> {
-            try {
-                Call<com.example.lectana.modelos.ApiResponse<com.example.lectana.modelos.CuentosResponse>> call = 
-                    apiService.getCuentosPublicos(1, 50, null, null, null, null);
+        // Llamada directa sin executorService para mejor debugging
+        Call<com.example.lectana.modelos.ApiResponse<com.example.lectana.modelos.CuentosResponse>> call = 
+            apiService.getCuentosPublicos(1, 50, null, null, null, null);
+        
+        call.enqueue(new Callback<com.example.lectana.modelos.ApiResponse<com.example.lectana.modelos.CuentosResponse>>() {
+            @Override
+            public void onResponse(Call<com.example.lectana.modelos.ApiResponse<com.example.lectana.modelos.CuentosResponse>> call, 
+                                 Response<com.example.lectana.modelos.ApiResponse<com.example.lectana.modelos.CuentosResponse>> response) {
+                mostrarCargando(false);
                 
-                call.enqueue(new Callback<com.example.lectana.modelos.ApiResponse<com.example.lectana.modelos.CuentosResponse>>() {
-                    @Override
-                    public void onResponse(Call<com.example.lectana.modelos.ApiResponse<com.example.lectana.modelos.CuentosResponse>> call, 
-                                         Response<com.example.lectana.modelos.ApiResponse<com.example.lectana.modelos.CuentosResponse>> response) {
-                        if (getActivity() != null) {
-                            getActivity().runOnUiThread(() -> {
-                                mostrarCargando(false);
-                                
-                                if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
-                                    com.example.lectana.modelos.CuentosResponse cuentosResponse = response.body().getData();
-                                    if (cuentosResponse != null && cuentosResponse.getCuentos() != null) {
-                                        listaCuentos.clear();
-                                        for (com.example.lectana.modelos.CuentoApi cuentoApi : cuentosResponse.getCuentos()) {
-                                            listaCuentos.add(cuentoApi.toModeloCuento());
-                                        }
-                                        adaptador.submitList(new ArrayList<>(listaCuentos));
-                                        android.util.Log.d("BibliotecaFragment", "Cuentos cargados desde API: " + listaCuentos.size());
-                                    } else {
-                                        android.util.Log.w("BibliotecaFragment", "API responde pero sin cuentos");
-                                        mostrarError("No se encontraron cuentos en el servidor");
+                android.util.Log.d("BibliotecaFragment", "Respuesta recibida - Código: " + response.code());
+                android.util.Log.d("BibliotecaFragment", "Respuesta exitosa: " + response.isSuccessful());
+                
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        android.util.Log.d("BibliotecaFragment", "Body no es null");
+                        android.util.Log.d("BibliotecaFragment", "Body ok: " + response.body().isOk());
+                        
+                        if (response.body().isOk()) {
+                            com.example.lectana.modelos.CuentosResponse cuentosResponse = response.body().getData();
+                            if (cuentosResponse != null) {
+                                android.util.Log.d("BibliotecaFragment", "CuentosResponse no es null");
+                                if (cuentosResponse.getCuentos() != null) {
+                                    android.util.Log.d("BibliotecaFragment", "Lista de cuentos no es null, tamaño: " + cuentosResponse.getCuentos().size());
+                                    
+                                    listaCuentos.clear();
+                                    for (com.example.lectana.modelos.CuentoApi cuentoApi : cuentosResponse.getCuentos()) {
+                                        listaCuentos.add(cuentoApi.toModeloCuento());
                                     }
+                                    adaptador.submitList(new ArrayList<>(listaCuentos));
+                                    android.util.Log.d("BibliotecaFragment", "Cuentos cargados desde API: " + listaCuentos.size());
                                 } else {
-                                    android.util.Log.w("BibliotecaFragment", "API no disponible: " + response.code());
-                                    mostrarError("Error del servidor: " + response.code());
+                                    android.util.Log.w("BibliotecaFragment", "Lista de cuentos es null");
+                                    mostrarError("No se encontraron cuentos en el servidor");
                                 }
-                            });
+                            } else {
+                                android.util.Log.w("BibliotecaFragment", "CuentosResponse es null");
+                                mostrarError("Error en la respuesta del servidor");
+                            }
+                        } else {
+                            android.util.Log.w("BibliotecaFragment", "Respuesta no es ok");
+                            mostrarError("Error del servidor: respuesta no válida");
                         }
+                    } else {
+                        android.util.Log.w("BibliotecaFragment", "Body es null");
+                        mostrarError("Error del servidor: sin datos");
                     }
-                    
-                    @Override
-                    public void onFailure(Call<com.example.lectana.modelos.ApiResponse<com.example.lectana.modelos.CuentosResponse>> call, Throwable t) {
-                        if (getActivity() != null) {
-                            getActivity().runOnUiThread(() -> {
-                                mostrarCargando(false);
-                                android.util.Log.e("BibliotecaFragment", "Error de conexión: " + t.getMessage());
-                                mostrarError("Error de conexión: " + t.getMessage());
-                            });
+                } else {
+                    android.util.Log.w("BibliotecaFragment", "API no disponible: " + response.code());
+                    String errorBody = "";
+                    try {
+                        if (response.errorBody() != null) {
+                            errorBody = response.errorBody().string();
                         }
+                    } catch (Exception e) {
+                        errorBody = "Error leyendo respuesta";
                     }
-                });
-            } catch (Exception e) {
-                if (getActivity() != null) {
-                    getActivity().runOnUiThread(() -> {
-                        mostrarCargando(false);
-                        android.util.Log.e("BibliotecaFragment", "Error inesperado: " + e.getMessage());
-                        mostrarError("Error inesperado: " + e.getMessage());
-                    });
+                    android.util.Log.w("BibliotecaFragment", "Error body: " + errorBody);
+                    mostrarError("Error del servidor: " + response.code() + " - " + errorBody);
                 }
+            }
+            
+            @Override
+            public void onFailure(Call<com.example.lectana.modelos.ApiResponse<com.example.lectana.modelos.CuentosResponse>> call, Throwable t) {
+                mostrarCargando(false);
+                android.util.Log.e("BibliotecaFragment", "Error de conexión: " + t.getMessage());
+                android.util.Log.e("BibliotecaFragment", "Tipo de error: " + t.getClass().getSimpleName());
+                if (t.getCause() != null) {
+                    android.util.Log.e("BibliotecaFragment", "Causa: " + t.getCause().getMessage());
+                }
+                mostrarError("Error de conexión: " + t.getMessage());
             }
         });
     }
