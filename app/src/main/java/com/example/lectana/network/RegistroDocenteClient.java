@@ -6,7 +6,6 @@ import com.example.lectana.models.DocenteRegistro;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -21,7 +20,7 @@ import okhttp3.Response;
 
 /**
  * Cliente para el registro de docentes
- * Se conecta directamente con Supabase REST API
+ * Se conecta con el backend de Render
  */
 public class RegistroDocenteClient {
     
@@ -31,12 +30,11 @@ public class RegistroDocenteClient {
             .writeTimeout(60, TimeUnit.SECONDS)
             .build();
     
-    private static final String SUPABASE_URL = "https://kutpsehgzxmnyrujmnxo.supabase.co";
-    private static final String SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt1dHBzZWhnenhtbnlydWptbnhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcyOTg4OTYsImV4cCI6MjA3Mjg3NDg5Nn0.yeO2t5-wEIM4Lbg3jh3RPgshbknrJrZ-JUr2EKyIF-4";
+    private final String baseUrl;
     private static final String TAG = "RegistroDocenteClient";
     
     public RegistroDocenteClient(String baseUrl) {
-        // baseUrl ya no se usa, pero mantenemos el constructor para compatibilidad
+        this.baseUrl = baseUrl;
     }
     
     public interface RegistroCallback {
@@ -45,179 +43,90 @@ public class RegistroDocenteClient {
     }
     
     /**
-     * Registra un nuevo docente directamente en Supabase
-     * Paso 1: Crear usuario
-     * Paso 2: Crear docente vinculado al usuario
+     * Registra un nuevo docente usando el backend de Render
      */
     public void registrarDocente(DocenteRegistro docente, RegistroCallback callback) {
-        // Paso 1: Crear usuario en la tabla 'usuario'
-        crearUsuario(docente, new RegistroCallback() {
-            @Override
-            public void onSuccess(String message, JSONObject usuario) {
-                try {
-                    int idUsuario = usuario.getInt("id_usuario");
-                    // Paso 2: Crear docente vinculado al usuario
-                    crearDocente(docente, idUsuario, callback);
-                } catch (JSONException e) {
-                    callback.onError("Error obteniendo ID de usuario: " + e.getMessage());
-                }
-            }
-
-            @Override
-            public void onError(String message) {
-                callback.onError(message);
-            }
-        });
-    }
-    
-    private void crearUsuario(DocenteRegistro docente, RegistroCallback callback) {
         try {
-            // Hashear la contraseña con BCrypt antes de enviarla
-            String hashedPassword = BCrypt.hashpw(docente.getPassword(), BCrypt.gensalt(12));
+            JSONObject datosRegistro = new JSONObject();
             
-            JSONObject usuarioJson = new JSONObject();
-            usuarioJson.put("nombre", docente.getNombre());
-            usuarioJson.put("apellido", docente.getApellido());
-            usuarioJson.put("email", docente.getEmail());
-            usuarioJson.put("password", hashedPassword); // Contraseña hasheada
-            usuarioJson.put("edad", docente.getEdad());
-            usuarioJson.put("activo", true);
+            // Datos de usuario según especificación del backend
+            datosRegistro.put("nombre", docente.getNombre());
+            datosRegistro.put("apellido", docente.getApellido());
+            datosRegistro.put("email", docente.getEmail());
+            datosRegistro.put("password", docente.getPassword()); // El backend se encarga del hash
+            datosRegistro.put("edad", docente.getEdad());
             
-            Log.d(TAG, "Contraseña hasheada exitosamente");
+            // Datos específicos de docente
+            datosRegistro.put("dni", docente.getDni());
+            datosRegistro.put("telefono", docente.getTelefono()); // Opcional
+            datosRegistro.put("institucion_nombre", docente.getInstitucionNombre());
+            datosRegistro.put("institucion_pais", docente.getInstitucionPais());
+            datosRegistro.put("institucion_provincia", docente.getInstitucionProvincia());
+            datosRegistro.put("nivel_educativo", docente.getNivelEducativo()); // Opcional - valores: "PRIMARIA", "SECUNDARIA", "AMBOS"
+
+            String url = baseUrl.endsWith("/") ? baseUrl + "api/auth/registro-form-docente" : baseUrl + "/api/auth/registro-form-docente";
 
             RequestBody body = RequestBody.create(
-                usuarioJson.toString(),
+                datosRegistro.toString(),
                 MediaType.get("application/json; charset=utf-8")
             );
-
-            String url = SUPABASE_URL + "/rest/v1/usuario";
 
             Request request = new Request.Builder()
                     .url(url)
                     .post(body)
-                    .addHeader("apikey", SUPABASE_KEY)
-                    .addHeader("Authorization", "Bearer " + SUPABASE_KEY)
                     .addHeader("Content-Type", "application/json")
-                    .addHeader("Prefer", "return=representation")
                     .build();
 
-            Log.d(TAG, "Creando usuario en Supabase: " + url);
+            Log.d(TAG, "Enviando registro de docente a: " + url);
+            Log.d(TAG, "Datos: " + datosRegistro.toString());
 
             httpClient.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    Log.e(TAG, "Error creando usuario: " + e.getMessage());
-                    callback.onError("Error de conexión al crear usuario: " + e.getMessage());
+                    Log.e(TAG, "Error de conexión: " + e.getMessage());
+                    callback.onError("Error de conexión: " + e.getMessage());
                 }
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     String responseBody = response.body() != null ? response.body().string() : "";
-                    Log.d(TAG, "Respuesta crear usuario: " + response.code() + " - " + responseBody);
+                    Log.d(TAG, "Respuesta del servidor: " + response.code() + " - " + responseBody);
 
                     if (response.isSuccessful()) {
                         try {
-                            // Supabase devuelve un array, tomamos el primer elemento
-                            if (responseBody.startsWith("[")) {
-                                org.json.JSONArray array = new org.json.JSONArray(responseBody);
-                                if (array.length() > 0) {
-                                    JSONObject usuario = array.getJSONObject(0);
-                                    callback.onSuccess("Usuario creado", usuario);
-                                } else {
-                                    callback.onError("No se recibió el usuario creado");
+                            JSONObject jsonResponse = new JSONObject(responseBody);
+                            boolean ok = jsonResponse.optBoolean("ok", true);
+                            
+                            if (ok) {
+                                String message = jsonResponse.optString("message", "¡Registro exitoso!");
+                                JSONObject user = jsonResponse.optJSONObject("user");
+                                if (user == null) {
+                                    user = new JSONObject();
                                 }
+                                callback.onSuccess(message, user);
                             } else {
-                                JSONObject usuario = new JSONObject(responseBody);
-                                callback.onSuccess("Usuario creado", usuario);
+                                String error = jsonResponse.optString("error", "Error desconocido");
+                                callback.onError(error);
                             }
                         } catch (JSONException e) {
-                            Log.e(TAG, "Error parseando usuario: " + e.getMessage());
-                            callback.onError("Error procesando respuesta: " + e.getMessage());
+                            Log.e(TAG, "Error parseando respuesta: " + e.getMessage());
+                            callback.onError("Error procesando respuesta del servidor");
                         }
                     } else {
                         try {
                             JSONObject error = new JSONObject(responseBody);
-                            String errorMsg = error.optString("message", "Error desconocido");
-                            callback.onError("Error al crear usuario: " + errorMsg);
+                            String errorMsg = error.optString("error", "Error desconocido");
+                            callback.onError("Error al registrar docente: " + errorMsg);
                         } catch (JSONException e) {
-                            callback.onError("Error al crear usuario. Código: " + response.code());
+                            callback.onError("Error al registrar docente. Código: " + response.code());
                         }
                     }
                 }
             });
 
         } catch (JSONException e) {
-            Log.e(TAG, "Error creando JSON de usuario: " + e.getMessage());
-            callback.onError("Error preparando datos de usuario");
-        }
-    }
-    
-    private void crearDocente(DocenteRegistro docente, int idUsuario, RegistroCallback callback) {
-        try {
-            JSONObject docenteJson = new JSONObject();
-            docenteJson.put("dni", docente.getDni());
-            docenteJson.put("telefono", docente.getTelefono() != null ? docente.getTelefono() : JSONObject.NULL);
-            docenteJson.put("nivel_educativo", docente.getNivelEducativo());
-            docenteJson.put("verificado", false);
-            docenteJson.put("usuario_id_usuario", idUsuario);
-            docenteJson.put("institucion_nombre", docente.getInstitucionNombre());
-            docenteJson.put("institucion_pais", docente.getInstitucionPais());
-            docenteJson.put("institucion_provincia", docente.getInstitucionProvincia() != null ? docente.getInstitucionProvincia() : JSONObject.NULL);
-
-            RequestBody body = RequestBody.create(
-                docenteJson.toString(),
-                MediaType.get("application/json; charset=utf-8")
-            );
-
-            String url = SUPABASE_URL + "/rest/v1/docente";
-
-            Request request = new Request.Builder()
-                    .url(url)
-                    .post(body)
-                    .addHeader("apikey", SUPABASE_KEY)
-                    .addHeader("Authorization", "Bearer " + SUPABASE_KEY)
-                    .addHeader("Content-Type", "application/json")
-                    .addHeader("Prefer", "return=representation")
-                    .build();
-
-            Log.d(TAG, "Creando docente en Supabase: " + url);
-
-            httpClient.newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    Log.e(TAG, "Error creando docente: " + e.getMessage());
-                    callback.onError("Error de conexión al crear docente: " + e.getMessage());
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    String responseBody = response.body() != null ? response.body().string() : "";
-                    Log.d(TAG, "Respuesta crear docente: " + response.code() + " - " + responseBody);
-
-                    if (response.isSuccessful()) {
-                        try {
-                            JSONObject result = new JSONObject();
-                            result.put("id_usuario", idUsuario);
-                            result.put("mensaje", "Docente registrado exitosamente");
-                            callback.onSuccess("¡Registro exitoso! Tu cuenta será verificada por un administrador.", result);
-                        } catch (JSONException e) {
-                            callback.onError("Error interno");
-                        }
-                    } else {
-                        try {
-                            JSONObject error = new JSONObject(responseBody);
-                            String errorMsg = error.optString("message", "Error desconocido");
-                            callback.onError("Error al crear docente: " + errorMsg);
-                        } catch (JSONException e) {
-                            callback.onError("Error al crear docente. Código: " + response.code());
-                        }
-                    }
-                }
-            });
-
-        } catch (JSONException e) {
-            Log.e(TAG, "Error creando JSON de docente: " + e.getMessage());
-            callback.onError("Error preparando datos de docente");
+            Log.e(TAG, "Error creando JSON: " + e.getMessage());
+            callback.onError("Error preparando datos de registro");
         }
     }
 }

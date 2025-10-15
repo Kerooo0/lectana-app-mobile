@@ -23,6 +23,7 @@ import com.example.lectana.Login;
 import com.example.lectana.R;
 import com.example.lectana.models.AlumnoRegistro;
 import com.example.lectana.network.RegistroAlumnoClient;
+import com.example.lectana.auth.SessionManager;
 
 import org.json.JSONObject;
 
@@ -35,12 +36,13 @@ public class ConfirmacionDatosAlumnos extends Fragment {
 
     private RegistroAlumnoManager registroManager;
     private RegistroAlumnoClient registroClient;
+    private SessionManager sessionManager;
     private TextView txtNombre, txtEdad, txtGrado,txtEmail,txtApellido;
     private Button btnConfirmar;
     private ProgressBar progressBar;
     
-    // URL base de Supabase
-    private static final String BASE_URL = "https://kutpsehgzxmnyrujmnxo.supabase.co";
+    // URL base del backend de Render
+    private static final String BASE_URL = "https://lectana-backend.onrender.com";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,6 +53,7 @@ public class ConfirmacionDatosAlumnos extends Fragment {
         // Inicializar componentes
         registroManager = RegistroAlumnoManager.getInstance(requireContext());
         registroClient = new RegistroAlumnoClient(BASE_URL);
+        sessionManager = new SessionManager(requireContext());
 
         ProgressBar barraDeProgreso = vista.findViewById(R.id.barraProgreso);
         barraDeProgreso.setProgress(3);
@@ -143,10 +146,33 @@ public class ConfirmacionDatosAlumnos extends Fragment {
                     Log.d("ConfirmacionAlumno", "✅ REGISTRO EXITOSO: " + message);
                     Log.d("ConfirmacionAlumno", "✅ Usuario creado: " + user.toString());
 
+                    // GUARDAR SESIÓN AUTOMÁTICAMENTE
+                    try {
+                        // Extraer datos del usuario de la respuesta
+                        String token = user.optString("token", "");
+                        String role = user.optString("role", "alumno");
+                        JSONObject userData = user.optJSONObject("user");
+                        
+                        if (userData == null) {
+                            // Si no hay user object separado, usar el objeto completo
+                            userData = user;
+                        }
+                        
+                        // Guardar sesión
+                        sessionManager.saveSession(token, role, userData);
+                        
+                        Log.d("ConfirmacionAlumno", "✅ SESIÓN GUARDADA AUTOMÁTICAMENTE");
+                        Log.d("ConfirmacionAlumno", "✅ Token: " + token);
+                        Log.d("ConfirmacionAlumno", "✅ Role: " + role);
+                        
+                    } catch (Exception e) {
+                        Log.e("ConfirmacionAlumno", "❌ Error guardando sesión: " + e.getMessage());
+                    }
+
                     // Limpiar datos guardados
                     registroManager.limpiarDatos();
 
-                    // Ir al fragment de cuenta creada o al login
+                    // Ir al fragment de cuenta creada
                     Fragment cuentaCreada = new CuentaCreadaAlumnoFragment();
                     FragmentManager fragmentManager = getParentFragmentManager();
                     FragmentTransaction cambioDeFragment = fragmentManager.beginTransaction();

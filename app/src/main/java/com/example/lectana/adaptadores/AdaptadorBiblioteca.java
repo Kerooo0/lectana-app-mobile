@@ -11,6 +11,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.lectana.R;
 import com.example.lectana.modelos.ModeloCuento;
 
@@ -82,6 +85,19 @@ public class AdaptadorBiblioteca extends RecyclerView.Adapter<AdaptadorBibliotec
         holder.genero.setText(cuento.getGenero());
         holder.tiempo.setText(" • " + cuento.getTiempoLectura());
         holder.rating.setText(" " + (cuento.getRating() != null ? cuento.getRating() : "4.5"));
+
+        // Cargar imagen del cuento desde Supabase
+        if (cuento.getImagenUrl() != null && !cuento.getImagenUrl().isEmpty()) {
+            Glide.with(context)
+                .load(cuento.getImagenUrl())
+                .apply(RequestOptions.bitmapTransform(new RoundedCorners(12)))
+                .placeholder(R.drawable.imagen_cuento_placeholder) // Imagen mientras carga
+                .error(R.drawable.imagen_cuento_placeholder) // Imagen si falla
+                .into(holder.imagen);
+        } else {
+            // Si no hay URL, usar imagen placeholder
+            holder.imagen.setImageResource(R.drawable.imagen_cuento_placeholder);
+        }
 
         holder.botonDetalle.setOnClickListener(v -> listener.onClickVerDetalle(cuento));
         holder.botonPlay.setOnClickListener(v -> listener.onClickReproducir(cuento));

@@ -38,7 +38,7 @@ public class EditarPerfilDocenteActivity extends AppCompatActivity {
     private SessionManager sessionManager;
     private DocenteApiClient docenteApiClient;
     
-    private static final String BASE_URL = "http://192.168.1.33:3000";
+    private static final String BASE_URL = "https://lectana-backend.onrender.com";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
