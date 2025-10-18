@@ -1,8 +1,10 @@
 package com.example.lectana.estudiante.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -211,7 +213,17 @@ public class BibliotecaFragment extends Fragment implements AdaptadorBiblioteca.
 
     @Override
     public void onClickReproducir(ModeloCuento cuento) {
-        startActivity(new android.content.Intent(requireContext(), ReproductorAudiolibroActivity.class));
+
+        Intent intent = new Intent(requireContext(), ReproductorAudiolibroActivity.class);
+
+        intent.putExtra("cuento_id", cuento.getId());
+        intent.putExtra("cuento_titulo", cuento.getTitulo());
+        intent.putExtra("cuento_autor", cuento.getAutor());
+        intent.putExtra("cuento_url", cuento.getPdfUrl());
+        Log.d("BibliotecaFragment", "PDF URL: " + cuento.getPdfUrl());
+
+
+        startActivity(intent);
     }
     
     @Override

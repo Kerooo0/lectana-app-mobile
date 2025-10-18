@@ -14,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.lectana.modelos.ApiResponse;
+import com.example.lectana.modelos.CuentoApi;
 import com.example.lectana.modelos.ModeloCuento;
 import com.example.lectana.services.ApiClient;
 import com.example.lectana.services.CuentosApiService;
@@ -91,10 +93,10 @@ public class DetalleCuentoActivity extends AppCompatActivity {
     private void cargarDetalleCuentoDesdeAPI(int idCuento) {
         mostrarCargando(true);
         
-        Call<com.example.lectana.modelos.ApiResponse<com.example.lectana.modelos.CuentoApi>> call = 
+        Call<ApiResponse<CuentoApi>> call =
             apiService.getCuentoDetalle(idCuento);
         
-        call.enqueue(new Callback<com.example.lectana.modelos.ApiResponse<com.example.lectana.modelos.CuentoApi>>() {
+        call.enqueue(new Callback<ApiResponse<CuentoApi>>() {
             @Override
             public void onResponse(Call<com.example.lectana.modelos.ApiResponse<com.example.lectana.modelos.CuentoApi>> call, 
                                  Response<com.example.lectana.modelos.ApiResponse<com.example.lectana.modelos.CuentoApi>> response) {
