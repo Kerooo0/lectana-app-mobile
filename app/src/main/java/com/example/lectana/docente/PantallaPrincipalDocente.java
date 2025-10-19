@@ -155,6 +155,7 @@ public class PantallaPrincipalDocente extends AppCompatActivity {
                     });
                 }
             });
+            
         } catch (Exception e) {
             Log.e("PantallaPrincipalDocente", "Error cargando aulas: " + e.getMessage(), e);
             mostrarCargando(false);
@@ -446,5 +447,72 @@ public class PantallaPrincipalDocente extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    /**
+     * Crear datos de ejemplo para aulas cuando no hay conexión
+     */
+    private List<ModeloAula> crearAulasEjemplo() {
+        List<ModeloAula> aulas = new ArrayList<>();
+        
+        // Aula 1
+        ModeloAula aula1 = new ModeloAula();
+        aula1.setId_aula(1);
+        aula1.setNombre_aula("Primer Grado A");
+        aula1.setGrado("1");
+        aula1.setCodigo_acceso("PRIM-A-2024");
+        aula1.setTotal_estudiantes(2);
+        aula1.setTotal_cuentos(3);
+        
+        // Crear estudiantes para el aula 1
+        List<ModeloAula.Estudiante> estudiantes1 = new ArrayList<>();
+        
+        ModeloAula.Estudiante est1 = new ModeloAula.Estudiante();
+        est1.setId(1);
+        ModeloAula.Estudiante.Usuario usuario1 = new ModeloAula.Estudiante.Usuario();
+        usuario1.setNombre("Juan");
+        usuario1.setApellido("Pérez");
+        usuario1.setEmail("juan.perez@ejemplo.com");
+        est1.setUsuario(usuario1);
+        estudiantes1.add(est1);
+        
+        ModeloAula.Estudiante est2 = new ModeloAula.Estudiante();
+        est2.setId(2);
+        ModeloAula.Estudiante.Usuario usuario2 = new ModeloAula.Estudiante.Usuario();
+        usuario2.setNombre("María");
+        usuario2.setApellido("García");
+        usuario2.setEmail("maria.garcia@ejemplo.com");
+        est2.setUsuario(usuario2);
+        estudiantes1.add(est2);
+        
+        aula1.setEstudiantes(estudiantes1);
+        aulas.add(aula1);
+        
+        // Aula 2
+        ModeloAula aula2 = new ModeloAula();
+        aula2.setId_aula(2);
+        aula2.setNombre_aula("Segundo Grado B");
+        aula2.setGrado("2");
+        aula2.setCodigo_acceso("SEG-B-2024");
+        aula2.setTotal_estudiantes(1);
+        aula2.setTotal_cuentos(2);
+        
+        // Crear estudiantes para el aula 2
+        List<ModeloAula.Estudiante> estudiantes2 = new ArrayList<>();
+        
+        ModeloAula.Estudiante est3 = new ModeloAula.Estudiante();
+        est3.setId(3);
+        ModeloAula.Estudiante.Usuario usuario3 = new ModeloAula.Estudiante.Usuario();
+        usuario3.setNombre("Carlos");
+        usuario3.setApellido("López");
+        usuario3.setEmail("carlos.lopez@ejemplo.com");
+        est3.setUsuario(usuario3);
+        estudiantes2.add(est3);
+        
+        aula2.setEstudiantes(estudiantes2);
+        aulas.add(aula2);
+        
+        Log.d("PantallaPrincipalDocente", "Creadas " + aulas.size() + " aulas de ejemplo");
+        return aulas;
     }
 }
