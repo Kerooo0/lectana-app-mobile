@@ -8,7 +8,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:paddingBottom="80dp"
+        android:clipToPadding="false">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/card_novedad"
