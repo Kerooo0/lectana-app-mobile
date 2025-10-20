@@ -249,4 +249,20 @@ public class PanelEstudianteActivity extends AppCompatActivity {
         Toast.makeText(this, "Sesión cerrada correctamente", Toast.LENGTH_SHORT).show();
         irAlLogin();
     }
+
+    /**
+     * Manejar el botón "Atrás" del sistema
+     * Si no está en Inicio, va a Inicio. Si está en Inicio, sale de la app.
+     */
+    @Override
+    public void onBackPressed() {
+        // Si no está en el tab de Inicio, navegar a Inicio
+        if (!tabActual.equals("inicio")) {
+            reemplazarFragment(new InicioFragment());
+            actualizarEstadoTabs("inicio");
+        } else {
+            // Si ya está en Inicio, comportamiento normal (salir de la app)
+            super.onBackPressed();
+        }
+    }
 }
