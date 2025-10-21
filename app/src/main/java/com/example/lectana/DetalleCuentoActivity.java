@@ -85,7 +85,10 @@ public class DetalleCuentoActivity extends AppCompatActivity {
                 String duracion = intent.getStringExtra("cuento_duracion");
                 String descripcion = intent.getStringExtra("cuento_descripcion");
 
-                cuentoSeleccionado = new ModeloCuento(idCuento, titulo, autor, genero, edad, "4.5★", "", duracion, descripcion, "");
+                cuentoSeleccionado = new ModeloCuento(
+                    idCuento, titulo, autor, genero, edad, "4.5★", "", duracion, descripcion, "",
+                    null, null, null // audio_url, audio_duration, audio_status como null
+                );
             }
         }
     }

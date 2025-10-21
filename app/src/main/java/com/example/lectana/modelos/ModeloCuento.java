@@ -11,13 +11,17 @@ public class ModeloCuento {
     private String tiempoLectura;
     private String descripcion;
     private String pdfUrl;
+    private String audioUrl;
+    private Integer audioDuration;
+    private String audioStatus;
     private boolean seleccionado;
 
     public ModeloCuento() {}
 
     public ModeloCuento(int id, String titulo, String autor, String genero, 
                        String edadRecomendada, String rating, String imagenUrl, 
-                       String tiempoLectura, String descripcion, String pdfUrl) {
+                       String tiempoLectura, String descripcion, String pdfUrl,
+                       String audioUrl, Integer audioDuration, String audioStatus) {
         this.id = id;
         this.titulo = titulo;
         this.autor = autor;
@@ -28,6 +32,9 @@ public class ModeloCuento {
         this.tiempoLectura = tiempoLectura;
         this.descripcion = descripcion;
         this.pdfUrl = pdfUrl;
+        this.audioUrl = audioUrl;
+        this.audioDuration = audioDuration;
+        this.audioStatus = audioStatus;
         this.seleccionado = false;
     }
 
@@ -118,5 +125,29 @@ public class ModeloCuento {
 
     public void setPdfUrl(String pdfUrl) {
         this.pdfUrl = pdfUrl;
+    }
+
+    public String getAudioUrl() {
+        return audioUrl;
+    }
+
+    public void setAudioUrl(String audioUrl) {
+        this.audioUrl = audioUrl;
+    }
+
+    public Integer getAudioDuration() {
+        return audioDuration;
+    }
+
+    public void setAudioDuration(Integer audioDuration) {
+        this.audioDuration = audioDuration;
+    }
+
+    public String getAudioStatus() {
+        return audioStatus;
+    }
+
+    public void setAudioStatus(String audioStatus) {
+        this.audioStatus = audioStatus;
     }
 }

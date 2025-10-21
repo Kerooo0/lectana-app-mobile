@@ -151,7 +151,10 @@ public class SeleccionarCuentosActivity extends AppCompatActivity implements Ada
                 cuentoApi.getUrl_img(),
                 cuentoApi.getDuracion() + " min",
                 (idsAsignadosActuales.contains(cuentoApi.getId_cuento()) ? "YA_ASIGNADO" : "Cuento disponible para el aula"),
-                cuentoApi.getPdf_url() != null ? cuentoApi.getPdf_url() : ""
+                cuentoApi.getPdf_url() != null ? cuentoApi.getPdf_url() : "",
+                cuentoApi.getAudio_url(), // URL del audio
+                cuentoApi.getAudio_duration(), // Duración del audio
+                cuentoApi.getAudio_status() // Estado del audio
             );
             listaCuentos.add(modeloCuento);
         }

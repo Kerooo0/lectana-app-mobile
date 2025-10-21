@@ -8,6 +8,9 @@ public class CuentoApi {
     private String url_img;
     private Object duracion; // Puede ser int, string o null
     private String pdf_url;
+    private String audio_url; // URL del archivo MP3
+    private Integer audio_duration; // Duración en segundos
+    private String audio_status; // Estado: "ready", "generating", "error", o null
     private Autor autor;
     private Genero genero;
 
@@ -67,6 +70,30 @@ public class CuentoApi {
         this.pdf_url = pdf_url;
     }
 
+    public String getAudio_url() {
+        return audio_url;
+    }
+
+    public void setAudio_url(String audio_url) {
+        this.audio_url = audio_url;
+    }
+
+    public Integer getAudio_duration() {
+        return audio_duration;
+    }
+
+    public void setAudio_duration(Integer audio_duration) {
+        this.audio_duration = audio_duration;
+    }
+
+    public String getAudio_status() {
+        return audio_status;
+    }
+
+    public void setAudio_status(String audio_status) {
+        this.audio_status = audio_status;
+    }
+
     public Autor getAutor() {
         return autor;
     }
@@ -99,6 +126,13 @@ public class CuentoApi {
             duracionFormato = duracion + " min";
         }
         
+        // LOG PARA DEBUG DE AUDIO
+        android.util.Log.d("CuentoApi", "=== toModeloCuento() ===");
+        android.util.Log.d("CuentoApi", "ID: " + id_cuento + " - Título: " + titulo);
+        android.util.Log.d("CuentoApi", "audio_url desde API: " + audio_url);
+        android.util.Log.d("CuentoApi", "audio_duration desde API: " + audio_duration);
+        android.util.Log.d("CuentoApi", "audio_status desde API: " + audio_status);
+        
         return new ModeloCuento(
             id_cuento,
             titulo,
@@ -109,7 +143,10 @@ public class CuentoApi {
             url_img != null ? url_img : "",
             duracionFormato,
             "Descripción no disponible", // Descripción por defecto
-            pdf_url != null ? pdf_url : "" // URL del PDF
+            pdf_url != null ? pdf_url : "", // URL del PDF
+            audio_url, // URL del audio
+            audio_duration, // Duración del audio en segundos
+            audio_status // Estado del audio
         );
     }
 }
