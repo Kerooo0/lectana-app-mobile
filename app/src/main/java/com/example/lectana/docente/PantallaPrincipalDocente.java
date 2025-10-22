@@ -22,7 +22,8 @@ import com.example.lectana.Login;
 import com.example.lectana.VisualizarAulaActivity;
 import com.example.lectana.CrearNuevaAulaActivity;
 import com.example.lectana.BibliotecaCuentosActivity;
-import com.example.lectana.CrearActividadActivity;
+import com.example.lectana.docente.CrearActividadActivity;
+import com.example.lectana.docente.GestionActividadesActivity;
 import com.example.lectana.PerfilDocenteActivity;
 import com.example.lectana.R;
 import com.example.lectana.adaptadores.AdaptadorListaAulas;
@@ -277,6 +278,14 @@ public class PantallaPrincipalDocente extends AppCompatActivity {
                 @Override
                 public void onClick(View vista) {
                     Intent intento_navegacion = new Intent(PantallaPrincipalDocente.this, CrearActividadActivity.class);
+                    startActivity(intento_navegacion);
+                }
+            });
+
+            findViewById(R.id.boton_gestionar_actividades).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View vista) {
+                    Intent intento_navegacion = new Intent(PantallaPrincipalDocente.this, GestionActividadesActivity.class);
                     startActivity(intento_navegacion);
                 }
             });

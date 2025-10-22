@@ -7,10 +7,11 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
-    private static final String BASE_URL = "https://lectana-backend.onrender.com/api/";
+    private static final String BASE_URL = "http://10.0.2.2:3000/api/";
     private static Retrofit retrofit;
     private static CuentosApiService cuentosApiService;
     private static AulasApiService aulasApiService;
+    private static ActividadesApiService actividadesApiService;
 
     private static OkHttpClient getOkHttpClient() {
         return new OkHttpClient.Builder()
@@ -44,5 +45,12 @@ public class ApiClient {
             aulasApiService = getRetrofitInstance().create(AulasApiService.class);
         }
         return aulasApiService;
+    }
+
+    public static ActividadesApiService getActividadesApiService() {
+        if (actividadesApiService == null) {
+            actividadesApiService = getRetrofitInstance().create(ActividadesApiService.class);
+        }
+        return actividadesApiService;
     }
 }

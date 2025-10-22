@@ -170,6 +170,10 @@ public class VisualizarAulaActivity extends AppCompatActivity {
                     intent.putExtra("cuento_titulo", cuento.getTitulo());
                     intent.putExtra("cuento_autor", cuento.getSubtitulo());
                 }
+                
+                // Pasar modo "explorar" para ocultar el botón "Seleccionar Cuento"
+                intent.putExtra("modo", "explorar");
+                
                 startActivity(intent);
             }
 
@@ -536,16 +540,131 @@ public class VisualizarAulaActivity extends AppCompatActivity {
         pestanaActual = "actividades";
         actualizarBotonesPestanas();
         if (barraAccionesCuentos != null) barraAccionesCuentos.setVisibility(View.GONE);
-        // Por ahora, si no hay actividades pendientes, mostrar CTA para crear
-        mostrarEstadoVacio(true);
-        textoEstadoVacio.setText("No hay actividades pendientes");
-        botonAccionEstadoVacio.setText("Crear nueva actividad");
-        botonAccionEstadoVacio.setVisibility(View.VISIBLE);
-        botonAccionEstadoVacio.setOnClickListener(v -> {
-            Intent intento = new Intent(VisualizarAulaActivity.this, CrearActividadActivity.class);
-            intento.putExtra("aula_id", aulaId);
-            startActivity(intento);
+        
+        // Cargar actividades del aula desde el backend
+        cargarActividadesAula();
+    }
+    
+    private void cargarActividadesAula() {
+        mostrarCargando(true);
+        
+        com.example.lectana.repository.ActividadesRepository actividadesRepository = 
+            new com.example.lectana.repository.ActividadesRepository(sessionManager);
+        
+        actividadesRepository.getActividadesAula(aulaId, new com.example.lectana.repository.ActividadesRepository.ActividadesCallback<java.util.List<com.example.lectana.modelos.Actividad>>() {
+            @Override
+            public void onSuccess(java.util.List<com.example.lectana.modelos.Actividad> actividades) {
+                runOnUiThread(() -> {
+                    mostrarCargando(false);
+                    
+                    if (actividades == null || actividades.isEmpty()) {
+                        // No hay actividades, mostrar estado vacío
+                        mostrarEstadoVacio(true);
+                        textoEstadoVacio.setText("No hay actividades asignadas a esta aula");
+                        botonAccionEstadoVacio.setText("Crear nueva actividad");
+                        botonAccionEstadoVacio.setVisibility(View.VISIBLE);
+                        botonAccionEstadoVacio.setOnClickListener(v -> {
+                            Intent intento = new Intent(VisualizarAulaActivity.this, com.example.lectana.docente.CrearActividadActivity.class);
+                            intento.putExtra("aula_id", aulaId);
+                            startActivity(intento);
+                        });
+                    } else {
+                        // Hay actividades, convertirlas al modelo local y mostrarlas
+                        convertirActividadesApiAModelo(actividades);
+                        mostrarEstadoVacio(false);
+                        recyclerViewContenido.setAdapter(adaptadorActividadesPorCuento);
+                        adaptadorActividadesPorCuento.notifyDataSetChanged();
+                        
+                        // Actualizar contador
+                        numeroActividadesAula.setText(String.valueOf(actividades.size()));
+                    }
+                });
+            }
+
+            @Override
+            public void onError(String message) {
+                runOnUiThread(() -> {
+                    mostrarCargando(false);
+                    Toast.makeText(VisualizarAulaActivity.this, "Error al cargar actividades: " + message, Toast.LENGTH_LONG).show();
+                    
+                    // Mostrar estado vacío con opción de crear
+                    mostrarEstadoVacio(true);
+                    textoEstadoVacio.setText("Error al cargar actividades");
+                    botonAccionEstadoVacio.setText("Crear nueva actividad");
+                    botonAccionEstadoVacio.setVisibility(View.VISIBLE);
+                    botonAccionEstadoVacio.setOnClickListener(v -> {
+                        Intent intento = new Intent(VisualizarAulaActivity.this, com.example.lectana.docente.CrearActividadActivity.class);
+                        intento.putExtra("aula_id", aulaId);
+                        startActivity(intento);
+                    });
+                });
+            }
         });
+    }
+    
+    private void convertirActividadesApiAModelo(java.util.List<com.example.lectana.modelos.Actividad> actividades) {
+        listaCuentosConActividades.clear();
+        
+        // Agrupar actividades por cuento
+        java.util.Map<Integer, java.util.List<com.example.lectana.modelos.Actividad>> actividadesPorCuento = new java.util.HashMap<>();
+        
+        for (com.example.lectana.modelos.Actividad actividad : actividades) {
+            int cuentoId = actividad.getCuento_id_cuento();
+            
+            if (!actividadesPorCuento.containsKey(cuentoId)) {
+                actividadesPorCuento.put(cuentoId, new java.util.ArrayList<>());
+            }
+            
+            actividadesPorCuento.get(cuentoId).add(actividad);
+        }
+        
+        // Crear ModeloCuentoConActividades para cada cuento
+        for (java.util.Map.Entry<Integer, java.util.List<com.example.lectana.modelos.Actividad>> entry : actividadesPorCuento.entrySet()) {
+            int cuentoId = entry.getKey();
+            java.util.List<com.example.lectana.modelos.Actividad> actividadesCuento = entry.getValue();
+            
+            // Buscar el cuento en la lista de cuentos del aula
+            String tituloCuento = "Cuento ID " + cuentoId;
+            if (aulaActual != null && aulaActual.getCuentos() != null) {
+                for (CuentoApi cuento : aulaActual.getCuentos()) {
+                    if (cuento.getId_cuento() == cuentoId) {
+                        tituloCuento = cuento.getTitulo();
+                        break;
+                    }
+                }
+            }
+            
+            // Crear lista de ModeloActividadDetallada a partir de las actividades
+            java.util.List<ModeloActividadDetallada> actividadesDetalladas = new java.util.ArrayList<>();
+            for (int i = 0; i < actividadesCuento.size(); i += 2) {
+                com.example.lectana.modelos.Actividad act1 = actividadesCuento.get(i);
+                com.example.lectana.modelos.Actividad act2 = (i + 1 < actividadesCuento.size()) ? actividadesCuento.get(i + 1) : null;
+                
+                ModeloActividadDetallada actividadDetallada = new ModeloActividadDetallada(
+                    String.valueOf(act1.getId_actividad()),
+                    tituloCuento,
+                    act1.getDescripcion(),
+                    act1.getTipoDisplay(),
+                    0, // Por ahora usar valor por defecto para estudiantes
+                    "Sin completar",
+                    act2 != null ? act2.getDescripcion() : "",
+                    act2 != null ? act2.getTipoDisplay() : "",
+                    0, // Por ahora usar valor por defecto para estudiantes
+                    act2 != null ? "Sin completar" : ""
+                );
+                
+                actividadesDetalladas.add(actividadDetallada);
+            }
+            
+            ModeloCuentoConActividades cuentoConActividades = new ModeloCuentoConActividades(
+                String.valueOf(cuentoId),
+                tituloCuento,
+                actividadesCuento.size(),
+                actividadesDetalladas
+            );
+            
+            listaCuentosConActividades.add(cuentoConActividades);
+        }
     }
 
     private void mostrarPestanaProgreso() {

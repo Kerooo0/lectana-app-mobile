@@ -38,7 +38,19 @@
             android:name=".BibliotecaCuentosActivity"
             android:exported="false" />
         <activity
-            android:name=".CrearActividadActivity"
+            android:name=".docente.CrearActividadActivity"
+            android:exported="false" />
+        <activity
+            android:name=".docente.CrearActividadActivityTest"
+            android:exported="false" />
+        <activity
+            android:name=".docente.GestionActividadesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".docente.DetalleActividadActivity"
+            android:exported="false" />
+        <activity
+            android:name=".docente.AsignarAulasActivity"
             android:exported="false" />
         <activity
             android:name=".DetalleCuentoActivity"

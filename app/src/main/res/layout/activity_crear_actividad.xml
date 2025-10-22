@@ -3,424 +3,151 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/fondo_claro">
+    android:background="@color/background_light">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <!-- Header -->
-        <LinearLayout
-            android:id="@+id/header_crear_actividad"
+        <TextView
+            android:id="@+id/textTitulo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/naranjaPastel"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:text="Crear Nueva Actividad"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:layout_marginBottom="24dp" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
+        <!-- Descripción -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Descripción de la actividad"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/editDescripcion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Ej: Actividad de comprensión lectora"
+            android:background="@drawable/edit_text_background"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Tipo de actividad -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tipo de actividad"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:layout_marginBottom="8dp" />
+
+        <Spinner
+            android:id="@+id/spinnerTipo"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/spinner_background"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Cuento -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cuento asociado"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:layout_marginBottom="8dp" />
+
+        <Spinner
+            android:id="@+id/spinnerCuento"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/spinner_background"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Aulas -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Aulas asignadas"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:layout_marginBottom="8dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewAulas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxHeight="200dp"
+            android:background="@drawable/recycler_background"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Preguntas -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:layout_weight="1"
+                android:text="Preguntas"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary" />
 
-                <ImageView
-                    android:id="@+id/boton_volver"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:src="@drawable/ic_arrow_back"
-                    android:tint="@color/gris_oscuro"
-                    android:contentDescription="@string/flecha_descripcion"
-                    android:padding="4dp" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center_horizontal"
-                    android:layout_marginHorizontal="8dp">
-
-                    <TextView
-                        android:id="@+id/texto_titulo_crear_actividad"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/crear_actividad"
-                        android:textColor="@color/gris_oscuro"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/texto_cuento_seleccionado"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="Caperucita Roja"
-                        android:textColor="@color/gris_medio"
-                        android:textSize="14sp" />
-
-                </LinearLayout>
-
-            </LinearLayout>
+            <Button
+                android:id="@+id/btnAgregarPregunta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+ Agregar"
+                android:textSize="12sp"
+                android:textColor="@android:color/white"
+                android:background="@drawable/button_secondary"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp" />
 
         </LinearLayout>
 
-        <!-- Contenido del formulario -->
-        <LinearLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewPreguntas"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:layout_marginBottom="24dp" />
 
-            <!-- Seleccionar cuento -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/seleccionar_cuento"
-                android:textColor="@color/gris_oscuro"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp" />
+        <!-- Botón guardar -->
+        <Button
+            android:id="@+id/btnGuardarActividad"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="Crear Actividad"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:background="@drawable/button_primary"
+            android:layout_marginBottom="16dp" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:background="@android:color/white"
-                android:padding="12dp"
-                android:layout_marginBottom="20dp">
-
-                <TextView
-                    android:id="@+id/texto_cuento_actual"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Caperucita Roja"
-                    android:textColor="@color/gris_oscuro"
-                    android:textSize="16sp" />
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_arrow_down"
-                    android:tint="@color/gris_medio"
-                    android:contentDescription="@string/seleccionar_cuento" />
-
-            </LinearLayout>
-
-            <!-- Título de la actividad -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/titulo_actividad"
-                android:textColor="@color/gris_oscuro"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp" />
-
-            <EditText
-                android:id="@+id/campo_titulo_actividad"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/ejemplo_titulo_actividad"
-                android:textColorHint="@color/gris_medio"
-                android:textSize="16sp"
-                android:background="@drawable/campo_texto_rectangular"
-                android:padding="12dp"
-                android:layout_marginBottom="20dp"
-                android:inputType="text" />
-
-            <!-- Tipo de actividad -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tipo_actividad"
-                android:textColor="@color/gris_oscuro"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="20dp">
-
-                <Button
-                    android:id="@+id/boton_opcion_multiple"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    android:text="@string/opcion_multiple"
-                    android:textColor="@color/naranjaPastel"
-                    android:background="@drawable/boton_tipo_actividad_seleccionado"
-                    android:drawableTop="@drawable/ic_check_circle"
-                    android:drawablePadding="8dp"
-                    android:paddingVertical="16dp"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    app:backgroundTint="@null" />
-
-                <Button
-                    android:id="@+id/boton_respuesta_abierta"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    android:text="@string/respuesta_abierta"
-                    android:textColor="@color/gris_medio"
-                    android:background="@drawable/boton_tipo_actividad_no_seleccionado"
-                    android:drawableTop="@drawable/ic_chat"
-                    android:drawablePadding="8dp"
-                    android:paddingVertical="16dp"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    app:backgroundTint="@null" />
-
-            </LinearLayout>
-
-            <!-- Pregunta -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/pregunta"
-                android:textColor="@color/gris_oscuro"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp" />
-
-            <EditText
-                android:id="@+id/campo_pregunta"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/ejemplo_pregunta"
-                android:textColorHint="@color/gris_medio"
-                android:textSize="16sp"
-                android:background="@drawable/campo_texto_rectangular"
-                android:padding="12dp"
-                android:layout_marginBottom="20dp"
-                android:inputType="textMultiLine"
-                android:minLines="3"
-                android:gravity="top" />
-
-            <!-- Opciones de respuesta (solo para opción múltiple) -->
-            <LinearLayout
-                android:id="@+id/contenedor_opciones_respuesta"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="20dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/opciones_respuesta"
-                    android:textColor="@color/gris_oscuro"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="8dp" />
-
-                <!-- Opción A -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="8dp">
-
-                    <TextView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:text="A"
-                        android:textColor="@color/gris_medio"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:gravity="center"
-                        android:background="@drawable/circulo_gris"
-                        android:layout_marginEnd="12dp" />
-
-                    <EditText
-                        android:id="@+id/campo_opcion_a"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:hint="@string/opcion_a"
-                        android:textColorHint="@color/gris_medio"
-                        android:textSize="16sp"
-                        android:background="@drawable/campo_texto_rectangular"
-                        android:padding="12dp"
-                        android:layout_marginEnd="12dp"
-                        android:inputType="text" />
-
-                    <CheckBox
-                        android:id="@+id/checkbox_opcion_a"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/correcta"
-                        android:textColor="@color/gris_oscuro"
-                        android:textSize="14sp" />
-
-                </LinearLayout>
-
-                <!-- Opción B -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="8dp">
-
-                    <TextView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:text="B"
-                        android:textColor="@color/gris_medio"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:gravity="center"
-                        android:background="@drawable/circulo_gris"
-                        android:layout_marginEnd="12dp" />
-
-                    <EditText
-                        android:id="@+id/campo_opcion_b"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:hint="@string/opcion_b"
-                        android:textColorHint="@color/gris_medio"
-                        android:textSize="16sp"
-                        android:background="@drawable/campo_texto_rectangular"
-                        android:padding="12dp"
-                        android:layout_marginEnd="12dp"
-                        android:inputType="text" />
-
-                    <CheckBox
-                        android:id="@+id/checkbox_opcion_b"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/correcta"
-                        android:textColor="@color/gris_oscuro"
-                        android:textSize="14sp" />
-
-                </LinearLayout>
-
-                <!-- Opción C -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="8dp">
-
-                    <TextView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:text="C"
-                        android:textColor="@color/gris_medio"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:gravity="center"
-                        android:background="@drawable/circulo_gris"
-                        android:layout_marginEnd="12dp" />
-
-                    <EditText
-                        android:id="@+id/campo_opcion_c"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:hint="@string/opcion_c"
-                        android:textColorHint="@color/gris_medio"
-                        android:textSize="16sp"
-                        android:background="@drawable/campo_texto_rectangular"
-                        android:padding="12dp"
-                        android:layout_marginEnd="12dp"
-                        android:inputType="text" />
-
-                    <CheckBox
-                        android:id="@+id/checkbox_opcion_c"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/correcta"
-                        android:textColor="@color/gris_oscuro"
-                        android:textSize="14sp" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <!-- Fecha de entrega -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/fecha_entrega"
-                android:textColor="@color/gris_oscuro"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp" />
-
-            <LinearLayout
-                android:id="@+id/contenedor_fecha_entrega"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:background="@android:color/white"
-                android:padding="12dp"
-                android:layout_marginBottom="20dp">
-
-                <TextView
-                    android:id="@+id/texto_fecha_seleccionada"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Seleccionar fecha..."
-                    android:textColor="@color/gris_medio"
-                    android:textSize="16sp" />
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_calendar"
-                    android:tint="@color/gris_medio"
-                    android:contentDescription="@string/fecha_entrega" />
-
-            </LinearLayout>
-
-            <!-- Botones de acción -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <Button
-                    android:id="@+id/boton_crear_actividad"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:background="@drawable/boton_naranja_rectangular"
-                    android:text="@string/crear_actividad_boton"
-                    android:textColor="@android:color/white"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="12dp"
-                    app:backgroundTint="@null" />
-
-                <Button
-                    android:id="@+id/boton_vista_previa"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:background="@drawable/boton_blanco_rectangular"
-                    android:text="@string/vista_previa"
-                    android:textColor="@color/gris_oscuro"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    app:backgroundTint="@null" />
-
-            </LinearLayout>
-
-        </LinearLayout>
+        <!-- Progress Bar -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
 
     </LinearLayout>
 
