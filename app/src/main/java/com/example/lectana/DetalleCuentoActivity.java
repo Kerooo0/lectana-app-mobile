@@ -2,6 +2,7 @@ package com.example.lectana;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.lectana.auth.SessionManager;
 import com.example.lectana.modelos.ApiResponse;
 import com.example.lectana.modelos.CuentoApi;
 import com.example.lectana.modelos.ModeloCuento;
@@ -34,6 +36,8 @@ public class DetalleCuentoActivity extends AppCompatActivity {
     private Button botonSeleccionarCuento, botonCancelarDetalle, botonVerPdf;
     private ProgressBar progressBarDetalle;
     private CuentosApiService apiService;
+    private SessionManager sessionManager;
+    private boolean esEstudiante = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +46,33 @@ public class DetalleCuentoActivity extends AppCompatActivity {
 
         inicializarVistas();
         apiService = ApiClient.getCuentosApiService();
+        sessionManager = new SessionManager(this);
+        
+        // Verificar si es estudiante
+        String role = sessionManager.getRole();
+        esEstudiante = "estudiante".equals(role) || "alumno".equals(role);
+        
+        Log.d("DetalleCuento", "onCreate - Role: " + role + ", esEstudiante: " + esEstudiante);
+        
+        // Configurar UI según el rol
+        configurarUISegunRol();
+        
         recibirDatosCuento();
         mostrarInformacionCuento();
         configurarListeners();
+    }
+    
+    private void configurarUISegunRol() {
+        if (esEstudiante) {
+            // Cambiar el botón para estudiantes
+            botonSeleccionarCuento.setText("Escuchar Audiolibro");
+            botonSeleccionarCuento.setBackgroundResource(R.drawable.boton_verde);
+            botonSeleccionarCuento.setTextColor(getResources().getColor(android.R.color.white));
+            botonSeleccionarCuento.setVisibility(View.VISIBLE);
+            Log.d("DetalleCuento", "Botón configurado para estudiante");
+        } else {
+            Log.d("DetalleCuento", "Botón configurado para docente/default");
+        }
     }
 
     private void inicializarVistas() {
@@ -68,8 +96,8 @@ public class DetalleCuentoActivity extends AppCompatActivity {
             int idCuento = intent.getIntExtra("cuento_id", 0);
             String modo = intent.getStringExtra("modo");
             
-            // Ocultar botón "Seleccionar Cuento" si viene del modo explorar
-            if ("explorar".equals(modo)) {
+            // Para docentes: ocultar botón si viene del modo explorar
+            if (!esEstudiante && "explorar".equals(modo)) {
                 botonSeleccionarCuento.setVisibility(View.GONE);
             }
             
@@ -173,12 +201,22 @@ public class DetalleCuentoActivity extends AppCompatActivity {
         botonSeleccionarCuento.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Marcar el cuento como seleccionado y regresar
-                Intent resultadoIntent = new Intent();
-                resultadoIntent.putExtra("cuento_seleccionado", true);
-                resultadoIntent.putExtra("id_cuento", cuentoSeleccionado.getId());
-                setResult(RESULT_OK, resultadoIntent);
-                finish();
+                if (esEstudiante) {
+                    // Para estudiantes: abrir reproductor de audiolibro
+                    if (cuentoSeleccionado != null) {
+                        abrirReproductorAudio();
+                    } else {
+                        Toast.makeText(DetalleCuentoActivity.this, 
+                            "Error al cargar el cuento", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    // Para docentes: marcar el cuento como seleccionado y regresar
+                    Intent resultadoIntent = new Intent();
+                    resultadoIntent.putExtra("cuento_seleccionado", true);
+                    resultadoIntent.putExtra("id_cuento", cuentoSeleccionado.getId());
+                    setResult(RESULT_OK, resultadoIntent);
+                    finish();
+                }
             }
         });
 
@@ -207,6 +245,15 @@ public class DetalleCuentoActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void abrirReproductorAudio() {
+        Intent intent = new Intent(DetalleCuentoActivity.this, ReproductorAudiolibroActivity.class);
+        intent.putExtra("cuento_id", cuentoSeleccionado.getId());
+        intent.putExtra("cuento_titulo", cuentoSeleccionado.getTitulo());
+        intent.putExtra("cuento_autor", cuentoSeleccionado.getAutor());
+        startActivity(intent);
+        Log.d("DetalleCuento", "Abriendo reproductor para cuento: " + cuentoSeleccionado.getTitulo());
     }
 
     private String obtenerUrlPdf() {

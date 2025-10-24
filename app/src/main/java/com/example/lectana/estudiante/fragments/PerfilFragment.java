@@ -14,6 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.lectana.CambiarPasswordEstudianteActivity;
+import com.example.lectana.EditarPerfilEstudianteActivity;
 import com.example.lectana.Login;
 import com.example.lectana.R;
 import com.example.lectana.auth.SessionManager;
@@ -26,6 +28,7 @@ public class PerfilFragment extends Fragment {
     private TextView nombreEstudiantePerfil;
     private TextView nivelEstudiantePerfil;
     private TextView puntosEstudiantePerfil;
+    private LinearLayout opcionEditarDatos;
     private LinearLayout opcionCambiarPassword;
     private LinearLayout opcionCentroAyuda;
     private LinearLayout opcionCerrarSesion;
@@ -52,12 +55,20 @@ public class PerfilFragment extends Fragment {
         cargarDatosPerfil();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Recargar datos del perfil al volver de editar
+        cargarDatosPerfil();
+    }
+
     private void inicializarVistas(View view) {
         fotoPerfilEstudiante = view.findViewById(R.id.foto_perfil_estudiante);
         botonEditarFoto = view.findViewById(R.id.boton_editar_foto);
         nombreEstudiantePerfil = view.findViewById(R.id.nombre_estudiante_perfil);
         nivelEstudiantePerfil = view.findViewById(R.id.nivel_estudiante_perfil);
         puntosEstudiantePerfil = view.findViewById(R.id.puntos_estudiante_perfil);
+        opcionEditarDatos = view.findViewById(R.id.opcion_editar_datos);
         opcionCambiarPassword = view.findViewById(R.id.opcion_cambiar_password);
         opcionCentroAyuda = view.findViewById(R.id.opcion_centro_ayuda);
         opcionCerrarSesion = view.findViewById(R.id.opcion_cerrar_sesion);
@@ -71,10 +82,16 @@ public class PerfilFragment extends Fragment {
             Toast.makeText(getContext(), "Seleccionar foto de perfil", Toast.LENGTH_SHORT).show();
         });
 
+        // Editar Datos Personales
+        opcionEditarDatos.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), EditarPerfilEstudianteActivity.class);
+            startActivity(intent);
+        });
+
         // Opciones de configuración
         opcionCambiarPassword.setOnClickListener(v -> {
-            // TODO: Implementar cambio de contraseña
-            Toast.makeText(getContext(), "Cambiar contraseña", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getContext(), CambiarPasswordEstudianteActivity.class);
+            startActivity(intent);
         });
 
         opcionCentroAyuda.setOnClickListener(v -> {

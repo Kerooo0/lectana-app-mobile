@@ -30,8 +30,12 @@ import retrofit2.Response;
 
 public class ReproductorAudiolibroActivity extends AppCompatActivity {
 
+    // Constantes
+    private static final int SEEK_TIME_MS = 10000; // 10 segundos en milisegundos
+    
     private TextView tituloAudiolibro, autorAudioLibro, tiempoActual, tiempoTotal;
-    private ImageView botonPlayPause, botonRetroceder, botonAvanzar, imagenCuento;
+    private ImageView botonPlayPause, imagenCuento;
+    private View botonRetroceder, botonAvanzar;
     private SeekBar seekBar;
     private TextView velocidad05, velocidad1, velocidad15, velocidad2;
     private ProgressBar progressBar;
@@ -226,19 +230,23 @@ public class ReproductorAudiolibroActivity extends AppCompatActivity {
 
         // Retroceder 10 segundos
         botonRetroceder.setOnClickListener(v -> {
-            int currentPosition = mediaPlayer.getCurrentPosition();
-            int newPosition = Math.max(0, currentPosition - 10000);
-            mediaPlayer.seekTo(newPosition);
-            seekBar.setProgress(newPosition);
+            if (mediaPlayer != null) {
+                int currentPosition = mediaPlayer.getCurrentPosition();
+                int newPosition = Math.max(0, currentPosition - SEEK_TIME_MS);
+                mediaPlayer.seekTo(newPosition);
+                seekBar.setProgress(newPosition);
+            }
         });
 
         // Avanzar 10 segundos
         botonAvanzar.setOnClickListener(v -> {
-            int currentPosition = mediaPlayer.getCurrentPosition();
-            int duration = mediaPlayer.getDuration();
-            int newPosition = Math.min(duration, currentPosition + 10000);
-            mediaPlayer.seekTo(newPosition);
-            seekBar.setProgress(newPosition);
+            if (mediaPlayer != null) {
+                int currentPosition = mediaPlayer.getCurrentPosition();
+                int duration = mediaPlayer.getDuration();
+                int newPosition = Math.min(duration, currentPosition + SEEK_TIME_MS);
+                mediaPlayer.seekTo(newPosition);
+                seekBar.setProgress(newPosition);
+            }
         });
 
         // SeekBar
@@ -262,6 +270,9 @@ public class ReproductorAudiolibroActivity extends AppCompatActivity {
         velocidad1.setOnClickListener(v -> cambiarVelocidad(1.0f, velocidad1));
         velocidad15.setOnClickListener(v -> cambiarVelocidad(1.5f, velocidad15));
         velocidad2.setOnClickListener(v -> cambiarVelocidad(2.0f, velocidad2));
+        
+        // Inicializar estilo de velocidad por defecto (1x seleccionado)
+        inicializarEstiloVelocidadPorDefecto();
     }
 
     private void reproducirAudio() {
@@ -288,7 +299,7 @@ public class ReproductorAudiolibroActivity extends AppCompatActivity {
             
             // Actualizar estilo de botones
             resetearEstiloVelocidad();
-            botonSeleccionado.setBackgroundResource(R.drawable.boton_azul_rectangular);
+            botonSeleccionado.setBackgroundResource(R.drawable.boton_velocidad_seleccionado);
             botonSeleccionado.setTextColor(getResources().getColor(android.R.color.white));
             botonSeleccionado.setTypeface(null, android.graphics.Typeface.BOLD);
         }
@@ -297,21 +308,46 @@ public class ReproductorAudiolibroActivity extends AppCompatActivity {
     private void resetearEstiloVelocidad() {
         int colorAzul = getResources().getColor(R.color.azul_fuerte);
         
-        velocidad05.setBackgroundResource(R.drawable.boton_blanco_rectangular);
+        velocidad05.setBackgroundResource(R.drawable.boton_velocidad_no_seleccionado);
         velocidad05.setTextColor(colorAzul);
         velocidad05.setTypeface(null, android.graphics.Typeface.NORMAL);
         
-        velocidad1.setBackgroundResource(R.drawable.boton_blanco_rectangular);
+        velocidad1.setBackgroundResource(R.drawable.boton_velocidad_no_seleccionado);
         velocidad1.setTextColor(colorAzul);
         velocidad1.setTypeface(null, android.graphics.Typeface.NORMAL);
         
-        velocidad15.setBackgroundResource(R.drawable.boton_blanco_rectangular);
+        velocidad15.setBackgroundResource(R.drawable.boton_velocidad_no_seleccionado);
         velocidad15.setTextColor(colorAzul);
         velocidad15.setTypeface(null, android.graphics.Typeface.NORMAL);
         
-        velocidad2.setBackgroundResource(R.drawable.boton_blanco_rectangular);
+        velocidad2.setBackgroundResource(R.drawable.boton_velocidad_no_seleccionado);
         velocidad2.setTextColor(colorAzul);
         velocidad2.setTypeface(null, android.graphics.Typeface.NORMAL);
+    }
+    
+    /**
+     * Inicializa el estilo de los botones de velocidad con 1x seleccionado por defecto
+     */
+    private void inicializarEstiloVelocidadPorDefecto() {
+        int colorAzul = getResources().getColor(R.color.azul_fuerte);
+        
+        // Todos los botones en estado no seleccionado
+        velocidad05.setBackgroundResource(R.drawable.boton_velocidad_no_seleccionado);
+        velocidad05.setTextColor(colorAzul);
+        velocidad05.setTypeface(null, android.graphics.Typeface.NORMAL);
+        
+        velocidad15.setBackgroundResource(R.drawable.boton_velocidad_no_seleccionado);
+        velocidad15.setTextColor(colorAzul);
+        velocidad15.setTypeface(null, android.graphics.Typeface.NORMAL);
+        
+        velocidad2.setBackgroundResource(R.drawable.boton_velocidad_no_seleccionado);
+        velocidad2.setTextColor(colorAzul);
+        velocidad2.setTypeface(null, android.graphics.Typeface.NORMAL);
+        
+        // Botón 1x en estado seleccionado por defecto
+        velocidad1.setBackgroundResource(R.drawable.boton_velocidad_seleccionado);
+        velocidad1.setTextColor(getResources().getColor(android.R.color.white));
+        velocidad1.setTypeface(null, android.graphics.Typeface.BOLD);
     }
 
     private void actualizarSeekBar() {
@@ -328,6 +364,43 @@ public class ReproductorAudiolibroActivity extends AppCompatActivity {
         int minutos = segundosTotales / 60;
         int segundos = segundosTotales % 60;
         return String.format("%d:%02d", minutos, segundos);
+    }
+
+    /**
+     * Método centralizado para limpiar y liberar el MediaPlayer de forma segura
+     */
+    private void limpiarMediaPlayer() {
+        try {
+            if (mediaPlayer != null) {
+                // Detener actualizaciones del SeekBar
+                handler.removeCallbacksAndMessages(null);
+                
+                // Detener reproducción si está activa
+                if (mediaPlayer.isPlaying()) {
+                    mediaPlayer.stop();
+                }
+                
+                // Resetear estado
+                isPlaying = false;
+                
+                // Resetear velocidad
+                currentSpeed = 1.0f;
+                
+                // Resetear estilo de botones de velocidad
+                if (velocidad1 != null) {
+                    inicializarEstiloVelocidadPorDefecto();
+                }
+                
+                // Liberar recursos
+                mediaPlayer.release();
+                mediaPlayer = null;
+                
+                Log.d("MediaPlayer", "MediaPlayer liberado correctamente");
+            }
+        } catch (Exception e) {
+            Log.e("MediaPlayer", "Error al limpiar MediaPlayer", e);
+            mediaPlayer = null;
+        }
     }
 
     private void cargarImagenCuento(String imagenUrl) {
@@ -490,21 +563,52 @@ public class ReproductorAudiolibroActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        // Pausar el audio cuando la actividad no está visible
         if (mediaPlayer != null && isPlaying) {
             pausarAudio();
         }
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        // Detener completamente el audio cuando la actividad está completamente oculta
+        if (mediaPlayer != null) {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.pause();
+            }
+            isPlaying = false;
+            botonPlayPause.setImageResource(R.drawable.ic_play_circle);
+            handler.removeCallbacksAndMessages(null);
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-            mediaPlayer = null;
-        }
-        handler.removeCallbacksAndMessages(null);
+        // Liberar todos los recursos del MediaPlayer
+        limpiarMediaPlayer();
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Detener el audio al presionar el botón atrás
+        limpiarMediaPlayer();
+        super.onBackPressed();
+    }
+
+    @Override
+    public void finish() {
+        // Asegurar que el audio se detenga al cerrar la actividad
+        limpiarMediaPlayer();
+        super.finish();
     }
 }
+
+
+
+
+
 
 
 

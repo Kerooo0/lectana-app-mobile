@@ -55,6 +55,12 @@ public class PanelEstudianteActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        // Configurar para que el contenido respete los bordes del sistema
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            getWindow().setDecorFitsSystemWindows(true);
+        }
+        
         setContentView(R.layout.activity_panel_estudiante);
 
         // Inicializar gestión de sesión
