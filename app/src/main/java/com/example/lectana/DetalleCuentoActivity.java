@@ -42,6 +42,12 @@ public class DetalleCuentoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        // Configurar para que el contenido no se superponga con los botones del sistema
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            getWindow().setDecorFitsSystemWindows(true);
+        }
+        
         setContentView(R.layout.activity_detalle_cuento);
 
         inicializarVistas();

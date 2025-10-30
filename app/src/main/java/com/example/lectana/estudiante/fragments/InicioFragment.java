@@ -74,11 +74,17 @@ public class InicioFragment extends Fragment {
             botonVerTodos.setOnClickListener(v -> {
                 // Cambiar al tab de Biblioteca
                 if (getActivity() != null && getActivity() instanceof com.example.lectana.estudiante.PanelEstudianteActivity) {
-                    // Cambiar al fragment de Biblioteca (el tab ya está implementado en PanelEstudianteActivity)
+                    com.example.lectana.estudiante.PanelEstudianteActivity activity = 
+                        (com.example.lectana.estudiante.PanelEstudianteActivity) getActivity();
+                    
+                    // Cambiar al fragment de Biblioteca
                     androidx.fragment.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                     fragmentManager.beginTransaction()
                         .replace(R.id.contenedor_fragments, new BibliotecaFragment())
                         .commit();
+                    
+                    // Actualizar el estado de los tabs
+                    activity.actualizarEstadoTabs("biblioteca");
                 }
             });
         }

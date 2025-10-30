@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -80,6 +81,21 @@ public class PanelEstudianteActivity extends AppCompatActivity {
         // Fragment inicial (Inicio)
         reemplazarFragment(new InicioFragment());
         actualizarEstadoTabs("inicio");
+        
+        // Configurar el manejador del botón back
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Si no está en el tab de Inicio, navegar a Inicio
+                if (!tabActual.equals("inicio")) {
+                    reemplazarFragment(new InicioFragment());
+                    actualizarEstadoTabs("inicio");
+                } else {
+                    // Si ya está en Inicio, comportamiento normal (salir de la app)
+                    finish();
+                }
+            }
+        });
     }
 
     private void inicializarVistas() {
@@ -144,7 +160,7 @@ public class PanelEstudianteActivity extends AppCompatActivity {
         tx.commitAllowingStateLoss();
     }
     
-    private void actualizarEstadoTabs(String tabSeleccionado) {
+    public void actualizarEstadoTabs(String tabSeleccionado) {
         // Resetear todos los tabs a estado inactivo
         resetearTabs();
         
@@ -254,21 +270,5 @@ public class PanelEstudianteActivity extends AppCompatActivity {
         sessionManager.clearSession();
         Toast.makeText(this, "Sesión cerrada correctamente", Toast.LENGTH_SHORT).show();
         irAlLogin();
-    }
-
-    /**
-     * Manejar el botón "Atrás" del sistema
-     * Si no está en Inicio, va a Inicio. Si está en Inicio, sale de la app.
-     */
-    @Override
-    public void onBackPressed() {
-        // Si no está en el tab de Inicio, navegar a Inicio
-        if (!tabActual.equals("inicio")) {
-            reemplazarFragment(new InicioFragment());
-            actualizarEstadoTabs("inicio");
-        } else {
-            // Si ya está en Inicio, comportamiento normal (salir de la app)
-            super.onBackPressed();
-        }
     }
 }

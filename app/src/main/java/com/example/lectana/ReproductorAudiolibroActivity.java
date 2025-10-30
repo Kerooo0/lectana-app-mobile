@@ -12,6 +12,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -69,6 +70,16 @@ public class ReproductorAudiolibroActivity extends AppCompatActivity {
         if (botonVolver != null) {
             botonVolver.setOnClickListener(v -> finish());
         }
+        
+        // Configurar el manejador del botón back
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Detener el audio al presionar el botón atrás
+                limpiarMediaPlayer();
+                finish();
+            }
+        });
     }
 
     private void initViews() {
@@ -588,13 +599,6 @@ public class ReproductorAudiolibroActivity extends AppCompatActivity {
         super.onDestroy();
         // Liberar todos los recursos del MediaPlayer
         limpiarMediaPlayer();
-    }
-
-    @Override
-    public void onBackPressed() {
-        // Detener el audio al presionar el botón atrás
-        limpiarMediaPlayer();
-        super.onBackPressed();
     }
 
     @Override
