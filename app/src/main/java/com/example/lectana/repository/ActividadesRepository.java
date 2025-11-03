@@ -60,12 +60,15 @@ public class ActividadesRepository {
             fechaFin = now.plusDays(7).toString();
         } catch (Throwable ignored) {}
 
-        // DTO exacto del backend
+        // DTO exacto del backend (incluye aulas_ids)
+        java.util.List<Integer> aulasIds = new java.util.ArrayList<>();
+        if (request.getAulas_ids() != null) aulasIds.addAll(request.getAulas_ids());
         CrearActividadBackendRequest crearReq = new CrearActividadBackendRequest(
-                fechaFin != null ? fechaFin : fechaInicio, // usamos fechaEntrega (requerida)
+                fechaFin != null ? fechaFin : fechaInicio, // fecha_entrega
                 request.getTipo(),
                 request.getDescripcion(),
-                request.getCuento_id_cuento()
+                request.getCuento_id_cuento(),
+                aulasIds
         );
 
         try {
@@ -83,12 +86,7 @@ public class ActividadesRepository {
                     callback.onError("Error creando actividad: " + msg);
                     return;
                 }
-                java.util.List<Actividad> lista = response.body().getActividad();
-                if (lista.isEmpty()) {
-                    callback.onError("Respuesta sin actividad creada");
-                    return;
-                }
-                Actividad actividadCreada = lista.get(0);
+                Actividad actividadCreada = response.body().getActividad();
                 int actividadId = actividadCreada.getId_actividad();
 
                 // Si no hay preguntas, terminamos acá
@@ -239,11 +237,11 @@ public class ActividadesRepository {
         }
 
         CrearActividadRequest.RespuestaRequest r = respuestas.get(index);
-        java.util.List<String> respuestasArray = new java.util.ArrayList<>();
-        if (r.getRespuesta() != null) respuestasArray.add(r.getRespuesta());
+        java.util.List<String> respuestasText = new java.util.ArrayList<>();
+        if (r.getRespuesta() != null) respuestasText.add(r.getRespuesta());
         com.example.lectana.modelos.nuevas.CrearRespuestaActividadBackendRequest reqRespuesta =
                 new com.example.lectana.modelos.nuevas.CrearRespuestaActividadBackendRequest(
-                        respuestasArray,
+                        respuestasText,
                         r.isEs_correcta() ? 1 : 0
                 );
 
@@ -538,18 +536,47 @@ public class ActividadesRepository {
 
         String authHeader = "Bearer " + token;
 
-        Call<ApiResponse<List<Actividad>>> call = ApiClient.getActividadesApiService().getActividadesAula(authHeader, aulaId);
+        Call<okhttp3.ResponseBody> call = ApiClient.getActividadesApiService().getActividadesAula(authHeader, aulaId);
 
-        call.enqueue(new Callback<ApiResponse<List<Actividad>>>() {
+        call.enqueue(new Callback<okhttp3.ResponseBody>() {
             @Override
-            public void onResponse(Call<ApiResponse<List<Actividad>>> call, Response<ApiResponse<List<Actividad>>> response) {
+            public void onResponse(Call<okhttp3.ResponseBody> call, Response<okhttp3.ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    ApiResponse<List<Actividad>> apiResponse = response.body();
-                    if (apiResponse.isOk()) {
-                        callback.onSuccess(apiResponse.getData());
-                    } else {
-                        String errorMsg = apiResponse.getMessage() != null ? apiResponse.getMessage() : "Error desconocido";
-                        callback.onError(errorMsg);
+                    try {
+                        String json = response.body().string();
+                        com.google.gson.JsonElement root = new com.google.gson.JsonParser().parse(json);
+                        List<Actividad> actividades = new ArrayList<>();
+
+                        if (root.isJsonArray()) {
+                            for (com.google.gson.JsonElement el : root.getAsJsonArray()) {
+                                Actividad act = extraerActividadDeItem(el);
+                                if (act != null) actividades.add(act);
+                            }
+                        } else if (root.isJsonObject()) {
+                            com.google.gson.JsonObject obj = root.getAsJsonObject();
+                            // Intentar data, items, resultados, etc.
+                            String[] posibles = new String[]{"data", "items", "result", "actividades"};
+                            boolean mapeado = false;
+                            for (String key : posibles) {
+                                if (obj.has(key) && obj.get(key).isJsonArray()) {
+                                    for (com.google.gson.JsonElement el : obj.get(key).getAsJsonArray()) {
+                                        Actividad act = extraerActividadDeItem(el);
+                                        if (act != null) actividades.add(act);
+                                    }
+                                    mapeado = true;
+                                    break;
+                                }
+                            }
+                            if (!mapeado) {
+                                // Caso objeto único
+                                Actividad act = extraerActividadDeItem(obj);
+                                if (act != null) actividades.add(act);
+                            }
+                        }
+                        callback.onSuccess(actividades);
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error parseando actividades del aula", e);
+                        callback.onError("Error de parseo: " + e.getMessage());
                     }
                 } else {
                     String errorMessage = "Error del servidor: " + response.code();
@@ -558,11 +585,29 @@ public class ActividadesRepository {
             }
 
             @Override
-            public void onFailure(Call<ApiResponse<List<Actividad>>> call, Throwable t) {
+            public void onFailure(Call<okhttp3.ResponseBody> call, Throwable t) {
                 Log.e(TAG, "Error de conexión al obtener actividades del aula", t);
                 callback.onError("Error de conexión: " + t.getMessage());
             }
         });
+    }
+
+    private Actividad extraerActividadDeItem(com.google.gson.JsonElement el) {
+        try {
+            if (el == null || !el.isJsonObject()) return null;
+            com.google.gson.JsonObject obj = el.getAsJsonObject();
+            // Preferir campo 'actividad' anidado
+            if (obj.has("actividad") && obj.get("actividad").isJsonObject()) {
+                com.google.gson.Gson g = new com.google.gson.Gson();
+                return g.fromJson(obj.get("actividad"), Actividad.class);
+            }
+            // Si el item ya es una actividad
+            if (obj.has("id_actividad") && obj.has("tipo")) {
+                com.google.gson.Gson g = new com.google.gson.Gson();
+                return g.fromJson(obj, Actividad.class);
+            }
+        } catch (Exception ignored) {}
+        return null;
     }
 
     // Métodos para datos de ejemplo

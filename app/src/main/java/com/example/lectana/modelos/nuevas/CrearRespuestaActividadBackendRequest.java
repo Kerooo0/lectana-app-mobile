@@ -1,8 +1,8 @@
 package com.example.lectana.modelos.nuevas;
 
 public class CrearRespuestaActividadBackendRequest {
-    private java.util.List<String> respuestas; // la DB espera text[]
-    private Integer respuesta_correcta; // DB espera smallint (0/1)
+    private java.util.List<String> respuestas; // text[]
+    private Integer respuesta_correcta; // smallint 0/1
 
     public CrearRespuestaActividadBackendRequest() {}
 

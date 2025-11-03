@@ -70,8 +70,9 @@ public interface ActividadesApiService {
     );
 
     // Ver actividades de un aula específica (ruta actual)
+    // Tolerante: puede devolver array plano o un objeto con data
     @GET("docentes/actividades/aula/{id}")
-    Call<ApiResponse<List<Actividad>>> getActividadesAula(
+    Call<okhttp3.ResponseBody> getActividadesAula(
             @Header("Authorization") String token,
             @Path("id") int aulaId
     );

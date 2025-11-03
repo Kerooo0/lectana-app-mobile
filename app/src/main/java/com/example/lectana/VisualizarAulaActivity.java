@@ -260,8 +260,8 @@ public class VisualizarAulaActivity extends AppCompatActivity {
                     aulaActual = aula;
                     actualizarInterfazConDatosReales();
                     
-                    // Mostrar la pestaña de estudiantes después de cargar los datos
-                    mostrarPestanaEstudiantes();
+                    // Mostrar por defecto la pestaña de actividades del aula
+                    mostrarPestanaActividades();
                 });
             }
 
@@ -547,6 +547,7 @@ public class VisualizarAulaActivity extends AppCompatActivity {
     
     private void cargarActividadesAula() {
         mostrarCargando(true);
+        Log.d(TAG, "cargarActividadesAula() -> aulaId=" + aulaId);
         
         com.example.lectana.repository.ActividadesRepository actividadesRepository = 
             new com.example.lectana.repository.ActividadesRepository(sessionManager);
@@ -556,6 +557,7 @@ public class VisualizarAulaActivity extends AppCompatActivity {
             public void onSuccess(java.util.List<com.example.lectana.modelos.Actividad> actividades) {
                 runOnUiThread(() -> {
                     mostrarCargando(false);
+                    Log.d(TAG, "getActividadesAula.onSuccess -> size=" + (actividades != null ? actividades.size() : -1));
                     
                     if (actividades == null || actividades.isEmpty()) {
                         // No hay actividades, mostrar estado vacío
@@ -571,6 +573,7 @@ public class VisualizarAulaActivity extends AppCompatActivity {
                     } else {
                         // Hay actividades, convertirlas al modelo local y mostrarlas
                         convertirActividadesApiAModelo(actividades);
+                        Log.d(TAG, "convertirActividadesApiAModelo -> grupos=" + listaCuentosConActividades.size());
                         mostrarEstadoVacio(false);
                         recyclerViewContenido.setAdapter(adaptadorActividadesPorCuento);
                         adaptadorActividadesPorCuento.notifyDataSetChanged();
@@ -585,6 +588,7 @@ public class VisualizarAulaActivity extends AppCompatActivity {
             public void onError(String message) {
                 runOnUiThread(() -> {
                     mostrarCargando(false);
+                    Log.e(TAG, "getActividadesAula.onError -> " + message);
                     Toast.makeText(VisualizarAulaActivity.this, "Error al cargar actividades: " + message, Toast.LENGTH_LONG).show();
                     
                     // Mostrar estado vacío con opción de crear
@@ -600,6 +604,15 @@ public class VisualizarAulaActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if ("actividades".equals(pestanaActual)) {
+            Log.d(TAG, "onResume -> refrescando actividades del aula");
+            cargarActividadesAula();
+        }
     }
     
     private void convertirActividadesApiAModelo(java.util.List<com.example.lectana.modelos.Actividad> actividades) {
