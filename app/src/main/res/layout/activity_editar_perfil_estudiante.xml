@@ -116,69 +116,6 @@
                 android:textSize="16sp"
                 android:drawableEnd="@drawable/ic_calendar"
                 android:drawableTint="@color/gris_medio"
-                android:layout_marginBottom="16dp" />
-
-            <!-- Grado -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Grado"
-                android:textColor="@color/gris_oscuro"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp" />
-
-            <Spinner
-                android:id="@+id/spinner_grado"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@drawable/campo_texto_rectangular"
-                android:paddingHorizontal="16dp"
-                android:layout_marginBottom="16dp" />
-
-            <!-- Institución -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Institución"
-                android:textColor="@color/gris_oscuro"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp" />
-
-            <EditText
-                android:id="@+id/input_institucion"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@drawable/campo_texto_rectangular"
-                android:hint="Nombre de tu escuela/colegio"
-                android:inputType="text"
-                android:paddingHorizontal="16dp"
-                android:textColor="@color/gris_oscuro"
-                android:textSize="16sp"
-                android:layout_marginBottom="16dp" />
-
-            <!-- Código de Aula -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Código de Aula"
-                android:textColor="@color/gris_oscuro"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp" />
-
-            <EditText
-                android:id="@+id/input_codigo_aula"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@drawable/campo_texto_rectangular"
-                android:hint="Código de 6 dígitos"
-                android:inputType="text"
-                android:maxLength="6"
-                android:paddingHorizontal="16dp"
-                android:textColor="@color/gris_oscuro"
-                android:textSize="16sp"
                 android:layout_marginBottom="32dp" />
 
             <!-- Botón Guardar -->

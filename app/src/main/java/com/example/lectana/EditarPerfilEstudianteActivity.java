@@ -33,9 +33,6 @@ public class EditarPerfilEstudianteActivity extends AppCompatActivity {
     private EditText inputNombre;
     private EditText inputApellido;
     private EditText inputFechaNacimiento;
-    private Spinner spinnerGrado;
-    private EditText inputInstitucion;
-    private EditText inputCodigoAula;
     private Button botonGuardar;
     private ProgressBar progressBar;
 
@@ -55,7 +52,6 @@ public class EditarPerfilEstudianteActivity extends AppCompatActivity {
         dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
         inicializarVistas();
-        configurarSpinnerGrado();
         configurarListeners();
         cargarDatosActuales();
     }
@@ -65,37 +61,8 @@ public class EditarPerfilEstudianteActivity extends AppCompatActivity {
         inputNombre = findViewById(R.id.input_nombre);
         inputApellido = findViewById(R.id.input_apellido);
         inputFechaNacimiento = findViewById(R.id.input_fecha_nacimiento);
-        spinnerGrado = findViewById(R.id.spinner_grado);
-        inputInstitucion = findViewById(R.id.input_institucion);
-        inputCodigoAula = findViewById(R.id.input_codigo_aula);
         botonGuardar = findViewById(R.id.boton_guardar);
         progressBar = findViewById(R.id.progress_bar);
-    }
-
-    private void configurarSpinnerGrado() {
-        String[] grados = {
-                "Selecciona un grado",
-                "1° Básico",
-                "2° Básico",
-                "3° Básico",
-                "4° Básico",
-                "5° Básico",
-                "6° Básico",
-                "7° Básico",
-                "8° Básico",
-                "1° Medio",
-                "2° Medio",
-                "3° Medio",
-                "4° Medio"
-        };
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_item,
-                grados
-        );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerGrado.setAdapter(adapter);
     }
 
     private void configurarListeners() {
@@ -130,48 +97,60 @@ public class EditarPerfilEstudianteActivity extends AppCompatActivity {
         mostrarCargando(true);
 
         try {
-            org.json.JSONObject user = sessionManager.getUser();
-            if (user == null) {
-                Toast.makeText(this, "Error: No hay sesión activa", Toast.LENGTH_SHORT).show();
-                finish();
-                return;
-            }
-
-            // Debug: Ver estructura completa del usuario
-            Log.d("EditarPerfil", "Usuario completo: " + user.toString());
-            Log.d("EditarPerfil", "Role: " + sessionManager.getRole());
-
-            // Intentar con id_estudiante o id_alumno
-            int idEstudiante = user.optInt("id_estudiante", 0);
-            if (idEstudiante == 0) {
-                idEstudiante = user.optInt("id_alumno", 0);
-                Log.d("EditarPerfil", "Usando id_alumno: " + idEstudiante);
-            } else {
-                Log.d("EditarPerfil", "Usando id_estudiante: " + idEstudiante);
-            }
-            
             String token = "Bearer " + sessionManager.getToken();
-
-            apiService.getPerfilEstudiante(token, idEstudiante).enqueue(new Callback<ApiResponse<EstudiantesApiService.EstudiantePerfilResponse>>() {
+            
+            // Primero obtener datos desde /api/auth/me para tener el id_alumno correcto
+            com.example.lectana.services.AuthApiService authApiService = 
+                com.example.lectana.services.ApiClient.getAuthApiService();
+            
+            authApiService.obtenerDatosUsuario(token).enqueue(new Callback<com.example.lectana.modelos.ApiResponse<com.example.lectana.services.AuthApiService.MeResponse>>() {
                 @Override
-                public void onResponse(Call<ApiResponse<EstudiantesApiService.EstudiantePerfilResponse>> call, 
-                                     Response<ApiResponse<EstudiantesApiService.EstudiantePerfilResponse>> response) {
-                    mostrarCargando(false);
-
-                    if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
-                        EstudiantesApiService.EstudiantePerfilResponse perfil = response.body().getData();
-                        llenarFormulario(perfil);
+                public void onResponse(Call<com.example.lectana.modelos.ApiResponse<com.example.lectana.services.AuthApiService.MeResponse>> call,
+                                     Response<com.example.lectana.modelos.ApiResponse<com.example.lectana.services.AuthApiService.MeResponse>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        com.example.lectana.modelos.ApiResponse<com.example.lectana.services.AuthApiService.MeResponse> apiResponse = response.body();
+                        
+                        // Extraer el id_alumno de la respuesta
+                        if (apiResponse.isOk() && apiResponse.getData() != null) {
+                            com.example.lectana.services.AuthApiService.MeResponse meData = apiResponse.getData();
+                            com.example.lectana.services.AuthApiService.Alumno alumno = meData.getAlumno();
+                            
+                            if (alumno != null) {
+                                int idAlumno = alumno.getIdAlumno();
+                                Log.d("EditarPerfil", "ID Alumno obtenido: " + idAlumno);
+                                
+                                // Guardar el id_alumno y aula_id en SessionManager para uso futuro
+                                Integer aulaId = alumno.getAulaIdAula();
+                                if (aulaId != null && aulaId > 0) {
+                                    sessionManager.saveAlumnoData(idAlumno, aulaId);
+                                } else {
+                                    sessionManager.saveAlumnoId(idAlumno);
+                                }
+                                
+                                // Ahora cargar el perfil con el id_alumno correcto
+                                cargarPerfilEstudiante(idAlumno);
+                            } else {
+                                Log.e("EditarPerfil", "No se encontró información del alumno en /me");
+                                cargarDatosDeSesion();
+                                mostrarCargando(false);
+                            }
+                        } else {
+                            Log.e("EditarPerfil", "Respuesta de /me no válida");
+                            cargarDatosDeSesion();
+                            mostrarCargando(false);
+                        }
                     } else {
-                        // Cargar datos de la sesión como fallback
+                        Log.e("EditarPerfil", "Error al obtener datos de /me: " + response.code());
                         cargarDatosDeSesion();
+                        mostrarCargando(false);
                     }
                 }
-
+                
                 @Override
-                public void onFailure(Call<ApiResponse<EstudiantesApiService.EstudiantePerfilResponse>> call, Throwable t) {
-                    mostrarCargando(false);
-                    Log.e("EditarPerfil", "Error al cargar perfil", t);
+                public void onFailure(Call<com.example.lectana.modelos.ApiResponse<com.example.lectana.services.AuthApiService.MeResponse>> call, Throwable t) {
+                    Log.e("EditarPerfil", "Error de conexión con /me", t);
                     cargarDatosDeSesion();
+                    mostrarCargando(false);
                 }
             });
 
@@ -180,6 +159,33 @@ public class EditarPerfilEstudianteActivity extends AppCompatActivity {
             Log.e("EditarPerfil", "Error al cargar datos", e);
             cargarDatosDeSesion();
         }
+    }
+    
+    private void cargarPerfilEstudiante(int idAlumno) {
+        String token = "Bearer " + sessionManager.getToken();
+        
+        apiService.getPerfilEstudiante(token, idAlumno).enqueue(new Callback<ApiResponse<EstudiantesApiService.EstudiantePerfilResponse>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<EstudiantesApiService.EstudiantePerfilResponse>> call, 
+                                 Response<ApiResponse<EstudiantesApiService.EstudiantePerfilResponse>> response) {
+                mostrarCargando(false);
+
+                if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+                    EstudiantesApiService.EstudiantePerfilResponse perfil = response.body().getData();
+                    llenarFormulario(perfil);
+                } else {
+                    // Cargar datos de la sesión como fallback
+                    cargarDatosDeSesion();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<EstudiantesApiService.EstudiantePerfilResponse>> call, Throwable t) {
+                mostrarCargando(false);
+                Log.e("EditarPerfil", "Error al cargar perfil", t);
+                cargarDatosDeSesion();
+            }
+        });
     }
 
     private void cargarDatosDeSesion() {
@@ -205,24 +211,6 @@ public class EditarPerfilEstudianteActivity extends AppCompatActivity {
                 if (!fechaNac.isEmpty() && !fechaNac.equals("null")) {
                     inputFechaNacimiento.setText(fechaNac);
                 }
-                
-                // Grado
-                String grado = user.optString("grado", "");
-                if (!grado.isEmpty() && !grado.equals("null")) {
-                    setSpinnerValue(spinnerGrado, grado);
-                }
-                
-                // Institución
-                String institucion = user.optString("institucion", "");
-                if (!institucion.isEmpty() && !institucion.equals("null")) {
-                    inputInstitucion.setText(institucion);
-                }
-                
-                // Código de aula
-                String codigoAula = user.optString("codigo_aula", "");
-                if (!codigoAula.isEmpty() && !codigoAula.equals("null")) {
-                    inputCodigoAula.setText(codigoAula);
-                }
             } else {
                 Log.w("EditarPerfil", "No hay usuario en sesión");
             }
@@ -247,37 +235,9 @@ public class EditarPerfilEstudianteActivity extends AppCompatActivity {
             inputFechaNacimiento.setText(perfil.getFecha_nacimiento());
         }
         
-        // Grado (opcional)
-        if (perfil.getGrado() != null && !perfil.getGrado().isEmpty()) {
-            setSpinnerValue(spinnerGrado, perfil.getGrado());
-        }
-        
-        // Institución (opcional)
-        if (perfil.getInstitucion() != null && !perfil.getInstitucion().isEmpty()) {
-            inputInstitucion.setText(perfil.getInstitucion());
-        }
-        
-        // Código de aula (opcional)
-        if (perfil.getCodigo_aula() != null && !perfil.getCodigo_aula().isEmpty()) {
-            inputCodigoAula.setText(perfil.getCodigo_aula());
-        }
-        
         Log.d("EditarPerfil", "Formulario llenado - Nombre: " + perfil.getNombre() + 
               ", Apellido: " + perfil.getApellido() + 
-              ", Fecha: " + perfil.getFecha_nacimiento() + 
-              ", Grado: " + perfil.getGrado() + 
-              ", Institución: " + perfil.getInstitucion() + 
-              ", Código Aula: " + perfil.getCodigo_aula());
-    }
-
-    private void setSpinnerValue(Spinner spinner, String value) {
-        ArrayAdapter adapter = (ArrayAdapter) spinner.getAdapter();
-        for (int i = 0; i < adapter.getCount(); i++) {
-            if (adapter.getItem(i).toString().equalsIgnoreCase(value)) {
-                spinner.setSelection(i);
-                return;
-            }
-        }
+              ", Fecha: " + perfil.getFecha_nacimiento());
     }
 
     private void guardarCambios() {
@@ -285,9 +245,6 @@ public class EditarPerfilEstudianteActivity extends AppCompatActivity {
         String nombre = inputNombre.getText().toString().trim();
         String apellido = inputApellido.getText().toString().trim();
         String fechaNacimiento = inputFechaNacimiento.getText().toString().trim();
-        String grado = spinnerGrado.getSelectedItem().toString();
-        String institucion = inputInstitucion.getText().toString().trim();
-        String codigoAula = inputCodigoAula.getText().toString().trim();
 
         if (nombre.isEmpty()) {
             inputNombre.setError("El nombre es requerido");
@@ -301,37 +258,34 @@ public class EditarPerfilEstudianteActivity extends AppCompatActivity {
             return;
         }
 
-        if (grado.equals("Selecciona un grado")) {
-            Toast.makeText(this, "Por favor selecciona un grado", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         mostrarCargando(true);
 
         try {
-            org.json.JSONObject user = sessionManager.getUser();
+            // Usar el id_alumno guardado en SessionManager
+            int idAlumno = sessionManager.getAlumnoId();
             
-            // Intentar con id_estudiante o id_alumno
-            int idEstudiante = user.optInt("id_estudiante", 0);
-            if (idEstudiante == 0) {
-                idEstudiante = user.optInt("id_alumno", 0);
+            if (idAlumno == 0) {
+                Toast.makeText(this, "Error: ID de alumno no encontrado", Toast.LENGTH_SHORT).show();
+                mostrarCargando(false);
+                return;
             }
             
-            Log.d("EditarPerfil", "Guardando cambios para ID: " + idEstudiante);
+            Log.d("EditarPerfil", "Guardando cambios para ID Alumno: " + idAlumno);
             
             String token = "Bearer " + sessionManager.getToken();
 
+            // El backend solo necesita: nombre, apellido, fecha_nacimiento
             EstudiantesApiService.ActualizarPerfilRequest request = 
                 new EstudiantesApiService.ActualizarPerfilRequest(
                     nombre,
                     apellido,
                     fechaNacimiento,
-                    grado,
-                    institucion,
-                    codigoAula
+                    null,  // grado - no se actualiza desde aquí
+                    null,  // institucion - no se actualiza desde aquí
+                    null   // codigo_aula - no se actualiza desde aquí
                 );
 
-            apiService.actualizarPerfil(token, idEstudiante, request).enqueue(
+            apiService.actualizarPerfil(token, idAlumno, request).enqueue(
                 new Callback<ApiResponse<EstudiantesApiService.EstudiantePerfilResponse>>() {
                     @Override
                     public void onResponse(Call<ApiResponse<EstudiantesApiService.EstudiantePerfilResponse>> call, 

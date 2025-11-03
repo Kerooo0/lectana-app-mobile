@@ -61,11 +61,13 @@ public class AdaptadorActividadesEstudiante extends RecyclerView.Adapter<Adaptad
 
         public ViewHolderActividad(@NonNull View itemView) {
             super(itemView);
-            textoTituloActividad = itemView.findViewById(R.id.texto_titulo_actividad);
-            textoEstado = itemView.findViewById(R.id.texto_estado);
-            textoFecha = itemView.findViewById(R.id.texto_fecha);
-            textoProgreso = itemView.findViewById(R.id.texto_progreso);
-            indicadorEstado = itemView.findViewById(R.id.indicador_estado);
+            // Usar los IDs del nuevo layout
+            textoTituloActividad = itemView.findViewById(R.id.textCuentoTitulo);
+            textoEstado = itemView.findViewById(R.id.textEstado);
+            textoFecha = itemView.findViewById(R.id.textFechaEntrega);
+            // Estos IDs no existen en el nuevo layout, usar valores por defecto
+            textoProgreso = new TextView(itemView.getContext());
+            indicadorEstado = itemView.findViewById(R.id.iconoEstado);
         }
     }
 }

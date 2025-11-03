@@ -21,6 +21,12 @@ import retrofit2.http.Path;
 public interface AulasApiService {
     
     /**
+     * Buscar un aula por su código (para alumnos)
+     */
+    @GET("aulas/codigo/{codigo}")
+    Call<ApiResponse<ModeloAula>> buscarAulaPorCodigo(@Header("Authorization") String token, @Path("codigo") String codigo);
+    
+    /**
      * Obtener todas las aulas del docente autenticado
      */
     @GET("aulas/docente")

@@ -41,4 +41,9 @@
     <color name="success">#28A745</color>
     <color name="warning">#FFC107</color>
     <color name="info">#17A2B8</color>
+    
+    <!-- Colores adicionales para sistema de actividades -->
+    <color name="blanco">#FFFFFF</color>
+    <color name="naranja_advertencia">#FF9800</color>
+    <color name="verde_exito">#4CAF50</color>
 </resources>

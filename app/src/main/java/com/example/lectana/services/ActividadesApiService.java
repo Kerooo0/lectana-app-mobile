@@ -94,5 +94,36 @@ public interface ActividadesApiService {
             @Path("id_pregunta") int idPregunta,
             @Body CrearRespuestaActividadBackendRequest request
     );
+    
+    // ==================== ENDPOINTS PARA ESTUDIANTES ====================
+    
+    // Obtener actividades por aula
+    @GET("actividades/aula/{id_aula}")
+    Call<ApiResponse<List<Actividad>>> getActividadesPorAula(
+            @Header("Authorization") String token,
+            @Path("id_aula") int idAula
+    );
+    
+    // Obtener preguntas de una actividad
+    @GET("preguntas/actividad/{id_actividad}")
+    Call<List<com.example.lectana.modelos.PreguntaActividad>> getPreguntasPorActividad(
+            @Header("Authorization") String token,
+            @Path("id_actividad") int idActividad
+    );
+    
+    // Enviar respuesta de usuario
+    @POST("respuestas-usuario")
+    Call<com.example.lectana.modelos.RespuestaUsuario> enviarRespuesta(
+            @Header("Authorization") String token,
+            @Body com.example.lectana.modelos.RespuestaUsuario.Request request
+    );
+    
+    // Obtener respuestas de un alumno para una actividad específica
+    @GET("respuestas-usuario/alumno/{alumno_id}/actividad/{actividad_id}")
+    Call<ApiResponse<List<com.example.lectana.modelos.RespuestaUsuario>>> getRespuestasAlumnoActividad(
+            @Header("Authorization") String token,
+            @Path("alumno_id") int alumnoId,
+            @Path("actividad_id") int actividadId
+    );
 }
 

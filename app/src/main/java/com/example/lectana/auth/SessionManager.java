@@ -35,6 +35,21 @@ public class SessionManager {
             editor.putString(KEY_TOKEN, token);
             editor.putString(KEY_ROLE, role);
             editor.putString(KEY_USER, user.toString());
+            
+            // Si es alumno, extraer y guardar alumno_id y aula_id
+            if ("alumno".equals(role) && user != null) {
+                if (user.has("id_alumno")) {
+                    int alumnoId = user.getInt("id_alumno");
+                    editor.putInt(KEY_ALUMNO_ID, alumnoId);
+                    Log.d(TAG, "ID de alumno guardado: " + alumnoId);
+                }
+                if (user.has("id_aula")) {
+                    int aulaId = user.getInt("id_aula");
+                    editor.putInt(KEY_AULA_ID, aulaId);
+                    Log.d(TAG, "ID de aula guardado: " + aulaId);
+                }
+            }
+            
             editor.putBoolean(KEY_IS_LOGGED_IN, true);
             editor.apply();
             
@@ -52,6 +67,21 @@ public class SessionManager {
             editor.putString(KEY_TOKEN, token);
             editor.putString(KEY_ROLE, role);
             editor.putString(KEY_USER, user.toString());
+            
+            // Si es alumno, extraer y guardar alumno_id y aula_id
+            if ("alumno".equals(role) && user != null) {
+                if (user.has("id_alumno")) {
+                    int alumnoId = user.getInt("id_alumno");
+                    editor.putInt(KEY_ALUMNO_ID, alumnoId);
+                    Log.d(TAG, "ID de alumno guardado: " + alumnoId);
+                }
+                if (user.has("id_aula")) {
+                    int aulaId = user.getInt("id_aula");
+                    editor.putInt(KEY_AULA_ID, aulaId);
+                    Log.d(TAG, "ID de aula guardado: " + aulaId);
+                }
+            }
+            
             if (docente != null) {
                 editor.putString(KEY_DOCENTE, docente.toString());
                 Log.d(TAG, "Datos de docente guardados: " + docente.toString());
@@ -165,5 +195,51 @@ public class SessionManager {
     public void clearSessionWithMessage(String message) {
         Log.w(TAG, "Limpiando sesión: " + message);
         clearSession();
+    }
+    
+    // Métodos para alumno y aula
+    private static final String KEY_ALUMNO_ID = "alumno_id";
+    private static final String KEY_AULA_ID = "aula_id";
+    
+    /**
+     * Guardar ID del alumno
+     */
+    public void saveAlumnoId(int alumnoId) {
+        editor.putInt(KEY_ALUMNO_ID, alumnoId);
+        editor.apply();
+        Log.d(TAG, "Alumno ID guardado: " + alumnoId);
+    }
+    
+    /**
+     * Obtener ID del alumno
+     */
+    public int getAlumnoId() {
+        return prefs.getInt(KEY_ALUMNO_ID, 0);
+    }
+    
+    /**
+     * Guardar ID del aula
+     */
+    public void saveAulaId(int aulaId) {
+        editor.putInt(KEY_AULA_ID, aulaId);
+        editor.apply();
+        Log.d(TAG, "Aula ID guardada: " + aulaId);
+    }
+    
+    /**
+     * Obtener ID del aula
+     */
+    public int getAulaId() {
+        return prefs.getInt(KEY_AULA_ID, 0);
+    }
+    
+    /**
+     * Guardar datos completos del alumno
+     */
+    public void saveAlumnoData(int alumnoId, int aulaId) {
+        editor.putInt(KEY_ALUMNO_ID, alumnoId);
+        editor.putInt(KEY_AULA_ID, aulaId);
+        editor.apply();
+        Log.d(TAG, "Datos de alumno guardados - Alumno ID: " + alumnoId + ", Aula ID: " + aulaId);
     }
 }

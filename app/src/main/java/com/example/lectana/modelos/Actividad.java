@@ -9,9 +9,14 @@ public class Actividad {
     private int cuento_id_cuento;
     private int docente_id_docente;
     private String fecha_creacion;
+    private String fecha_entrega;
+    private String fecha_publicacion;
     private List<Pregunta> preguntas;
     private List<Integer> aulas_ids;
     private CuentoApi cuento;
+    
+    // Campo local para rastrear si está completada (no viene del servidor)
+    private boolean completada;
 
     public Actividad() {
     }
@@ -95,6 +100,35 @@ public class Actividad {
 
     public void setCuento(CuentoApi cuento) {
         this.cuento = cuento;
+    }
+
+    public String getFecha_entrega() {
+        return fecha_entrega;
+    }
+
+    public void setFecha_entrega(String fecha_entrega) {
+        this.fecha_entrega = fecha_entrega;
+    }
+
+    public String getFecha_publicacion() {
+        return fecha_publicacion;
+    }
+
+    public void setFecha_publicacion(String fecha_publicacion) {
+        this.fecha_publicacion = fecha_publicacion;
+    }
+
+    public boolean isCompletada() {
+        return completada;
+    }
+
+    public void setCompletada(boolean completada) {
+        this.completada = completada;
+    }
+    
+    // Alias para mantener compatibilidad
+    public int getIdActividad() {
+        return id_actividad;
     }
 
     // Métodos de utilidad

@@ -9,16 +9,17 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
     // URL de desarrollo local para emulador Android
-    private static final String BASE_URL = "http://10.0.2.2:3000/api/";
+    // private static final String BASE_URL = "http://10.0.2.2:3000/api/";
     
-    // URL de producción en Render (alternativa)
-    // private static final String BASE_URL = "https://lectana-backend.onrender.com/api/";
+    // URL de producción en Render
+    private static final String BASE_URL = "https://lectana-backend.onrender.com/api/";
     
     private static Retrofit retrofit;
     private static CuentosApiService cuentosApiService;
     private static AulasApiService aulasApiService;
     private static ActividadesApiService actividadesApiService;
     private static EstudiantesApiService estudiantesApiService;
+    private static AuthApiService authApiService;
 
     private static OkHttpClient getOkHttpClient() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -71,5 +72,17 @@ public class ApiClient {
             estudiantesApiService = getRetrofitInstance().create(EstudiantesApiService.class);
         }
         return estudiantesApiService;
+    }
+    
+    public static AuthApiService getAuthApiService() {
+        if (authApiService == null) {
+            authApiService = getRetrofitInstance().create(AuthApiService.class);
+        }
+        return authApiService;
+    }
+    
+    // Alias para compatibilidad
+    public static Retrofit getClient() {
+        return getRetrofitInstance();
     }
 }
