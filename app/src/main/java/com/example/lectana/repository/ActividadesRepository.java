@@ -10,6 +10,10 @@ import com.example.lectana.modelos.CrearActividadRequest;
 import com.example.lectana.services.ActividadesApiService;
 import com.example.lectana.services.ApiClient;
 import com.example.lectana.auth.SessionManager;
+import com.example.lectana.modelos.nuevas.CrearActividadNuevaRequest;
+import com.example.lectana.modelos.nuevas.CrearActividadBackendRequest;
+import com.example.lectana.modelos.nuevas.CrearPreguntaActividadRequest;
+import com.example.lectana.modelos.nuevas.CrearRespuestaActividadRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,73 +36,244 @@ public class ActividadesRepository {
     }
 
     /**
-     * Crear actividad completa
+     * Crear actividad con nuevas rutas: 1) actividad 2) preguntas 3) respuestas
      */
     public void crearActividad(CrearActividadRequest request, ActividadesCallback<Actividad> callback) {
         String token = sessionManager.getToken();
-        Log.d(TAG, "=== CREAR ACTIVIDAD ===");
-        Log.d(TAG, "Token obtenido: " + (token != null ? "Presente (" + token.length() + " chars)" : "Nulo"));
-
+        Log.d(TAG, "=== CREAR ACTIVIDAD (NUEVAS RUTAS) ===");
         if (token == null || token.isEmpty()) {
-            Log.e(TAG, "Token de autenticación no encontrado");
             callback.onError("Token de autenticación no encontrado");
             return;
         }
 
         String authHeader = "Bearer " + token;
-        Log.d(TAG, "Header de autorización: " + authHeader);
-        Log.d(TAG, "Descripción: " + request.getDescripcion());
-        Log.d(TAG, "Tipo: " + request.getTipo());
-        Log.d(TAG, "Cuento ID: " + request.getCuento_id_cuento());
-        Log.d(TAG, "Aulas IDs: " + request.getAulas_ids());
-        Log.d(TAG, "Total preguntas: " + (request.getPreguntas() != null ? request.getPreguntas().size() : 0));
+        ActividadesApiService api = ApiClient.getActividadesApiService();
 
-        Call<ApiResponse<Actividad>> call = ApiClient.getActividadesApiService().crearActividad(authHeader, request);
+        // Paso 1: crear actividad mínima (mapeo from UI)
+        String titulo = request.getDescripcion(); // hasta tener campo específico
+        Integer cursoId = (request.getAulas_ids() != null && !request.getAulas_ids().isEmpty()) ? request.getAulas_ids().get(0) : null;
+        String fechaInicio = null;
+        String fechaFin = null;
+        try {
+            java.time.OffsetDateTime now = java.time.OffsetDateTime.now();
+            fechaInicio = now.toString();
+            fechaFin = now.plusDays(7).toString();
+        } catch (Throwable ignored) {}
 
-        call.enqueue(new Callback<ApiResponse<Actividad>>() {
+        // DTO exacto del backend
+        CrearActividadBackendRequest crearReq = new CrearActividadBackendRequest(
+                fechaFin != null ? fechaFin : fechaInicio, // usamos fechaEntrega (requerida)
+                request.getTipo(),
+                request.getDescripcion(),
+                request.getCuento_id_cuento()
+        );
+
+        try {
+            com.google.gson.Gson gson = new com.google.gson.Gson();
+            Log.d(TAG, "Payload crearActividadNueva JSON => " + gson.toJson(crearReq));
+        } catch (Throwable ignored) {}
+
+        api.crearActividadNueva(authHeader, crearReq).enqueue(new Callback<com.example.lectana.modelos.nuevas.CrearActividadBackendResponse>() {
             @Override
-            public void onResponse(Call<ApiResponse<Actividad>> call, Response<ApiResponse<Actividad>> response) {
-                Log.d(TAG, "=== RESPUESTA CREAR ACTIVIDAD ===");
-                Log.d(TAG, "Código de respuesta: " + response.code());
-                Log.d(TAG, "¿Respuesta exitosa?: " + response.isSuccessful());
-                Log.d(TAG, "URL de la llamada: " + call.request().url());
+            public void onResponse(Call<com.example.lectana.modelos.nuevas.CrearActividadBackendResponse> call, Response<com.example.lectana.modelos.nuevas.CrearActividadBackendResponse> response) {
+                if (!response.isSuccessful() || response.body() == null || response.body().getActividad() == null) {
+                    String msg = null;
+                    try { msg = response.errorBody() != null ? response.errorBody().string() : null; } catch (Exception ignored) {}
+                    if (msg == null) msg = "HTTP " + response.code();
+                    callback.onError("Error creando actividad: " + msg);
+                    return;
+                }
+                java.util.List<Actividad> lista = response.body().getActividad();
+                if (lista.isEmpty()) {
+                    callback.onError("Respuesta sin actividad creada");
+                    return;
+                }
+                Actividad actividadCreada = lista.get(0);
+                int actividadId = actividadCreada.getId_actividad();
 
-                if (response.isSuccessful() && response.body() != null) {
-                    ApiResponse<Actividad> apiResponse = response.body();
-                    Log.d(TAG, "Respuesta API OK: " + apiResponse.isOk());
-                    Log.d(TAG, "Mensaje de respuesta: " + apiResponse.getMessage());
+                // Si no hay preguntas, terminamos acá
+                if (request.getPreguntas() == null || request.getPreguntas().isEmpty()) {
+                    callback.onSuccess(actividadCreada);
+                    return;
+                }
 
-                    if (apiResponse.isOk()) {
-                        Log.d(TAG, "Actividad creada exitosamente: " + apiResponse.getData().getId_actividad());
-                        callback.onSuccess(apiResponse.getData());
-                    } else {
-                        String errorMsg = apiResponse.getMessage() != null ? apiResponse.getMessage() : "Error desconocido";
-                        Log.e(TAG, "Error de API: " + errorMsg);
-                        callback.onError(errorMsg);
+                // Paso 2: crear preguntas en serie y sus respuestas (si múltiple choice)
+                final String tipoGlobal = request.getTipo();
+                crearPreguntasYRespuestasEnCadena(api, authHeader, actividadId, tipoGlobal, request, new ActividadesCallback<Void>() {
+                    @Override
+                    public void onSuccess(Void data) {
+                        callback.onSuccess(actividadCreada);
                     }
-                } else {
-                    String errorMessage = "Error del servidor: " + response.code();
-                    Log.e(TAG, "Error HTTP: " + response.code());
 
-                    if (response.errorBody() != null) {
-                        try {
-                            String errorBody = response.errorBody().string();
-                            Log.e(TAG, "Cuerpo del error: " + errorBody);
-                            errorMessage = errorBody;
-                        } catch (Exception e) {
-                            Log.e(TAG, "Error leyendo respuesta de error", e);
+                    @Override
+                    public void onError(String message) {
+                        callback.onError(message);
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Call<com.example.lectana.modelos.nuevas.CrearActividadBackendResponse> call, Throwable t) {
+                callback.onError("Error de conexión al crear actividad: " + t.getMessage());
+            }
+        });
+    }
+
+    private void crearPreguntasYRespuestasEnCadena(ActividadesApiService api, String authHeader, int actividadId, String tipoGlobal, CrearActividadRequest request, ActividadesCallback<Void> callback) {
+        List<CrearActividadRequest.PreguntaRequest> preguntas = request.getPreguntas();
+        if (preguntas == null || preguntas.isEmpty()) {
+            callback.onSuccess(null);
+            return;
+        }
+
+        crearPreguntaRecursiva(api, authHeader, actividadId, tipoGlobal, preguntas, 0, callback);
+    }
+
+    private void crearPreguntaRecursiva(ActividadesApiService api, String authHeader, int actividadId, String tipoGlobal, List<CrearActividadRequest.PreguntaRequest> preguntas, int index, ActividadesCallback<Void> callback) {
+        if (index >= preguntas.size()) {
+            callback.onSuccess(null);
+            return;
+        }
+
+        CrearActividadRequest.PreguntaRequest p = preguntas.get(index);
+        CrearPreguntaActividadRequest reqPregunta = new CrearPreguntaActividadRequest(
+                p.getEnunciado(),
+                mapTipoParaPregunta(tipoGlobal),
+                1,
+                index + 1,
+                true
+        );
+
+        api.crearPreguntaActividad(authHeader, actividadId, reqPregunta).enqueue(new Callback<okhttp3.ResponseBody>() {
+            @Override
+            public void onResponse(Call<okhttp3.ResponseBody> call, Response<okhttp3.ResponseBody> response) {
+                if (!response.isSuccessful() || response.body() == null) {
+                    String err = null; try { err = response.errorBody() != null ? response.errorBody().string() : null; } catch (Exception ignored) {}
+                    callback.onError("Error creando pregunta: " + (err != null ? err : ("HTTP " + response.code())));
+                    return;
+                }
+                int idPregunta = -1;
+                try {
+                    String json = response.body().string();
+                    com.google.gson.JsonElement root = new com.google.gson.JsonParser().parse(json);
+                    Log.d(TAG, "Respuesta crearPregunta raw: " + json);
+                    // Buscar id_pregunta en distintas formas
+                    if (root.isJsonObject() && root.getAsJsonObject().has("id_pregunta")) {
+                        idPregunta = root.getAsJsonObject().get("id_pregunta").getAsInt();
+                    } else if (root.isJsonObject() && root.getAsJsonObject().has("id")) {
+                        idPregunta = root.getAsJsonObject().get("id").getAsInt();
+                    } else if (root.isJsonObject() && root.getAsJsonObject().has("pregunta_id")) {
+                        idPregunta = root.getAsJsonObject().get("pregunta_id").getAsInt();
+                    } else if (root.isJsonObject() && root.getAsJsonObject().has("preguntaActividad")) {
+                        com.google.gson.JsonElement arr = root.getAsJsonObject().get("preguntaActividad");
+                        if (arr.isJsonArray() && arr.getAsJsonArray().size() > 0) {
+                            com.google.gson.JsonElement first = arr.getAsJsonArray().get(0);
+                            if (first.isJsonObject() && first.getAsJsonObject().has("id_pregunta_actividad")) {
+                                idPregunta = first.getAsJsonObject().get("id_pregunta_actividad").getAsInt();
+                            }
+                        }
+                    } else if (root.isJsonObject() && root.getAsJsonObject().has("pregunta")) {
+                        com.google.gson.JsonElement p = root.getAsJsonObject().get("pregunta");
+                        if (p.isJsonObject() && p.getAsJsonObject().has("id_pregunta")) {
+                            idPregunta = p.getAsJsonObject().get("id_pregunta").getAsInt();
+                        } else if (p.isJsonObject() && p.getAsJsonObject().has("id")) {
+                            idPregunta = p.getAsJsonObject().get("id").getAsInt();
+                        }
+                    } else if (root.isJsonArray() && root.getAsJsonArray().size() > 0) {
+                        com.google.gson.JsonElement first = root.getAsJsonArray().get(0);
+                        if (first.isJsonObject() && first.getAsJsonObject().has("id_pregunta")) {
+                            idPregunta = first.getAsJsonObject().get("id_pregunta").getAsInt();
+                        } else if (first.isJsonObject() && first.getAsJsonObject().has("id")) {
+                            idPregunta = first.getAsJsonObject().get("id").getAsInt();
                         }
                     }
-                    callback.onError(errorMessage);
+                } catch (Exception e) {
+                    Log.e(TAG, "Error parseando respuesta de crearPregunta", e);
+                }
+                if (idPregunta <= 0) {
+                    // Intento final: extraer primer entero del body
+                    try {
+                        String all = response.body() != null ? response.body().string() : null;
+                        if (all != null) {
+                            java.util.regex.Matcher m = java.util.regex.Pattern.compile("\\d+").matcher(all);
+                            if (m.find()) {
+                                idPregunta = Integer.parseInt(m.group());
+                            }
+                        }
+                    } catch (Exception ignored) {}
+                }
+                if (idPregunta <= 0) {
+                    callback.onError("Error creando pregunta: id_pregunta no recibido");
+                    return;
+                }
+
+                // Si es multiple choice, crear respuestas
+                if ("multiple_choice".equals(mapTipo(tipoGlobal)) && p.getRespuestas() != null && !p.getRespuestas().isEmpty()) {
+                    crearRespuestasEnCadena(api, authHeader, idPregunta, p.getRespuestas(), 0, new ActividadesCallback<Void>() {
+                        @Override
+                        public void onSuccess(Void data) {
+                            crearPreguntaRecursiva(api, authHeader, actividadId, tipoGlobal, preguntas, index + 1, callback);
+                        }
+
+                        @Override
+                        public void onError(String message) {
+                            callback.onError(message);
+                        }
+                    });
+                } else {
+                    crearPreguntaRecursiva(api, authHeader, actividadId, tipoGlobal, preguntas, index + 1, callback);
                 }
             }
 
             @Override
-            public void onFailure(Call<ApiResponse<Actividad>> call, Throwable t) {
-                Log.e(TAG, "Error de conexión al crear actividad", t);
-                callback.onError("Error de conexión: " + t.getMessage());
+            public void onFailure(Call<okhttp3.ResponseBody> call, Throwable t) {
+                callback.onError("Error de conexión creando pregunta: " + t.getMessage());
             }
         });
+    }
+
+    private void crearRespuestasEnCadena(ActividadesApiService api, String authHeader, int idPregunta, List<CrearActividadRequest.RespuestaRequest> respuestas, int index, ActividadesCallback<Void> callback) {
+        if (index >= respuestas.size()) {
+            callback.onSuccess(null);
+            return;
+        }
+
+        CrearActividadRequest.RespuestaRequest r = respuestas.get(index);
+        java.util.List<String> respuestasArray = new java.util.ArrayList<>();
+        if (r.getRespuesta() != null) respuestasArray.add(r.getRespuesta());
+        com.example.lectana.modelos.nuevas.CrearRespuestaActividadBackendRequest reqRespuesta =
+                new com.example.lectana.modelos.nuevas.CrearRespuestaActividadBackendRequest(
+                        respuestasArray,
+                        r.isEs_correcta() ? 1 : 0
+                );
+
+        api.crearRespuestaActividad(authHeader, idPregunta, reqRespuesta).enqueue(new Callback<okhttp3.ResponseBody>() {
+            @Override
+            public void onResponse(Call<okhttp3.ResponseBody> call, Response<okhttp3.ResponseBody> response) {
+                if (!response.isSuccessful()) {
+                    String err = null; try { err = response.errorBody() != null ? response.errorBody().string() : null; } catch (Exception ignored) {}
+                    callback.onError("Error creando respuesta: " + (err != null ? err : ("HTTP " + response.code())));
+                    return;
+                }
+                crearRespuestasEnCadena(api, authHeader, idPregunta, respuestas, index + 1, callback);
+            }
+
+            @Override
+            public void onFailure(Call<okhttp3.ResponseBody> call, Throwable t) {
+                callback.onError("Error de conexión creando respuesta: " + t.getMessage());
+            }
+        });
+    }
+
+    private String mapTipo(String tipoGlobal) {
+        if (tipoGlobal == null) return "multiple_choice";
+        return tipoGlobal;
+    }
+
+    private String mapTipoParaPregunta(String tipoGlobal) {
+        if (tipoGlobal == null) return "multiple_choice";
+        if ("respuesta_abierta".equals(tipoGlobal)) return "abierta";
+        return tipoGlobal;
     }
 
     /**

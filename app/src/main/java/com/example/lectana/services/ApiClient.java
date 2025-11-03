@@ -3,15 +3,16 @@ package com.example.lectana.services;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
-    // URL de producción en Render
-    private static final String BASE_URL = "https://lectana-backend.onrender.com/api/";
+    // URL de desarrollo local para emulador Android
+    private static final String BASE_URL = "http://10.0.2.2:3000/api/";
     
-    // URL de desarrollo local (comentada)
-    // private static final String BASE_URL = "http://10.0.2.2:3000/api/";
+    // URL de producción en Render (alternativa)
+    // private static final String BASE_URL = "https://lectana-backend.onrender.com/api/";
     
     private static Retrofit retrofit;
     private static CuentosApiService cuentosApiService;
@@ -20,10 +21,15 @@ public class ApiClient {
     private static EstudiantesApiService estudiantesApiService;
 
     private static OkHttpClient getOkHttpClient() {
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
         return new OkHttpClient.Builder()
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
-                .writeTimeout(30, TimeUnit.SECONDS)
+                .addInterceptor(logging)
+                .connectTimeout(45, TimeUnit.SECONDS)
+                .readTimeout(45, TimeUnit.SECONDS)
+                .writeTimeout(45, TimeUnit.SECONDS)
+                .callTimeout(60, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true)
                 .build();
     }

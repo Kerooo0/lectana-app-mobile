@@ -302,6 +302,8 @@ public class CrearActividadActivity extends AppCompatActivity {
                         } else {
                             Log.e(TAG, "Error en respuesta de cuentos: " + response.code());
                             Toast.makeText(CrearActividadActivity.this, "Error cargando cuentos", Toast.LENGTH_SHORT).show();
+                            // Fallback mínimo para permitir selección
+                            agregarCuentoEjemploYRefrescar();
                         }
                     });
                 }
@@ -311,10 +313,27 @@ public class CrearActividadActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
                         Log.e(TAG, "Error cargando cuentos", t);
                         Toast.makeText(CrearActividadActivity.this, "Error de conexión al cargar cuentos", Toast.LENGTH_SHORT).show();
+                        // Fallback mínimo para permitir selección
+                        agregarCuentoEjemploYRefrescar();
                     });
                 }
             });
         }
+    }
+
+    private void agregarCuentoEjemploYRefrescar() {
+        try {
+            CuentoApi ejemplo = new CuentoApi();
+            ejemplo.setId_cuento(1);
+            ejemplo.setTitulo("Cuento de ejemplo");
+            if (listaCuentos != null) {
+                listaCuentos.clear();
+                listaCuentos.add(ejemplo);
+                ((ArrayAdapter) spinnerCuento.getAdapter()).notifyDataSetChanged();
+                spinnerCuento.setEnabled(true);
+                spinnerCuento.setSelection(0);
+            }
+        } catch (Exception ignored) {}
     }
 
     private void cargarAulas() {
