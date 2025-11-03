@@ -103,16 +103,15 @@ public class EditarPerfilEstudianteActivity extends AppCompatActivity {
             com.example.lectana.services.AuthApiService authApiService = 
                 com.example.lectana.services.ApiClient.getAuthApiService();
             
-            authApiService.obtenerDatosUsuario(token).enqueue(new Callback<com.example.lectana.modelos.ApiResponse<com.example.lectana.services.AuthApiService.MeResponse>>() {
+            authApiService.obtenerDatosUsuario(token).enqueue(new Callback<com.example.lectana.services.AuthApiService.MeResponse>() {
                 @Override
-                public void onResponse(Call<com.example.lectana.modelos.ApiResponse<com.example.lectana.services.AuthApiService.MeResponse>> call,
-                                     Response<com.example.lectana.modelos.ApiResponse<com.example.lectana.services.AuthApiService.MeResponse>> response) {
+                public void onResponse(Call<com.example.lectana.services.AuthApiService.MeResponse> call,
+                                     Response<com.example.lectana.services.AuthApiService.MeResponse> response) {
                     if (response.isSuccessful() && response.body() != null) {
-                        com.example.lectana.modelos.ApiResponse<com.example.lectana.services.AuthApiService.MeResponse> apiResponse = response.body();
+                        com.example.lectana.services.AuthApiService.MeResponse meData = response.body();
                         
                         // Extraer el id_alumno de la respuesta
-                        if (apiResponse.isOk() && apiResponse.getData() != null) {
-                            com.example.lectana.services.AuthApiService.MeResponse meData = apiResponse.getData();
+                        if (meData.isOk()) {
                             com.example.lectana.services.AuthApiService.Alumno alumno = meData.getAlumno();
                             
                             if (alumno != null) {
@@ -147,7 +146,7 @@ public class EditarPerfilEstudianteActivity extends AppCompatActivity {
                 }
                 
                 @Override
-                public void onFailure(Call<com.example.lectana.modelos.ApiResponse<com.example.lectana.services.AuthApiService.MeResponse>> call, Throwable t) {
+                public void onFailure(Call<com.example.lectana.services.AuthApiService.MeResponse> call, Throwable t) {
                     Log.e("EditarPerfil", "Error de conexión con /me", t);
                     cargarDatosDeSesion();
                     mostrarCargando(false);
@@ -164,7 +163,8 @@ public class EditarPerfilEstudianteActivity extends AppCompatActivity {
     private void cargarPerfilEstudiante(int idAlumno) {
         String token = "Bearer " + sessionManager.getToken();
         
-        apiService.getPerfilEstudiante(token, idAlumno).enqueue(new Callback<ApiResponse<EstudiantesApiService.EstudiantePerfilResponse>>() {
+        // El endpoint usa el usuarioId del token, no necesita pasar ID
+        apiService.getPerfilEstudiante(token).enqueue(new Callback<ApiResponse<EstudiantesApiService.EstudiantePerfilResponse>>() {
             @Override
             public void onResponse(Call<ApiResponse<EstudiantesApiService.EstudiantePerfilResponse>> call, 
                                  Response<ApiResponse<EstudiantesApiService.EstudiantePerfilResponse>> response) {
@@ -261,20 +261,12 @@ public class EditarPerfilEstudianteActivity extends AppCompatActivity {
         mostrarCargando(true);
 
         try {
-            // Usar el id_alumno guardado en SessionManager
-            int idAlumno = sessionManager.getAlumnoId();
-            
-            if (idAlumno == 0) {
-                Toast.makeText(this, "Error: ID de alumno no encontrado", Toast.LENGTH_SHORT).show();
-                mostrarCargando(false);
-                return;
-            }
-            
-            Log.d("EditarPerfil", "Guardando cambios para ID Alumno: " + idAlumno);
+            Log.d("EditarPerfil", "Guardando cambios - Nombre: " + nombre + ", Apellido: " + apellido);
             
             String token = "Bearer " + sessionManager.getToken();
 
             // El backend solo necesita: nombre, apellido, fecha_nacimiento
+            // El endpoint usa el usuarioId del token, no necesita pasar ID
             EstudiantesApiService.ActualizarPerfilRequest request = 
                 new EstudiantesApiService.ActualizarPerfilRequest(
                     nombre,
@@ -285,7 +277,7 @@ public class EditarPerfilEstudianteActivity extends AppCompatActivity {
                     null   // codigo_aula - no se actualiza desde aquí
                 );
 
-            apiService.actualizarPerfil(token, idAlumno, request).enqueue(
+            apiService.actualizarPerfil(token, request).enqueue(
                 new Callback<ApiResponse<EstudiantesApiService.EstudiantePerfilResponse>>() {
                     @Override
                     public void onResponse(Call<ApiResponse<EstudiantesApiService.EstudiantePerfilResponse>> call, 

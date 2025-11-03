@@ -17,7 +17,7 @@ public interface AuthApiService {
      * Incluye datos específicos según el rol (alumno, docente, administrador)
      */
     @GET("auth/me")
-    Call<ApiResponse<MeResponse>> obtenerDatosUsuario(
+    Call<MeResponse> obtenerDatosUsuario(
             @Header("Authorization") String token
     );
     
@@ -25,6 +25,9 @@ public interface AuthApiService {
      * Respuesta del endpoint /api/auth/me
      */
     class MeResponse {
+        @SerializedName("ok")
+        private boolean ok;
+        
         @SerializedName("user")
         private Usuario user;
         
@@ -44,6 +47,7 @@ public interface AuthApiService {
         private Administrador administrador;
         
         // Getters
+        public boolean isOk() { return ok; }
         public Usuario getUser() { return user; }
         public String getRole() { return role; }
         public boolean isVerificado() { return verificado; }

@@ -18,19 +18,17 @@ public interface EstudiantesApiService {
     /**
      * Obtener datos del perfil del estudiante
      */
-    @GET("estudiantes/{id}")
+    @GET("alumnos/obtener-perfil-alumno")
     Call<ApiResponse<EstudiantePerfilResponse>> getPerfilEstudiante(
-            @Header("Authorization") String token,
-            @Path("id") int idEstudiante
+            @Header("Authorization") String token
     );
 
     /**
      * Actualizar datos personales del estudiante
      */
-    @PUT("estudiantes/{id}")
+    @PUT("alumnos/actualizar-perfil-alumno")
     Call<ApiResponse<EstudiantePerfilResponse>> actualizarPerfil(
             @Header("Authorization") String token,
-            @Path("id") int idEstudiante,
             @Body ActualizarPerfilRequest request
     );
 

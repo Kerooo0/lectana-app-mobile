@@ -114,33 +114,17 @@ public class Login extends AppCompatActivity {
             @Override
             public void onSuccess(String token, String role, JSONObject user, JSONObject docente) {
                 runOnUiThread(() -> {
-                    boton_iniciar_sesion.setEnabled(true);
-                    boton_iniciar_sesion.setText("Iniciar Sesión");
-                    
-                    // Redirigir según el tipo de usuario (igual que en el frontend web)
-                    Intent intent;
-                    if ("alumno".equals(role)) {
-                        intent = new Intent(Login.this, PanelEstudianteActivity.class);
-                        Toast.makeText(Login.this, "¡Bienvenido estudiante!", Toast.LENGTH_SHORT).show();
-                    } else if ("docente".equals(role)) {
-                        intent = new Intent(Login.this, PantallaPrincipalDocente.class);
-                        Toast.makeText(Login.this, "¡Bienvenido docente!", Toast.LENGTH_SHORT).show();
-                    } else if ("administrador".equals(role)) {
-                        // Los administradores van al panel web, no a la app móvil
-                        Toast.makeText(Login.this, "Los administradores deben usar el panel web", Toast.LENGTH_LONG).show();
-                        return;
-                    } else {
-                        // Para roles no reconocidos
-                        Toast.makeText(Login.this, "Rol no soportado en la app móvil", Toast.LENGTH_LONG).show();
-                        return;
-                    }
-                    
                     // Guardar sesión completa con datos de usuario y docente
-                    // El backend ahora incluye todos los datos del docente en el login
                     sessionManager.saveSession(token, role, user, docente);
                     
-                    startActivity(intent);
-                    finish(); // Cerrar la actividad de login
+                    // Si es alumno, obtener datos adicionales (id_alumno y aula_id)
+                    if ("alumno".equals(role)) {
+                        obtenerDatosAlumno(token);
+                    } else {
+                        boton_iniciar_sesion.setEnabled(true);
+                        boton_iniciar_sesion.setText("Iniciar Sesión");
+                        redirigirDespuesDeLogin(role);
+                    }
                 });
             }
 
@@ -153,6 +137,91 @@ public class Login extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    /**
+     * Obtener datos adicionales del alumno desde /api/auth/me
+     */
+    private void obtenerDatosAlumno(String token) {
+        android.util.Log.d("Login", "Obteniendo datos del alumno desde /api/auth/me");
+        
+        com.example.lectana.services.AuthApiService authApiService = 
+            com.example.lectana.services.ApiClient.getAuthApiService();
+        
+        authApiService.obtenerDatosUsuario("Bearer " + token).enqueue(
+            new retrofit2.Callback<com.example.lectana.services.AuthApiService.MeResponse>() {
+                @Override
+                public void onResponse(retrofit2.Call<com.example.lectana.services.AuthApiService.MeResponse> call,
+                                     retrofit2.Response<com.example.lectana.services.AuthApiService.MeResponse> response) {
+                    runOnUiThread(() -> {
+                        boton_iniciar_sesion.setEnabled(true);
+                        boton_iniciar_sesion.setText("Iniciar Sesión");
+                        
+                        if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
+                            com.example.lectana.services.AuthApiService.MeResponse meData = response.body();
+                            com.example.lectana.services.AuthApiService.Alumno alumno = meData.getAlumno();
+                            
+                            if (alumno != null) {
+                                int idAlumno = alumno.getIdAlumno();
+                                Integer aulaId = alumno.getAulaIdAula();
+                                
+                                android.util.Log.d("Login", "Datos obtenidos - ID Alumno: " + idAlumno + ", Aula ID: " + aulaId);
+                                
+                                // Guardar IDs en SessionManager
+                                if (aulaId != null && aulaId > 0) {
+                                    sessionManager.saveAlumnoData(idAlumno, aulaId);
+                                    Toast.makeText(Login.this, "¡Bienvenido estudiante!", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    sessionManager.saveAlumnoId(idAlumno);
+                                    Toast.makeText(Login.this, "¡Bienvenido! Por favor completa tu perfil", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        } else {
+                            android.util.Log.w("Login", "No se pudieron obtener datos adicionales del alumno");
+                            Toast.makeText(Login.this, "¡Bienvenido estudiante!", Toast.LENGTH_SHORT).show();
+                        }
+                        
+                        redirigirDespuesDeLogin("alumno");
+                    });
+                }
+                
+                @Override
+                public void onFailure(retrofit2.Call<com.example.lectana.services.AuthApiService.MeResponse> call, Throwable t) {
+                    runOnUiThread(() -> {
+                        boton_iniciar_sesion.setEnabled(true);
+                        boton_iniciar_sesion.setText("Iniciar Sesión");
+                        
+                        android.util.Log.e("Login", "Error al obtener datos del alumno", t);
+                        Toast.makeText(Login.this, "¡Bienvenido estudiante!", Toast.LENGTH_SHORT).show();
+                        
+                        redirigirDespuesDeLogin("alumno");
+                    });
+                }
+            }
+        );
+    }
+
+    /**
+     * Redirigir después del login según el rol
+     */
+    private void redirigirDespuesDeLogin(String role) {
+        Intent intent;
+        
+        if ("alumno".equals(role)) {
+            intent = new Intent(Login.this, PanelEstudianteActivity.class);
+        } else if ("docente".equals(role)) {
+            intent = new Intent(Login.this, PantallaPrincipalDocente.class);
+            Toast.makeText(Login.this, "¡Bienvenido docente!", Toast.LENGTH_SHORT).show();
+        } else if ("administrador".equals(role)) {
+            Toast.makeText(Login.this, "Los administradores deben usar el panel web", Toast.LENGTH_LONG).show();
+            return;
+        } else {
+            Toast.makeText(Login.this, "Rol no soportado en la app móvil", Toast.LENGTH_LONG).show();
+            return;
+        }
+        
+        startActivity(intent);
+        finish();
     }
 
     /**

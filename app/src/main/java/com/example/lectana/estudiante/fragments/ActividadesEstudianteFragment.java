@@ -118,9 +118,10 @@ public class ActividadesEstudianteFragment extends Fragment {
         
         Log.d(TAG, "Aula ID: " + aulaId + ", Alumno ID: " + alumnoId);
         
-        if (aulaId == 0) {
-            mostrarCargando(false);
-            Toast.makeText(requireContext(), "Error: No se encontró el aula del alumno", Toast.LENGTH_LONG).show();
+        // Si los IDs no están guardados, obtenerlos desde /api/auth/me
+        if (aulaId == 0 || alumnoId == 0) {
+            Log.d(TAG, "IDs no encontrados, obteniendo desde /api/auth/me...");
+            obtenerYGuardarIdsAlumno(token);
             return;
         }
         
@@ -139,6 +140,13 @@ public class ActividadesEstudianteFragment extends Fragment {
                         mostrarSinActividades(true);
                         actualizarContadores();
                     }
+                } else if (response.code() == 403) {
+                    // El endpoint no está disponible para alumnos aún
+                    Log.w(TAG, "Endpoint no disponible para alumnos (403 Forbidden)");
+                    Toast.makeText(requireContext(), 
+                        "La funcionalidad de actividades estará disponible próximamente", 
+                        Toast.LENGTH_LONG).show();
+                    mostrarSinActividades(true);
                 } else {
                     Log.e(TAG, "Error en respuesta: " + response.code());
                     Toast.makeText(requireContext(), "Error al cargar actividades", Toast.LENGTH_SHORT).show();
@@ -273,6 +281,68 @@ public class ActividadesEstudianteFragment extends Fragment {
         if (textContadorCompletadas != null) {
             textContadorCompletadas.setText("Completadas: " + actividadesCompletadas.size());
         }
+    }
+
+    /**
+     * Obtener IDs del alumno desde /api/auth/me y guardarlos en sesión
+     */
+    private void obtenerYGuardarIdsAlumno(String token) {
+        Log.d(TAG, "Llamando a /api/auth/me para obtener IDs...");
+        
+        com.example.lectana.services.AuthApiService authApiService = 
+            com.example.lectana.services.ApiClient.getAuthApiService();
+        
+        authApiService.obtenerDatosUsuario(token).enqueue(
+            new Callback<com.example.lectana.services.AuthApiService.MeResponse>() {
+                @Override
+                public void onResponse(Call<com.example.lectana.services.AuthApiService.MeResponse> call,
+                                     Response<com.example.lectana.services.AuthApiService.MeResponse> response) {
+                    if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
+                        com.example.lectana.services.AuthApiService.MeResponse meData = response.body();
+                        com.example.lectana.services.AuthApiService.Alumno alumno = meData.getAlumno();
+                        
+                        if (alumno != null) {
+                            int idAlumno = alumno.getIdAlumno();
+                            Integer aulaId = alumno.getAulaIdAula();
+                            
+                            Log.d(TAG, "IDs obtenidos - ID Alumno: " + idAlumno + ", Aula ID: " + aulaId);
+                            
+                            // Guardar IDs en SessionManager
+                            if (aulaId != null && aulaId > 0) {
+                                sessionManager.saveAlumnoData(idAlumno, aulaId);
+                                // Reintentar cargar actividades con los IDs correctos
+                                cargarActividades();
+                            } else {
+                                mostrarCargando(false);
+                                Toast.makeText(requireContext(), 
+                                    "No estás asignado a ninguna aula. Por favor contacta a tu docente.", 
+                                    Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            mostrarCargando(false);
+                            Toast.makeText(requireContext(), 
+                                "Error: No se encontraron datos del alumno", 
+                                Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        mostrarCargando(false);
+                        Log.e(TAG, "Error en respuesta de /api/auth/me: " + response.code());
+                        Toast.makeText(requireContext(), 
+                            "Error al obtener datos del alumno", 
+                            Toast.LENGTH_SHORT).show();
+                    }
+                }
+                
+                @Override
+                public void onFailure(Call<com.example.lectana.services.AuthApiService.MeResponse> call, Throwable t) {
+                    mostrarCargando(false);
+                    Log.e(TAG, "Error al llamar /api/auth/me", t);
+                    Toast.makeText(requireContext(), 
+                        "Error de conexión: " + t.getMessage(), 
+                        Toast.LENGTH_SHORT).show();
+                }
+            }
+        );
     }
 
     @Override
