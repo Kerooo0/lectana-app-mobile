@@ -54,9 +54,17 @@ public interface ActividadesApiService {
             @Body CrearActividadRequest request
     );
 
-    // Eliminar actividad (ruta actual)
+    // Eliminar actividad (ruta actual - legacy)
     @DELETE("docentes/actividades/{id}")
-    Call<ApiResponse<Void>> eliminarActividad(
+    Call<ApiResponse<Void>> eliminarActividadLegacy(
+            @Header("Authorization") String token,
+            @Path("id") int id
+    );
+
+    // Eliminar actividad (ruta nueva sugerida por backend)
+    // DELETE /api/actividades/:id_actividad → { ok: true/false, mensaje|error }
+    @DELETE("actividades/{id}")
+    Call<okhttp3.ResponseBody> eliminarActividad(
             @Header("Authorization") String token,
             @Path("id") int id
     );

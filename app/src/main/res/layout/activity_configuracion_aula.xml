@@ -10,7 +10,7 @@
         android:id="@+id/header_configuracion_aula"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/azul_claro"
+        android:background="@color/morado_claro"
         android:orientation="horizontal"
         android:padding="16dp"
         android:gravity="center_vertical"
@@ -94,7 +94,7 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:src="@drawable/ic_classroom"
-                            android:tint="@color/azul_claro"
+                            android:tint="@color/morado_claro"
                             android:layout_marginEnd="12dp" />
 
                         <LinearLayout
@@ -132,7 +132,7 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:src="@drawable/ic_grade"
-                            android:tint="@color/azul_claro"
+                            android:tint="@color/morado_claro"
                             android:layout_marginEnd="12dp" />
 
                         <LinearLayout

@@ -31,6 +31,7 @@ public class GestionActividadesActivity extends AppCompatActivity {
     private TextView textSinActividades;
     private Button btnCrearActividad;
     private TextView textContadorActividades;
+    private android.widget.ImageButton botonVolverGestion;
     
     private ActividadesRepository actividadesRepository;
     private SessionManager sessionManager;
@@ -111,6 +112,11 @@ public class GestionActividadesActivity extends AppCompatActivity {
             
             textContadorActividades = findViewById(R.id.textContadorActividades);
             Log.d(TAG, "textContadorActividades: " + (textContadorActividades != null ? "OK" : "NULL"));
+
+            botonVolverGestion = findViewById(R.id.botonVolverGestion);
+            if (botonVolverGestion != null) {
+                botonVolverGestion.setOnClickListener(v -> finish());
+            }
             
             // Verificar que todos los componentes críticos estén inicializados
             if (recyclerViewActividades == null || progressBar == null || btnCrearActividad == null) {
@@ -229,10 +235,6 @@ public class GestionActividadesActivity extends AppCompatActivity {
             btnCrearActividad.setOnClickListener(v -> {
                 Log.d(TAG, "=== CLICK EN CREAR ACTIVIDAD ===");
                 Log.d(TAG, "Botón presionado: " + v.getId());
-                
-                // Toast inmediato para confirmar que el click funciona
-                Toast.makeText(this, "¡Botón Crear Actividad presionado!", Toast.LENGTH_SHORT).show();
-                
                 try {
                     Intent intent = new Intent(this, CrearActividadActivity.class);
                     Log.d(TAG, "Intent creado, iniciando CrearActividadActivity...");

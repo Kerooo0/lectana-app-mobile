@@ -457,27 +457,36 @@ public class ActividadesRepository {
 
         String authHeader = "Bearer " + token;
 
-        Call<ApiResponse<Void>> call = ApiClient.getActividadesApiService().eliminarActividad(authHeader, actividadId);
+        // Preferir ruta nueva /actividades/{id}
+        Call<okhttp3.ResponseBody> call = ApiClient.getActividadesApiService().eliminarActividad(authHeader, actividadId);
 
-        call.enqueue(new Callback<ApiResponse<Void>>() {
+        call.enqueue(new Callback<okhttp3.ResponseBody>() {
             @Override
-            public void onResponse(Call<ApiResponse<Void>> call, Response<ApiResponse<Void>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    ApiResponse<Void> apiResponse = response.body();
-                    if (apiResponse.isOk()) {
-                        callback.onSuccess(null);
-                    } else {
-                        String errorMsg = apiResponse.getMessage() != null ? apiResponse.getMessage() : "Error desconocido";
-                        callback.onError(errorMsg);
-                    }
-                } else {
-                    String errorMessage = "Error del servidor: " + response.code();
-                    callback.onError(errorMessage);
+            public void onResponse(Call<okhttp3.ResponseBody> call, Response<okhttp3.ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    // 200 OK: actividad eliminada
+                    callback.onSuccess(null);
+                    return;
                 }
+
+                // Manejo de 404/400/500 con cuerpo { ok: false, error: "..." }
+                String mensaje = "Error del servidor: " + response.code();
+                try {
+                    if (response.errorBody() != null) {
+                        String errJson = response.errorBody().string();
+                        com.google.gson.JsonElement root = new com.google.gson.JsonParser().parse(errJson);
+                        if (root.isJsonObject()) {
+                            com.google.gson.JsonObject obj = root.getAsJsonObject();
+                            if (obj.has("mensaje")) mensaje = obj.get("mensaje").getAsString();
+                            if (obj.has("error")) mensaje = obj.get("error").getAsString();
+                        }
+                    }
+                } catch (Exception ignored) {}
+                callback.onError(mensaje);
             }
 
             @Override
-            public void onFailure(Call<ApiResponse<Void>> call, Throwable t) {
+            public void onFailure(Call<okhttp3.ResponseBody> call, Throwable t) {
                 Log.e(TAG, "Error de conexión al eliminar actividad", t);
                 callback.onError("Error de conexión: " + t.getMessage());
             }
