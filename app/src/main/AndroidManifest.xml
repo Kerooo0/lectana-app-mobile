@@ -46,6 +46,9 @@
             android:name=".docente.PantallaPrincipalDocente"
             android:exported="false" />
         <activity
+            android:name=".docente.GestorAulasActivity"
+            android:exported="false" />
+        <activity
             android:name=".CrearNuevaAulaActivity"
             android:exported="false" />
         <activity

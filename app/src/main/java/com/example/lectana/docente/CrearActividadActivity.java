@@ -40,10 +40,12 @@ public class CrearActividadActivity extends AppCompatActivity {
     private Spinner spinnerTipo;
     private Spinner spinnerCuento;
     private RecyclerView recyclerViewAulas;
+    private EditText editBuscarAulaCrear;
     private RecyclerView recyclerViewPreguntas;
     private Button btnAgregarPregunta;
     private Button btnGuardarActividad;
     private ProgressBar progressBar;
+    private android.widget.ImageButton botonVolverCrear;
     
     // Repositories y servicios
     private ActividadesRepository actividadesRepository;
@@ -53,6 +55,7 @@ public class CrearActividadActivity extends AppCompatActivity {
     // Datos
     private List<CuentoApi> listaCuentos;
     private List<ModeloAula> listaAulas;
+    private List<ModeloAula> aulasFiltradas;
     private List<ModeloAula> aulasSeleccionadas;
     private List<PreguntaItem> listaPreguntas;
     private PreguntasAdapter preguntasAdapter;
@@ -158,6 +161,7 @@ public class CrearActividadActivity extends AppCompatActivity {
         spinnerTipo = findViewById(R.id.spinnerTipo);
         spinnerCuento = findViewById(R.id.spinnerCuento);
         recyclerViewAulas = findViewById(R.id.recyclerViewAulas);
+        editBuscarAulaCrear = findViewById(R.id.edit_buscar_aula_crear);
         recyclerViewPreguntas = findViewById(R.id.recyclerViewPreguntas);
         btnAgregarPregunta = findViewById(R.id.btnAgregarPregunta);
         btnGuardarActividad = findViewById(R.id.btnGuardarActividad);
@@ -171,17 +175,23 @@ public class CrearActividadActivity extends AppCompatActivity {
         
         listaCuentos = new ArrayList<>();
         listaAulas = new ArrayList<>();
+        aulasFiltradas = new ArrayList<>();
         aulasSeleccionadas = new ArrayList<>();
         listaPreguntas = new ArrayList<>();
         
         // Configurar título según modo
         TextView textTitulo = findViewById(R.id.textTitulo);
+        botonVolverCrear = findViewById(R.id.botonVolverCrear);
         if (modoEdicion) {
             textTitulo.setText("Editar Actividad");
             btnGuardarActividad.setText("Actualizar Actividad");
         } else {
             textTitulo.setText("Crear Nueva Actividad");
             btnGuardarActividad.setText("Crear Actividad");
+        }
+
+        if (botonVolverCrear != null) {
+            botonVolverCrear.setOnClickListener(v -> finish());
         }
     }
 
@@ -229,7 +239,7 @@ public class CrearActividadActivity extends AppCompatActivity {
 
     private void configurarRecyclerViews() {
         // RecyclerView de aulas
-        aulasAdapter = new AulasSeleccionAdapter(listaAulas, aulasSeleccionadas, new AulasSeleccionAdapter.OnAulaSeleccionListener() {
+        aulasAdapter = new AulasSeleccionAdapter(aulasFiltradas, aulasSeleccionadas, new AulasSeleccionAdapter.OnAulaSeleccionListener() {
             @Override
             public void onAulaSeleccionada(ModeloAula aula, boolean seleccionada) {
                 if (seleccionada) {
@@ -244,6 +254,14 @@ public class CrearActividadActivity extends AppCompatActivity {
         });
         recyclerViewAulas.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewAulas.setAdapter(aulasAdapter);
+
+        if (editBuscarAulaCrear != null) {
+            editBuscarAulaCrear.addTextChangedListener(new android.text.TextWatcher() {
+                @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                @Override public void onTextChanged(CharSequence s, int start, int before, int count) { filtrarAulasCrear(); }
+                @Override public void afterTextChanged(android.text.Editable s) {}
+            });
+        }
         
         // RecyclerView de preguntas
         preguntasAdapter = new PreguntasAdapter(listaPreguntas, new PreguntasAdapter.OnPreguntaListener() {
@@ -343,7 +361,7 @@ public class CrearActividadActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     listaAulas.clear();
                     listaAulas.addAll(aulas);
-                    aulasAdapter.notifyDataSetChanged();
+                    filtrarAulasCrear();
                 });
             }
 
@@ -355,6 +373,17 @@ public class CrearActividadActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    private void filtrarAulasCrear() {
+        String q = editBuscarAulaCrear != null && editBuscarAulaCrear.getText() != null ? editBuscarAulaCrear.getText().toString().toLowerCase() : "";
+        aulasFiltradas.clear();
+        for (ModeloAula aula : listaAulas) {
+            if (q.isEmpty() || (aula.getNombre_aula() != null && aula.getNombre_aula().toLowerCase().contains(q))) {
+                aulasFiltradas.add(aula);
+            }
+        }
+        aulasAdapter.notifyDataSetChanged();
     }
 
     private void cargarActividadParaEdicion() {
@@ -427,9 +456,9 @@ public class CrearActividadActivity extends AppCompatActivity {
         nuevaPregunta.setEnunciado("");
         nuevaPregunta.setRespuestas(new ArrayList<>());
         
-        // Agregar respuesta por defecto
+        // No agregar texto por defecto en respuestas
         RespuestaItem respuesta = new RespuestaItem();
-        respuesta.setRespuesta("Respuesta 1"); // Texto por defecto en lugar de vacío
+        respuesta.setRespuesta("");
         respuesta.setEsCorrecta(false);
         nuevaPregunta.getRespuestas().add(respuesta);
         

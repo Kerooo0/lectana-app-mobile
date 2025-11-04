@@ -11,16 +11,37 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Header -->
-        <TextView
-            android:id="@+id/textTitulo"
+        <!-- Top Bar Naranja -->
+        <LinearLayout
+            android:id="@+id/topBarCrear"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Crear Nueva Actividad"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_primary"
-            android:layout_marginBottom="24dp" />
+            android:layout_height="48dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@color/naranjaPastel"
+            android:paddingHorizontal="8dp"
+            android:layout_marginBottom="16dp">
+
+            <ImageButton
+                android:id="@+id/botonVolverCrear"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="Volver"
+                android:src="@drawable/ic_arrow_back"
+                android:tint="@android:color/white" />
+
+            <TextView
+                android:id="@+id/textTitulo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Crear Actividad"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white" />
+
+        </LinearLayout>
 
         <!-- Descripción -->
         <TextView
@@ -99,6 +120,17 @@
                     android:textColor="@color/text_primary"
                     android:layout_marginBottom="8dp" />
 
+                <EditText
+                    android:id="@+id/edit_buscar_aula_crear"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:hint="Buscar aula"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:background="@drawable/edit_text_background"
+                    android:padding="10dp"
+                    android:layout_marginBottom="8dp" />
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewAulas"
                     android:layout_width="match_parent"
@@ -173,6 +205,7 @@
             android:textStyle="bold"
             android:textColor="@android:color/white"
             android:background="@drawable/button_primary"
+            app:backgroundTint="@color/naranjaPastel"
             android:layout_marginBottom="16dp" />
 
         <!-- Progress Bar -->

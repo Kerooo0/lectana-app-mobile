@@ -430,8 +430,7 @@ public class VisualizarAulaActivity extends AppCompatActivity {
         actualizarBotonesPestanas();
         if (barraAccionesCuentos != null) barraAccionesCuentos.setVisibility(View.GONE);
         
-        // Mostrar barra de acciones para estudiantes
-        mostrarBarraAccionesEstudiantes();
+        // La barra de acciones se mostrará solo si hay estudiantes (para evitar duplicar "Compartir código")
         
         Log.d(TAG, "=== MOSTRAR PESTANA ESTUDIANTES ===");
         Log.d(TAG, "listaEstudiantes: " + (listaEstudiantes != null ? "No nulo" : "NULO"));
@@ -458,9 +457,11 @@ public class VisualizarAulaActivity extends AppCompatActivity {
             botonAccionEstadoVacio.setText("Compartir código del aula");
             botonAccionEstadoVacio.setVisibility(View.VISIBLE);
             botonAccionEstadoVacio.setOnClickListener(v -> compartirCodigoAula());
+            if (barraAccionesCuentos != null) barraAccionesCuentos.setVisibility(View.GONE);
         } else {
             Log.d(TAG, "Mostrando lista de estudiantes - Cantidad: " + listaEstudiantes.size());
             mostrarEstadoVacio(false);
+            mostrarBarraAccionesEstudiantes();
             Log.d(TAG, "Configurando adaptador de estudiantes");
             recyclerViewContenido.setAdapter(adaptadorEstudiantes);
             adaptadorEstudiantes.notifyDataSetChanged();

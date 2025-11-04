@@ -320,7 +320,7 @@
     <!-- Sección de Mis Aulas -->
     <TextView
         android:id="@+id/texto_titulo_mis_aulas"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
         android:layout_marginStart="16dp"
@@ -329,16 +329,58 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/contenedor_botones_acciones_rapidas" />
+        app:layout_constraintTop_toBottomOf="@id/contenedor_botones_acciones_rapidas"
+        app:layout_constraintEnd_toStartOf="@+id/boton_gestionar_aulas"
+        app:layout_constraintHorizontal_bias="0"/>
+
+    <Button
+        android:id="@+id/boton_gestionar_aulas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:text="Gestionar aulas"
+        android:textAllCaps="false"
+        android:textSize="14sp"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="8dp"
+        android:background="@drawable/boton_azul_rectangular"
+        android:textColor="@android:color/white"
+        app:layout_constraintTop_toBottomOf="@id/contenedor_botones_acciones_rapidas"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Barra de filtros (búsqueda, grado, orden) -->
+    <LinearLayout
+        android:id="@+id/contenedor_filtros_aulas"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="16dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/texto_titulo_mis_aulas"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <EditText
+            android:id="@+id/edit_buscar_aula"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:hint="Buscar aula"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:paddingHorizontal="12dp" />
+    </LinearLayout>
 
     <!-- Progress Bar -->
     <ProgressBar
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/texto_titulo_mis_aulas"
+        app:layout_constraintTop_toBottomOf="@id/contenedor_filtros_aulas"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -347,10 +389,10 @@
         android:id="@+id/lista_aulas_docente"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:layout_marginHorizontal="16dp"
         android:layout_marginBottom="16dp"
-        app:layout_constraintTop_toBottomOf="@id/texto_titulo_mis_aulas"
+        app:layout_constraintTop_toBottomOf="@id/progress_bar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

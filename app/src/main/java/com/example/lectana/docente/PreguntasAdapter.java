@@ -94,7 +94,7 @@ public class PreguntasAdapter extends RecyclerView.Adapter<PreguntasAdapter.Preg
             // Botón agregar respuesta
             btnAgregarRespuesta.setOnClickListener(v -> {
                 CrearActividadActivity.RespuestaItem nuevaRespuesta = new CrearActividadActivity.RespuestaItem();
-                nuevaRespuesta.setRespuesta("Nueva respuesta"); // Texto por defecto
+                nuevaRespuesta.setRespuesta("");
                 nuevaRespuesta.setEsCorrecta(false);
                 pregunta.getRespuestas().add(nuevaRespuesta);
                 respuestasAdapter.notifyDataSetChanged();
