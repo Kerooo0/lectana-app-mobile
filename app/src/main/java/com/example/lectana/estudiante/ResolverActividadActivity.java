@@ -16,12 +16,16 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.lectana.R;
+import com.example.lectana.modelos.ActividadCompleta;
+import com.example.lectana.modelos.ActividadCompletaResponse;
+import com.example.lectana.modelos.ApiResponse;
 import com.example.lectana.modelos.Actividad;
 import com.example.lectana.modelos.PreguntaActividad;
 import com.example.lectana.modelos.RespuestaActividad;
 import com.example.lectana.modelos.RespuestaUsuario;
 import com.example.lectana.services.ApiClient;
 import com.example.lectana.services.ActividadesApiService;
+import com.example.lectana.services.AlumnoApiService;
 import com.example.lectana.auth.SessionManager;
 
 import java.util.ArrayList;
@@ -59,6 +63,7 @@ public class ResolverActividadActivity extends AppCompatActivity {
     
     // Servicios
     private ActividadesApiService actividadesApiService;
+    private AlumnoApiService alumnoApiService;
     private SessionManager sessionManager;
     private String token;
     private int alumnoId;
@@ -73,6 +78,7 @@ public class ResolverActividadActivity extends AppCompatActivity {
         token = sessionManager.getToken();
         alumnoId = sessionManager.getAlumnoId();
         actividadesApiService = ApiClient.getClient().create(ActividadesApiService.class);
+        alumnoApiService = ApiClient.getClient().create(AlumnoApiService.class);
 
         // Obtener actividad del intent
         actividad = (Actividad) getIntent().getSerializableExtra("actividad");
@@ -156,27 +162,34 @@ public class ResolverActividadActivity extends AppCompatActivity {
     private void cargarPreguntas() {
         progressBarCarga.setVisibility(View.VISIBLE);
         
-        Call<List<PreguntaActividad>> call = actividadesApiService.getPreguntasPorActividad(
+        Call<ActividadCompletaResponse> call = actividadesApiService.getActividadCompleta(
             "Bearer " + token,
             actividad.getIdActividad()
         );
 
-        call.enqueue(new Callback<List<PreguntaActividad>>() {
+        call.enqueue(new Callback<ActividadCompletaResponse>() {
             @Override
-            public void onResponse(Call<List<PreguntaActividad>> call, Response<List<PreguntaActividad>> response) {
+            public void onResponse(Call<ActividadCompletaResponse> call, Response<ActividadCompletaResponse> response) {
                 progressBarCarga.setVisibility(View.GONE);
                 
                 if (response.isSuccessful() && response.body() != null) {
-                    preguntas = response.body();
-                    
-                    if (preguntas.isEmpty()) {
+                    ActividadCompletaResponse actividadResponse = response.body();
+                    if (actividadResponse.getActividad() != null) {
+                        preguntas = actividadResponse.getActividad().getPreguntaActividad();
+                        
+                        if (preguntas == null || preguntas.isEmpty()) {
+                            Toast.makeText(ResolverActividadActivity.this, 
+                                "Esta actividad no tiene preguntas", Toast.LENGTH_SHORT).show();
+                            finish();
+                            return;
+                        }
+                        
+                        mostrarPreguntaActual();
+                    } else {
                         Toast.makeText(ResolverActividadActivity.this, 
-                            "Esta actividad no tiene preguntas", Toast.LENGTH_SHORT).show();
+                            "Error al cargar actividad", Toast.LENGTH_SHORT).show();
                         finish();
-                        return;
                     }
-                    
-                    mostrarPreguntaActual();
                 } else {
                     Toast.makeText(ResolverActividadActivity.this, 
                         "Error al cargar preguntas", Toast.LENGTH_SHORT).show();
@@ -185,7 +198,7 @@ public class ResolverActividadActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<PreguntaActividad>> call, Throwable t) {
+            public void onFailure(Call<ActividadCompletaResponse> call, Throwable t) {
                 progressBarCarga.setVisibility(View.GONE);
                 Toast.makeText(ResolverActividadActivity.this, 
                     "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
@@ -210,7 +223,7 @@ public class ResolverActividadActivity extends AppCompatActivity {
         textEnunciado.setText(pregunta.getEnunciado());
 
         // Determinar tipo de pregunta
-        if (pregunta.getRespuestas() != null && !pregunta.getRespuestas().isEmpty()) {
+        if (pregunta.getRespuestaActividad() != null && !pregunta.getRespuestaActividad().isEmpty()) {
             // Pregunta de opción múltiple
             mostrarPreguntaMultiple(pregunta);
         } else {
@@ -230,9 +243,9 @@ public class ResolverActividadActivity extends AppCompatActivity {
         radioGroupOpciones.removeAllViews();
         
         // Agregar opciones
-        for (RespuestaActividad respuesta : pregunta.getRespuestas()) {
+        for (RespuestaActividad respuesta : pregunta.getRespuestaActividad()) {
             RadioButton radioButton = new RadioButton(this);
-            radioButton.setText(respuesta.getRespuesta());
+            radioButton.setText(respuesta.getRespuestas());
             radioButton.setTextSize(16);
             radioButton.setPadding(16, 16, 16, 16);
             radioButton.setId(respuesta.getIdRespuestaActividad());
@@ -276,7 +289,7 @@ public class ResolverActividadActivity extends AppCompatActivity {
     private boolean validarRespuestaActual() {
         PreguntaActividad pregunta = preguntas.get(preguntaActualIndex);
         
-        if (pregunta.getRespuestas() != null && !pregunta.getRespuestas().isEmpty()) {
+        if (pregunta.getRespuestaActividad() != null && !pregunta.getRespuestaActividad().isEmpty()) {
             // Pregunta de opción múltiple
             if (radioGroupOpciones.getCheckedRadioButtonId() == -1) {
                 Toast.makeText(this, "Por favor selecciona una opción", Toast.LENGTH_SHORT).show();
@@ -298,7 +311,7 @@ public class ResolverActividadActivity extends AppCompatActivity {
     private void guardarRespuestaActual() {
         PreguntaActividad pregunta = preguntas.get(preguntaActualIndex);
         
-        if (pregunta.getRespuestas() != null && !pregunta.getRespuestas().isEmpty()) {
+        if (pregunta.getRespuestaActividad() != null && !pregunta.getRespuestaActividad().isEmpty()) {
             // Pregunta de opción múltiple
             int selectedId = radioGroupOpciones.getCheckedRadioButtonId();
             if (selectedId != -1) {
@@ -353,25 +366,18 @@ public class ResolverActividadActivity extends AppCompatActivity {
         btnEnviarRespuestas.setEnabled(false);
 
         // Preparar lista de respuestas
-        List<Call<RespuestaUsuario>> llamadas = new ArrayList<>();
+        List<Call<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>>> llamadas = new ArrayList<>();
         
         for (PreguntaActividad pregunta : preguntas) {
             String respuestaTexto = respuestasUsuario.get(pregunta.getIdPreguntaActividad());
-            Integer respuestaId = respuestasSeleccionadas.get(pregunta.getIdPreguntaActividad());
             
             if (respuestaTexto != null) {
-                RespuestaUsuario.Request request = new RespuestaUsuario.Request();
-                request.setRespuestaTexto(respuestaTexto);
-                request.setPreguntaActividadId(pregunta.getIdPreguntaActividad());
-                request.setAlumnoIdAlumno(alumnoId);
+                AlumnoApiService.ResponderPreguntaRequest request = 
+                        new AlumnoApiService.ResponderPreguntaRequest(respuestaTexto);
                 
-                // Si es opción múltiple, agregar respuestaActividadId
-                if (respuestaId != null) {
-                    request.setRespuestaActividadIdRespuestaActividad(respuestaId);
-                }
-                
-                Call<RespuestaUsuario> call = actividadesApiService.enviarRespuesta(
+                Call<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>> call = alumnoApiService.responderPregunta(
                     "Bearer " + token,
+                    pregunta.getIdPreguntaActividad(),
                     request
                 );
                 
@@ -383,7 +389,7 @@ public class ResolverActividadActivity extends AppCompatActivity {
         enviarRespuestaRecursiva(llamadas, 0);
     }
 
-    private void enviarRespuestaRecursiva(List<Call<RespuestaUsuario>> llamadas, int index) {
+    private void enviarRespuestaRecursiva(List<Call<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>>> llamadas, int index) {
         if (index >= llamadas.size()) {
             // Todas las respuestas enviadas exitosamente
             progressBarCarga.setVisibility(View.GONE);
@@ -400,11 +406,12 @@ public class ResolverActividadActivity extends AppCompatActivity {
             return;
         }
 
-        Call<RespuestaUsuario> call = llamadas.get(index);
-        call.enqueue(new Callback<RespuestaUsuario>() {
+        Call<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>> call = llamadas.get(index);
+        call.enqueue(new Callback<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>>() {
             @Override
-            public void onResponse(Call<RespuestaUsuario> call, Response<RespuestaUsuario> response) {
-                if (response.isSuccessful()) {
+            public void onResponse(Call<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>> call, 
+                                 Response<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
                     // Continuar con la siguiente respuesta
                     enviarRespuestaRecursiva(llamadas, index + 1);
                 } else {
@@ -418,7 +425,7 @@ public class ResolverActividadActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<RespuestaUsuario> call, Throwable t) {
+            public void onFailure(Call<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>> call, Throwable t) {
                 progressBarCarga.setVisibility(View.GONE);
                 btnEnviarRespuestas.setEnabled(true);
                 

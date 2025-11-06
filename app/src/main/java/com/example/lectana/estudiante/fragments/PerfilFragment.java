@@ -82,11 +82,9 @@ public class PerfilFragment extends Fragment {
             Toast.makeText(getContext(), "Seleccionar foto de perfil", Toast.LENGTH_SHORT).show();
         });
 
-        // Editar Datos Personales
-        opcionEditarDatos.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), EditarPerfilEstudianteActivity.class);
-            startActivity(intent);
-        });
+        // Editar Datos Personales - REMOVIDO según requisito del cliente
+        // Solo se permite cambiar la contraseña, no los datos personales
+        opcionEditarDatos.setVisibility(View.GONE);
 
         // Opciones de configuración
         opcionCambiarPassword.setOnClickListener(v -> {

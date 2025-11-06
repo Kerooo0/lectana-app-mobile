@@ -19,9 +19,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.lectana.R;
 import com.example.lectana.auth.SessionManager;
+import com.example.lectana.estudiante.DetalleActividadEstudianteActivity;
 import com.example.lectana.estudiante.ResolverActividadActivity;
 import com.example.lectana.estudiante.adaptadores.ActividadesEstudianteAdapter;
 import com.example.lectana.modelos.Actividad;
+import com.example.lectana.modelos.ActividadesPorAulaResponse;
 import com.example.lectana.modelos.ApiResponse;
 import com.example.lectana.modelos.RespuestaUsuario;
 import com.example.lectana.services.ActividadesApiService;
@@ -125,14 +127,15 @@ public class ActividadesEstudianteFragment extends Fragment {
             return;
         }
         
-        actividadesApiService.getActividadesPorAula(token, aulaId).enqueue(new Callback<ApiResponse<List<Actividad>>>() {
+        actividadesApiService.getActividadesPorAula(token, aulaId).enqueue(new Callback<ActividadesPorAulaResponse>() {
             @Override
-            public void onResponse(Call<ApiResponse<List<Actividad>>> call, Response<ApiResponse<List<Actividad>>> response) {
+            public void onResponse(Call<ActividadesPorAulaResponse> call, Response<ActividadesPorAulaResponse> response) {
                 mostrarCargando(false);
                 
-                if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
-                    List<Actividad> actividades = response.body().getData();
-                    Log.d(TAG, "Actividades cargadas: " + actividades.size());
+                if (response.isSuccessful() && response.body() != null) {
+                    ActividadesPorAulaResponse data = response.body();
+                    List<Actividad> actividades = data.getActividades();
+                    Log.d(TAG, "Actividades cargadas: " + (actividades != null ? actividades.size() : 0));
                     
                     if (actividades != null && !actividades.isEmpty()) {
                         verificarActividadesCompletadas(actividades, alumnoId, token);
@@ -140,13 +143,11 @@ public class ActividadesEstudianteFragment extends Fragment {
                         mostrarSinActividades(true);
                         actualizarContadores();
                     }
-                } else if (response.code() == 403) {
-                    // El endpoint no está disponible para alumnos aún
-                    Log.w(TAG, "Endpoint no disponible para alumnos (403 Forbidden)");
-                    Toast.makeText(requireContext(), 
-                        "La funcionalidad de actividades estará disponible próximamente", 
-                        Toast.LENGTH_LONG).show();
-                    mostrarSinActividades(true);
+                } else if (response.code() == 401) {
+                    // Token expirado - cerrar sesión y redirigir al login
+                    Log.e(TAG, "Token expirado - cerrando sesión");
+                    Toast.makeText(requireContext(), "Tu sesión ha expirado. Por favor, inicia sesión nuevamente.", Toast.LENGTH_LONG).show();
+                    cerrarSesionYRedireccionar();
                 } else {
                     Log.e(TAG, "Error en respuesta: " + response.code());
                     Toast.makeText(requireContext(), "Error al cargar actividades", Toast.LENGTH_SHORT).show();
@@ -154,7 +155,7 @@ public class ActividadesEstudianteFragment extends Fragment {
             }
             
             @Override
-            public void onFailure(Call<ApiResponse<List<Actividad>>> call, Throwable t) {
+            public void onFailure(Call<ActividadesPorAulaResponse> call, Throwable t) {
                 mostrarCargando(false);
                 Log.e(TAG, "Error de conexión: " + t.getMessage());
                 Toast.makeText(requireContext(), "Error de conexión: " + t.getMessage(), Toast.LENGTH_LONG).show();
@@ -238,18 +239,9 @@ public class ActividadesEstudianteFragment extends Fragment {
     }
 
     private void abrirResolverActividad(Actividad actividad) {
-        if (actividad.isCompletada()) {
-            Toast.makeText(requireContext(), "Esta actividad ya fue completada", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        
-        Intent intent = new Intent(requireContext(), ResolverActividadActivity.class);
+        // Abrir detalles de la actividad (no importa si está completada)
+        Intent intent = new Intent(requireContext(), DetalleActividadEstudianteActivity.class);
         intent.putExtra("actividad_id", actividad.getId_actividad());
-        intent.putExtra("actividad_descripcion", actividad.getDescripcion());
-        intent.putExtra("actividad_tipo", actividad.getTipo());
-        if (actividad.getCuento() != null) {
-            intent.putExtra("cuento_titulo", actividad.getCuento().getTitulo());
-        }
         startActivity(intent);
     }
 
@@ -348,7 +340,22 @@ public class ActividadesEstudianteFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        // Recargar actividades al volver (por si completó alguna)
+        // Recargar actividades al volver a este fragmento
         cargarActividades();
+    }
+    
+    private void cerrarSesionYRedireccionar() {
+        if (sessionManager != null) {
+            sessionManager.clearSession();
+        }
+        
+        // Redirigir a Login
+        Intent intent = new Intent(requireContext(), com.example.lectana.Login.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        
+        if (getActivity() != null) {
+            getActivity().finish();
+        }
     }
 }

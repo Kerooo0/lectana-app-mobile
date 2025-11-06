@@ -153,6 +153,8 @@ public class CambiarPasswordEstudianteActivity extends AppCompatActivity {
         }
 
         // Realizar cambio de contraseña
+        // TODO: Migrar a AlumnoApiService.cambiarPassword cuando el backend implemente PUT /api/alumnos/cambiar-password
+        // Por ahora usa EstudiantesApiService como fallback
         mostrarCargando(true);
 
         try {

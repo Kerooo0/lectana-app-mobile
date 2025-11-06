@@ -2,16 +2,19 @@ package com.example.lectana.modelos;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * Modelo para representar una respuesta posible de una pregunta de actividad
+ */
 public class RespuestaActividad {
     
     @SerializedName("id_respuesta_actividad")
     private int idRespuestaActividad;
     
-    @SerializedName("respuesta")
-    private String respuesta;
+    @SerializedName("respuestas")
+    private String respuestas;
     
-    @SerializedName("es_correcta")
-    private boolean esCorrecta;
+    @SerializedName("respuesta_correcta")
+    private boolean respuestaCorrecta;
     
     @SerializedName("pregunta_actividad_id_pregunta_actividad")
     private int preguntaActividadId;
@@ -29,20 +32,20 @@ public class RespuestaActividad {
         this.idRespuestaActividad = idRespuestaActividad;
     }
 
-    public String getRespuesta() {
-        return respuesta;
+    public String getRespuestas() {
+        return respuestas;
     }
 
-    public void setRespuesta(String respuesta) {
-        this.respuesta = respuesta;
+    public void setRespuestas(String respuestas) {
+        this.respuestas = respuestas;
     }
 
-    public boolean isEsCorrecta() {
-        return esCorrecta;
+    public boolean isRespuestaCorrecta() {
+        return respuestaCorrecta;
     }
 
-    public void setEsCorrecta(boolean esCorrecta) {
-        this.esCorrecta = esCorrecta;
+    public void setRespuestaCorrecta(boolean respuestaCorrecta) {
+        this.respuestaCorrecta = respuestaCorrecta;
     }
 
     public int getPreguntaActividadId() {

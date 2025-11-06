@@ -3,6 +3,9 @@ package com.example.lectana.modelos;
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
+/**
+ * Modelo para representar una pregunta de actividad con sus respuestas posibles
+ */
 public class PreguntaActividad {
     
     @SerializedName("id_pregunta_actividad")
@@ -14,8 +17,12 @@ public class PreguntaActividad {
     @SerializedName("actividad_id_actividad")
     private int actividadIdActividad;
     
-    @SerializedName("respuestas")
-    private List<RespuestaActividad> respuestas;
+    @SerializedName("respuesta_actividad")
+    private List<RespuestaActividad> respuestaActividad;
+    
+    // Respuesta del usuario (local, no viene del servidor)
+    private String respuestaUsuario;
+    private int respuestaSeleccionadaId;
 
     // Constructor vacío
     public PreguntaActividad() {
@@ -46,11 +53,47 @@ public class PreguntaActividad {
         this.actividadIdActividad = actividadIdActividad;
     }
 
-    public List<RespuestaActividad> getRespuestas() {
-        return respuestas;
+    public List<RespuestaActividad> getRespuestaActividad() {
+        return respuestaActividad;
     }
 
-    public void setRespuestas(List<RespuestaActividad> respuestas) {
-        this.respuestas = respuestas;
+    public void setRespuestaActividad(List<RespuestaActividad> respuestaActividad) {
+        this.respuestaActividad = respuestaActividad;
+    }
+
+    public String getRespuestaUsuario() {
+        return respuestaUsuario;
+    }
+
+    public void setRespuestaUsuario(String respuestaUsuario) {
+        this.respuestaUsuario = respuestaUsuario;
+    }
+
+    public int getRespuestaSeleccionadaId() {
+        return respuestaSeleccionadaId;
+    }
+
+    public void setRespuestaSeleccionadaId(int respuestaSeleccionadaId) {
+        this.respuestaSeleccionadaId = respuestaSeleccionadaId;
+    }
+
+    // Métodos de utilidad
+    public boolean tieneRespuestas() {
+        return respuestaActividad != null && !respuestaActividad.isEmpty();
+    }
+
+    public int getTotalRespuestas() {
+        return respuestaActividad != null ? respuestaActividad.size() : 0;
+    }
+
+    public RespuestaActividad getRespuestaCorrecta() {
+        if (respuestaActividad != null) {
+            for (RespuestaActividad respuesta : respuestaActividad) {
+                if (respuesta.isRespuestaCorrecta()) {
+                    return respuesta;
+                }
+            }
+        }
+        return null;
     }
 }

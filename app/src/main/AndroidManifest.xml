@@ -104,6 +104,14 @@
             android:name=".estudiante.PanelEstudianteActivity"
             android:exported="false" />
         <activity
+            android:name=".estudiante.DetalleActividadEstudianteActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".estudiante.ResponderActividadActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".estudiante.ResolverActividadActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
