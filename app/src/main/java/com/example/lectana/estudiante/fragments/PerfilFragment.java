@@ -30,6 +30,7 @@ public class PerfilFragment extends Fragment {
     private TextView puntosEstudiantePerfil;
     private LinearLayout opcionEditarDatos;
     private LinearLayout opcionCambiarPassword;
+    private LinearLayout opcionCambiarAula;
     private LinearLayout opcionCentroAyuda;
     private LinearLayout opcionCerrarSesion;
     private View botonIrTienda;
@@ -70,6 +71,7 @@ public class PerfilFragment extends Fragment {
         puntosEstudiantePerfil = view.findViewById(R.id.puntos_estudiante_perfil);
         opcionEditarDatos = view.findViewById(R.id.opcion_editar_datos);
         opcionCambiarPassword = view.findViewById(R.id.opcion_cambiar_password);
+        opcionCambiarAula = view.findViewById(R.id.opcion_cambiar_aula);
         opcionCentroAyuda = view.findViewById(R.id.opcion_centro_ayuda);
         opcionCerrarSesion = view.findViewById(R.id.opcion_cerrar_sesion);
         botonIrTienda = view.findViewById(R.id.boton_ir_tienda);
@@ -89,6 +91,11 @@ public class PerfilFragment extends Fragment {
         // Opciones de configuración
         opcionCambiarPassword.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), CambiarPasswordEstudianteActivity.class);
+            startActivity(intent);
+        });
+
+        opcionCambiarAula.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), com.example.lectana.CambiarAulaActivity.class);
             startActivity(intent);
         });
 

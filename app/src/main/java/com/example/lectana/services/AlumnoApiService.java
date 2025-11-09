@@ -49,6 +49,27 @@ public interface AlumnoApiService {
             @Body CambiarPasswordRequest request
     );
 
+    /**
+     * Obtener perfil del alumno autenticado
+     * GET /api/alumnos/obtener-perfil-alumno
+     * Rol: alumno
+     */
+    @GET("alumnos/obtener-perfil-alumno")
+    Call<PerfilAlumnoResponse> obtenerPerfilAlumno(
+            @Header("Authorization") String token
+    );
+
+    /**
+     * Actualizar perfil del alumno
+     * PUT /api/alumnos/actualizar-perfil-alumno
+     * Rol: alumno
+     */
+    @PUT("alumnos/actualizar-perfil-alumno")
+    Call<PerfilAlumnoResponse> actualizarPerfilAlumno(
+            @Header("Authorization") String token,
+            @Body ActualizarPerfilRequest request
+    );
+
     // ============================================
     // MODELOS DE REQUEST/RESPONSE
     // ============================================
@@ -207,6 +228,227 @@ public interface AlumnoApiService {
 
         public void setMensaje(String mensaje) {
             this.mensaje = mensaje;
+        }
+    }
+
+    /**
+     * Request para actualizar perfil
+     */
+    class ActualizarPerfilRequest {
+        @SerializedName("nombre")
+        private String nombre;
+
+        @SerializedName("apellido")
+        private String apellido;
+
+        @SerializedName("email")
+        private String email;
+
+        @SerializedName("edad")
+        private Integer edad;
+
+        @SerializedName("nacionalidad")
+        private String nacionalidad;
+
+        @SerializedName("aula_id_aula")
+        private Integer aulaIdAula;
+
+        public String getNombre() {
+            return nombre;
+        }
+
+        public void setNombre(String nombre) {
+            this.nombre = nombre;
+        }
+
+        public String getApellido() {
+            return apellido;
+        }
+
+        public void setApellido(String apellido) {
+            this.apellido = apellido;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public Integer getEdad() {
+            return edad;
+        }
+
+        public void setEdad(Integer edad) {
+            this.edad = edad;
+        }
+
+        public String getNacionalidad() {
+            return nacionalidad;
+        }
+
+        public void setNacionalidad(String nacionalidad) {
+            this.nacionalidad = nacionalidad;
+        }
+
+        public Integer getAulaIdAula() {
+            return aulaIdAula;
+        }
+
+        public void setAulaIdAula(Integer aulaIdAula) {
+            this.aulaIdAula = aulaIdAula;
+        }
+    }
+
+    /**
+     * Response de perfil de alumno
+     */
+    class PerfilAlumnoResponse {
+        @SerializedName("ok")
+        private boolean ok;
+
+        @SerializedName("data")
+        private PerfilData data;
+
+        public boolean isOk() {
+            return ok;
+        }
+
+        public void setOk(boolean ok) {
+            this.ok = ok;
+        }
+
+        public PerfilData getData() {
+            return data;
+        }
+
+        public void setData(PerfilData data) {
+            this.data = data;
+        }
+
+        public static class PerfilData {
+            @SerializedName("id_alumno")
+            private int idAlumno;
+
+            @SerializedName("usuario")
+            private UsuarioInfo usuario;
+
+            @SerializedName("aula_id_aula")
+            private Integer aulaIdAula;
+
+            @SerializedName("nacionalidad")
+            private String nacionalidad;
+
+            public int getIdAlumno() {
+                return idAlumno;
+            }
+
+            public void setIdAlumno(int idAlumno) {
+                this.idAlumno = idAlumno;
+            }
+
+            public UsuarioInfo getUsuario() {
+                return usuario;
+            }
+
+            public void setUsuario(UsuarioInfo usuario) {
+                this.usuario = usuario;
+            }
+
+            public Integer getAulaIdAula() {
+                return aulaIdAula;
+            }
+
+            public void setAulaIdAula(Integer aulaIdAula) {
+                this.aulaIdAula = aulaIdAula;
+            }
+
+            public String getNacionalidad() {
+                return nacionalidad;
+            }
+
+            public void setNacionalidad(String nacionalidad) {
+                this.nacionalidad = nacionalidad;
+            }
+
+            public static class UsuarioInfo {
+                @SerializedName("id_usuario")
+                private int idUsuario;
+
+                @SerializedName("nombre")
+                private String nombre;
+
+                @SerializedName("apellido")
+                private String apellido;
+
+                @SerializedName("email")
+                private String email;
+
+                @SerializedName("edad")
+                private int edad;
+
+                public int getIdUsuario() {
+                    return idUsuario;
+                }
+
+                public void setIdUsuario(int idUsuario) {
+                    this.idUsuario = idUsuario;
+                }
+
+                public String getNombre() {
+                    return nombre;
+                }
+
+                public void setNombre(String nombre) {
+                    this.nombre = nombre;
+                }
+
+                public String getApellido() {
+                    return apellido;
+                }
+
+                public void setApellido(String apellido) {
+                    this.apellido = apellido;
+                }
+
+                public String getEmail() {
+                    return email;
+                }
+
+                public void setEmail(String email) {
+                    this.email = email;
+                }
+
+                public int getEdad() {
+                    return edad;
+                }
+
+                public void setEdad(int edad) {
+                    this.edad = edad;
+                }
+            }
+        }
+    }
+
+    /**
+     * Request para unirse a un aula mediante código
+     */
+    class UnirseAulaRequest {
+        @SerializedName("codigo_acceso")
+        private String codigoAcceso;
+
+        public UnirseAulaRequest(String codigoAcceso) {
+            this.codigoAcceso = codigoAcceso;
+        }
+
+        public String getCodigoAcceso() {
+            return codigoAcceso;
+        }
+
+        public void setCodigoAcceso(String codigoAcceso) {
+            this.codigoAcceso = codigoAcceso;
         }
     }
 }

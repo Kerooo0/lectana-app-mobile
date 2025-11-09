@@ -242,4 +242,81 @@ public class SessionManager {
         editor.apply();
         Log.d(TAG, "Datos de alumno guardados - Alumno ID: " + alumnoId + ", Aula ID: " + aulaId);
     }
+    
+    /**
+     * Decodificar el payload del JWT sin verificar la firma
+     * Esto es solo para leer la información, NO para validar el token
+     */
+    private JSONObject decodeJWTPayload(String token) {
+        try {
+            // El JWT tiene formato: header.payload.signature
+            String[] parts = token.split("\\.");
+            if (parts.length < 2) {
+                Log.e(TAG, "Token JWT inválido: formato incorrecto");
+                return null;
+            }
+            
+            // Decodificar el payload (segunda parte)
+            String payload = parts[1];
+            
+            // Decodificar Base64URL
+            byte[] decodedBytes = android.util.Base64.decode(payload, android.util.Base64.URL_SAFE | android.util.Base64.NO_WRAP);
+            String decodedPayload = new String(decodedBytes, "UTF-8");
+            
+            return new JSONObject(decodedPayload);
+        } catch (Exception e) {
+            Log.e(TAG, "Error decodificando JWT: " + e.getMessage());
+            return null;
+        }
+    }
+    
+    /**
+     * Verificar si el token ha expirado
+     * @return true si el token expiró, false si aún es válido
+     */
+    public boolean isTokenExpired() {
+        String token = getToken();
+        if (token == null || token.isEmpty()) {
+            Log.w(TAG, "No hay token guardado");
+            return true;
+        }
+        
+        try {
+            JSONObject payload = decodeJWTPayload(token);
+            if (payload == null) {
+                Log.e(TAG, "No se pudo decodificar el payload del token");
+                return true;
+            }
+            
+            // Obtener el campo 'exp' (expiration time en segundos desde epoch)
+            if (!payload.has("exp")) {
+                Log.w(TAG, "Token no tiene campo 'exp'");
+                return false; // Si no tiene exp, asumimos que no expira
+            }
+            
+            long expirationTime = payload.getLong("exp");
+            long currentTime = System.currentTimeMillis() / 1000; // Convertir a segundos
+            
+            boolean isExpired = currentTime > expirationTime;
+            
+            if (isExpired) {
+                Log.w(TAG, "Token expirado - Exp: " + expirationTime + ", Current: " + currentTime);
+            } else {
+                long remainingSeconds = expirationTime - currentTime;
+                Log.d(TAG, "Token válido - Expira en " + remainingSeconds + " segundos");
+            }
+            
+            return isExpired;
+        } catch (JSONException e) {
+            Log.e(TAG, "Error verificando expiración del token: " + e.getMessage());
+            return true; // En caso de error, consideramos el token como expirado
+        }
+    }
+    
+    /**
+     * Verificar si la sesión es válida (está logueado y el token no ha expirado)
+     */
+    public boolean isSessionValid() {
+        return isLoggedIn() && !isTokenExpired();
+    }
 }

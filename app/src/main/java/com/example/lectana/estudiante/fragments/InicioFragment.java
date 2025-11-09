@@ -283,6 +283,8 @@ public class InicioFragment extends Fragment {
         call.enqueue(new Callback<ApiResponse<CuentosResponse>>() {
             @Override
             public void onResponse(Call<ApiResponse<CuentosResponse>> call, Response<ApiResponse<CuentosResponse>> response) {
+                if (!isAdded()) return; // Check if fragment is still attached
+                
                 mostrarCargandoCuentos(false);
                 
                 if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
@@ -302,6 +304,8 @@ public class InicioFragment extends Fragment {
             
             @Override
             public void onFailure(Call<ApiResponse<CuentosResponse>> call, Throwable t) {
+                if (!isAdded()) return; // Check if fragment is still attached
+                
                 mostrarCargandoCuentos(false);
                 mostrarMensajeCuentosVacio();
                 Log.e(TAG, "Error de conexión al cargar cuentos: " + t.getMessage());
@@ -323,7 +327,12 @@ public class InicioFragment extends Fragment {
     }
 
     private CardView crearTarjetaCuento(CuentoApi cuento) {
-        CardView card = new CardView(requireContext());
+        // Check if fragment is attached before creating views
+        if (!isAdded() || getContext() == null) {
+            return new CardView(requireActivity()); // Return empty card as fallback
+        }
+        
+        CardView card = new CardView(getContext());
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
@@ -334,7 +343,7 @@ public class InicioFragment extends Fragment {
         card.setCardElevation(4f);
         card.setUseCompatPadding(true);
 
-        TextView textView = new TextView(requireContext());
+        TextView textView = new TextView(getContext());
         String autor = cuento.getAutor() != null ? cuento.getAutor().getNombre() : "Autor desconocido";
         textView.setText(cuento.getTitulo() + "\n" + autor);
         textView.setPadding(32, 32, 32, 32);
@@ -348,7 +357,9 @@ public class InicioFragment extends Fragment {
     }
 
     private void abrirDetalleCuento(CuentoApi cuento) {
-        Intent intent = new Intent(requireContext(), DetalleCuentoActivity.class);
+        if (!isAdded() || getContext() == null) return;
+        
+        Intent intent = new Intent(getContext(), DetalleCuentoActivity.class);
         intent.putExtra("cuento_id", cuento.getId_cuento());
         intent.putExtra("cuento_titulo", cuento.getTitulo());
         
@@ -415,11 +426,13 @@ public class InicioFragment extends Fragment {
     }
 
     private void cerrarSesionYRedireccionar() {
+        if (!isAdded() || getContext() == null) return;
+        
         if (sessionManager != null) {
             sessionManager.clearSession();
         }
         
-        Intent intent = new Intent(requireContext(), com.example.lectana.Login.class);
+        Intent intent = new Intent(getContext(), com.example.lectana.Login.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         

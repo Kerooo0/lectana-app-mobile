@@ -574,6 +574,39 @@
 
                 </LinearLayout>
 
+                <!-- Cambiar Aula -->
+                <LinearLayout
+                    android:id="@+id/opcion_cambiar_aula"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingVertical="12dp"
+                    android:layout_marginBottom="8dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_classroom"
+                        android:tint="@color/gris_medio"
+                        android:layout_marginEnd="16dp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Cambiar Aula"
+                        android:textColor="@color/gris_oscuro"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_arrow_forward"
+                        android:tint="@color/gris_medio" />
+
+                </LinearLayout>
+
                 <!-- Centro de Ayuda -->
                 <LinearLayout
                     android:id="@+id/opcion_centro_ayuda"
