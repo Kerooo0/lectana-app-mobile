@@ -52,14 +52,15 @@
 
     <!-- ScrollView para el contenido -->
     <ScrollView
+        android:id="@+id/scroll_view_detalle"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:paddingHorizontal="20dp"
         android:paddingTop="20dp"
-        android:paddingBottom="80dp"
+        android:paddingBottom="16dp"
         android:clipToPadding="false"
         app:layout_constraintTop_toBottomOf="@id/header_detalle_cuento"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toTopOf="@id/layout_botones_detalle">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -298,41 +299,48 @@
 
             </androidx.cardview.widget.CardView>
 
-            <!-- Botones de acción -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="16dp">
-
-                <Button
-                    android:id="@+id/boton_seleccionar_cuento"
-                    android:layout_width="0dp"
-                    android:layout_height="56dp"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    android:text="Seleccionar Cuento"
-                    android:background="@drawable/boton_verde"
-                    android:textColor="@android:color/white"
-                    android:textSize="16sp"
-                    app:backgroundTint="@null" />
-
-                <Button
-                    android:id="@+id/boton_cancelar_detalle"
-                    android:layout_width="0dp"
-                    android:layout_height="56dp"
-                    android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    android:text="Volver"
-                    android:background="@drawable/boton_blanco_rectangular"
-                    android:textColor="@color/gris_oscuro"
-                    android:textSize="16sp"
-                    app:backgroundTint="@null" />
-
-            </LinearLayout>
-
         </LinearLayout>
 
     </ScrollView>
+
+    <!-- Botones de acción FIJOS en la parte inferior -->
+    <LinearLayout
+        android:id="@+id/layout_botones_detalle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:background="@color/blanco"
+        android:elevation="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <Button
+            android:id="@+id/boton_escuchar_audiolibro"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="Escuchar\nAudiolibro"
+            android:background="@drawable/boton_verde"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:gravity="center"
+            app:backgroundTint="@null" />
+
+        <Button
+            android:id="@+id/boton_cancelar_detalle"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="Volver"
+            android:background="@drawable/boton_blanco_rectangular"
+            android:textColor="@color/gris_oscuro"
+            android:textSize="16sp"
+            app:backgroundTint="@null" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

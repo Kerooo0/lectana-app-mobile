@@ -70,14 +70,14 @@ public class DetalleCuentoActivity extends AppCompatActivity {
     
     private void configurarUISegunRol() {
         if (esEstudiante) {
-            // Cambiar el botón para estudiantes
-            botonSeleccionarCuento.setText("Escuchar Audiolibro");
-            botonSeleccionarCuento.setBackgroundResource(R.drawable.boton_verde);
-            botonSeleccionarCuento.setTextColor(getResources().getColor(android.R.color.white));
+            // El botón ya está configurado como "Escuchar Audiolibro" en el XML
             botonSeleccionarCuento.setVisibility(View.VISIBLE);
-            Log.d("DetalleCuento", "Botón configurado para estudiante");
+            Log.d("DetalleCuento", "Botón visible para estudiante");
         } else {
-            Log.d("DetalleCuento", "Botón configurado para docente/default");
+            // Para docentes, cambiar el texto del botón
+            botonSeleccionarCuento.setText("Seleccionar Cuento");
+            botonSeleccionarCuento.setVisibility(View.VISIBLE);
+            Log.d("DetalleCuento", "Botón configurado para docente");
         }
     }
 
@@ -90,7 +90,7 @@ public class DetalleCuentoActivity extends AppCompatActivity {
         tiempoPrincipalCuento = findViewById(R.id.tiempo_principal_cuento);
         descripcionCuento = findViewById(R.id.descripcion_cuento);
         imagenPrincipalCuento = findViewById(R.id.imagen_principal_cuento);
-        botonSeleccionarCuento = findViewById(R.id.boton_seleccionar_cuento);
+        botonSeleccionarCuento = findViewById(R.id.boton_escuchar_audiolibro);
         botonCancelarDetalle = findViewById(R.id.boton_cancelar_detalle);
         botonVerPdf = findViewById(R.id.boton_ver_pdf);
         progressBarDetalle = findViewById(R.id.progress_bar_detalle);
