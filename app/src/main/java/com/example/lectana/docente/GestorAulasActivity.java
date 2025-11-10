@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.lectana.R;
+import com.example.lectana.CrearNuevaAulaActivity;
 import com.example.lectana.VisualizarAulaActivity;
 import com.example.lectana.adaptadores.AdaptadorListaAulas;
 import com.example.lectana.auth.SessionManager;
@@ -68,6 +69,14 @@ public class GestorAulasActivity extends AppCompatActivity {
             botonVolver.setOnClickListener(v -> finish());
         }
 
+        android.widget.Button botonCrearAula = findViewById(R.id.botonCrearAula);
+        if (botonCrearAula != null) {
+            botonCrearAula.setOnClickListener(v -> {
+                Intent intent = new Intent(GestorAulasActivity.this, CrearNuevaAulaActivity.class);
+                startActivity(intent);
+            });
+        }
+
         Locale localeEs = new Locale("es", "ES");
         collatorEs = Collator.getInstance(localeEs);
         collatorEs.setStrength(Collator.PRIMARY);
@@ -109,6 +118,13 @@ public class GestorAulasActivity extends AppCompatActivity {
         });
 
         configurarBuscadorYOrden();
+        cargarAulas();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Recargar aulas cuando se regrese a esta pantalla (por ejemplo, después de crear una nueva aula)
         cargarAulas();
     }
 

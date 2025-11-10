@@ -19,7 +19,7 @@ import com.example.lectana.repository.AulasRepository;
 public class PerfilDocenteActivity extends AppCompatActivity {
 
     private ImageView botonVolverPerfil;
-    private ImageView botonEditarPerfil;
+    // private ImageView botonEditarPerfil; // Deshabilitado
     private TextView nombreDocentePerfil;
     private TextView especialidadDocentePerfil;
     private TextView emailDocentePerfil;
@@ -57,7 +57,7 @@ public class PerfilDocenteActivity extends AppCompatActivity {
 
     private void inicializarVistas() {
         botonVolverPerfil = findViewById(R.id.boton_volver_perfil);
-        botonEditarPerfil = findViewById(R.id.boton_editar_perfil);
+        // botonEditarPerfil = findViewById(R.id.boton_editar_perfil); // Deshabilitado
         nombreDocentePerfil = findViewById(R.id.nombre_docente_perfil);
         especialidadDocentePerfil = findViewById(R.id.especialidad_docente_perfil);
         emailDocentePerfil = findViewById(R.id.email_docente_perfil);
@@ -194,6 +194,8 @@ public class PerfilDocenteActivity extends AppCompatActivity {
             }
         });
 
+        // Botón de editar perfil deshabilitado
+        /*
         botonEditarPerfil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -202,6 +204,7 @@ public class PerfilDocenteActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        */
 
         botonCambiarPassword.setOnClickListener(new View.OnClickListener() {
             @Override
