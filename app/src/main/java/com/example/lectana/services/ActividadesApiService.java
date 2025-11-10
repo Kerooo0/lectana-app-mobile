@@ -144,5 +144,42 @@ public interface ActividadesApiService {
             @Path("alumno_id") int alumnoId,
             @Path("actividad_id") int actividadId
     );
+
+    // ============================================
+    // ENDPOINTS PARA CORRECCIÓN DE ACTIVIDADES
+    // ============================================
+    // NOTA: Para pendientes y corregidas, reutilizamos GET /api/docentes/actividades
+    // y filtramos en el frontend por resultados_actividad.sin_corregir
+
+    /**
+     * Corregir actividad de un estudiante
+     * POST /api/docentes/corregirActividad/:idActividad
+     */
+    @POST("docentes/corregirActividad/{idActividad}")
+    Call<ApiResponse<Void>> corregirActividad(
+            @Header("Authorization") String token,
+            @Path("idActividad") int idActividad,
+            @Body com.example.lectana.modelos.CorregirActividadRequest request
+    );
+
+    /**
+     * Obtener todas las respuestas de una pregunta específica
+     * GET /api/respuestas-usuario/pregunta/:id
+     */
+    @GET("respuestas-usuario/pregunta/{id}")
+    Call<ApiResponse<List<com.example.lectana.modelos.RespuestaUsuario>>> getRespuestasPregunta(
+            @Header("Authorization") String token,
+            @Path("id") int preguntaId
+    );
+
+    /**
+     * Obtener estadísticas de una actividad
+     * GET /api/respuestas-usuario/estadisticas/:id
+     */
+    @GET("respuestas-usuario/estadisticas/{id}")
+    Call<ApiResponse<com.example.lectana.modelos.EstadisticasActividad>> getEstadisticasActividad(
+            @Header("Authorization") String token,
+            @Path("id") int actividadId
+    );
 }
 

@@ -70,6 +70,15 @@
             android:name=".docente.GestionActividadesActivity"
             android:exported="false" />
         <activity
+            android:name=".docente.ListaTodasActividadesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".docente.ActividadesPendientesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".docente.ActividadesCorregidasActivity"
+            android:exported="false" />
+        <activity
             android:name=".docente.DetalleActividadActivity"
             android:exported="false" />
         <activity

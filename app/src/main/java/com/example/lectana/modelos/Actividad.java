@@ -15,6 +15,9 @@ public class Actividad {
     private List<Integer> aulas_ids;
     private CuentoApi cuento;
     
+    @com.google.gson.annotations.SerializedName("resultados_actividad")
+    private ResultadosActividad resultados_actividad;
+    
     // Campo local para rastrear si está completada (no viene del servidor)
     private boolean completada;
 
@@ -149,6 +152,14 @@ public class Actividad {
 
     public int getTotalAulas() {
         return aulas_ids != null ? aulas_ids.size() : 0;
+    }
+
+    public ResultadosActividad getResultados_actividad() {
+        return resultados_actividad;
+    }
+
+    public void setResultados_actividad(ResultadosActividad resultados_actividad) {
+        this.resultados_actividad = resultados_actividad;
     }
 }
 

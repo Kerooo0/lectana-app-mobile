@@ -69,15 +69,20 @@ public class DetalleCuentoActivity extends AppCompatActivity {
     }
     
     private void configurarUISegunRol() {
-        if (esEstudiante) {
-            // El botón ya está configurado como "Escuchar Audiolibro" en el XML
+        Intent intent = getIntent();
+        String modo = intent != null ? intent.getStringExtra("modo") : null;
+        boolean esModoExplorar = "explorar".equals(modo);
+        
+        if (esEstudiante || esModoExplorar) {
+            // Para estudiantes o docentes en modo explorar: mostrar botón de audiolibro
+            botonSeleccionarCuento.setText("Escuchar Audiolibro");
             botonSeleccionarCuento.setVisibility(View.VISIBLE);
-            Log.d("DetalleCuento", "Botón visible para estudiante");
+            Log.d("DetalleCuento", "Botón visible para " + (esEstudiante ? "estudiante" : "docente en modo explorar"));
         } else {
-            // Para docentes, cambiar el texto del botón
+            // Para docentes en modo asignar: mostrar botón de seleccionar
             botonSeleccionarCuento.setText("Seleccionar Cuento");
             botonSeleccionarCuento.setVisibility(View.VISIBLE);
-            Log.d("DetalleCuento", "Botón configurado para docente");
+            Log.d("DetalleCuento", "Botón configurado para docente en modo asignar");
         }
     }
 
@@ -100,12 +105,6 @@ public class DetalleCuentoActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null) {
             int idCuento = intent.getIntExtra("cuento_id", 0);
-            String modo = intent.getStringExtra("modo");
-            
-            // Para docentes: ocultar botón si viene del modo explorar
-            if (!esEstudiante && "explorar".equals(modo)) {
-                botonSeleccionarCuento.setVisibility(View.GONE);
-            }
             
             if (idCuento > 0) {
                 // Cargar datos completos desde la API
@@ -207,8 +206,12 @@ public class DetalleCuentoActivity extends AppCompatActivity {
         botonSeleccionarCuento.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (esEstudiante) {
-                    // Para estudiantes: abrir reproductor de audiolibro
+                Intent intent = getIntent();
+                String modo = intent != null ? intent.getStringExtra("modo") : null;
+                boolean esModoExplorar = "explorar".equals(modo);
+                
+                if (esEstudiante || esModoExplorar) {
+                    // Para estudiantes o docentes en modo explorar: abrir reproductor de audiolibro
                     if (cuentoSeleccionado != null) {
                         abrirReproductorAudio();
                     } else {
@@ -216,7 +219,7 @@ public class DetalleCuentoActivity extends AppCompatActivity {
                             "Error al cargar el cuento", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    // Para docentes: marcar el cuento como seleccionado y regresar
+                    // Para docentes en modo asignar: marcar el cuento como seleccionado y regresar
                     Intent resultadoIntent = new Intent();
                     resultadoIntent.putExtra("cuento_seleccionado", true);
                     resultadoIntent.putExtra("id_cuento", cuentoSeleccionado.getId());

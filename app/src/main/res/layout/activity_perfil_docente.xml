@@ -37,6 +37,8 @@
             android:gravity="center"
             android:layout_marginHorizontal="16dp" />
 
+        <!-- Botón de editar perfil deshabilitado -->
+        <!--
         <ImageView
             android:id="@+id/boton_editar_perfil"
             android:layout_width="32dp"
@@ -44,7 +46,9 @@
             android:src="@drawable/ic_edit"
             android:tint="@android:color/white"
             android:contentDescription="Editar perfil"
-            android:padding="4dp" />
+            android:padding="4dp"
+            android:visibility="gone" />
+        -->
 
     </LinearLayout>
 

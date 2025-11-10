@@ -487,6 +487,7 @@ public class BibliotecaCuentosActivity extends AppCompatActivity implements Adap
         intent.putExtra("cuento_edad", cuento.getEdadRecomendada());
         intent.putExtra("cuento_duracion", cuento.getTiempoLectura());
         intent.putExtra("cuento_descripcion", cuento.getDescripcion());
+        intent.putExtra("modo", MODO_EXPLORAR); // Pasar el modo explorar
         startActivity(intent);
     }
 
