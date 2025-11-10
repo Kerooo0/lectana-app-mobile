@@ -70,6 +70,27 @@ public interface AlumnoApiService {
             @Body ActualizarPerfilRequest request
     );
 
+    /**
+     * Unirse a un aula mediante código de acceso
+     * POST /alumnos/unirse-aula
+     * Rol: alumno
+     */
+    @POST("alumnos/unirse-aula")
+    Call<ApiResponse<UnirseAulaResponse>> unirseAula(
+            @Header("Authorization") String token,
+            @Body UnirseAulaRequest request
+    );
+
+    /**
+     * Salir del aula actual
+     * POST /alumnos/salir-aula
+     * Rol: alumno
+     */
+    @POST("alumnos/salir-aula")
+    Call<ApiResponse<SalirAulaResponse>> salirAula(
+            @Header("Authorization") String token
+    );
+
     // ============================================
     // MODELOS DE REQUEST/RESPONSE
     // ============================================
@@ -433,7 +454,7 @@ public interface AlumnoApiService {
     }
 
     /**
-     * Request para unirse a un aula mediante código
+     * Request para unirse a un aula
      */
     class UnirseAulaRequest {
         @SerializedName("codigo_acceso")
@@ -449,6 +470,106 @@ public interface AlumnoApiService {
 
         public void setCodigoAcceso(String codigoAcceso) {
             this.codigoAcceso = codigoAcceso;
+        }
+    }
+
+    /**
+     * Response al unirse a un aula
+     */
+    class UnirseAulaResponse {
+        @SerializedName("mensaje")
+        private String mensaje;
+
+        @SerializedName("aula")
+        private Aula aula;
+
+        public String getMensaje() {
+            return mensaje;
+        }
+
+        public void setMensaje(String mensaje) {
+            this.mensaje = mensaje;
+        }
+
+        public Aula getAula() {
+            return aula;
+        }
+
+        public void setAula(Aula aula) {
+            this.aula = aula;
+        }
+
+        public static class Aula {
+            @SerializedName("id_aula")
+            private int idAula;
+
+            @SerializedName("nombre_aula")
+            private String nombreAula;
+
+            @SerializedName("grado")
+            private String grado;
+
+            @SerializedName("codigo_acceso")
+            private String codigoAcceso;
+
+            public int getIdAula() {
+                return idAula;
+            }
+
+            public void setIdAula(int idAula) {
+                this.idAula = idAula;
+            }
+
+            public String getNombreAula() {
+                return nombreAula;
+            }
+
+            public void setNombreAula(String nombreAula) {
+                this.nombreAula = nombreAula;
+            }
+
+            public String getGrado() {
+                return grado;
+            }
+
+            public void setGrado(String grado) {
+                this.grado = grado;
+            }
+
+            public String getCodigoAcceso() {
+                return codigoAcceso;
+            }
+
+            public void setCodigoAcceso(String codigoAcceso) {
+                this.codigoAcceso = codigoAcceso;
+            }
+        }
+    }
+
+    /**
+     * Response al salir de un aula
+     */
+    class SalirAulaResponse {
+        @SerializedName("mensaje")
+        private String mensaje;
+
+        @SerializedName("aula_anterior")
+        private String aulaAnterior;
+
+        public String getMensaje() {
+            return mensaje;
+        }
+
+        public void setMensaje(String mensaje) {
+            this.mensaje = mensaje;
+        }
+
+        public String getAulaAnterior() {
+            return aulaAnterior;
+        }
+
+        public void setAulaAnterior(String aulaAnterior) {
+            this.aulaAnterior = aulaAnterior;
         }
     }
 }
