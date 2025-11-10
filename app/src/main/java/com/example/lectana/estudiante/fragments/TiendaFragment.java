@@ -164,9 +164,88 @@ public class TiendaFragment extends Fragment implements ItemsAdapter.OnItemClick
         });
     }
 
+    /**
+     * Carga items disponibles en la tienda (que el alumno NO ha comprado)
+     */
     private void cargarItems() {
-        // Cargar todos los items disponibles (usar tipo "avatar" por defecto o cargar todos los tipos)
-        cargarItemsPorTipo("avatar");
+        if (progressBarItems != null) {
+            progressBarItems.setVisibility(View.VISIBLE);
+        }
+        recyclerViewItems.setVisibility(View.GONE);
+
+        String token = "Bearer " + sessionManager.getToken();
+
+        itemsApiService.obtenerItemsDisponibles(token).enqueue(new Callback<ItemsResponse>() {
+            @Override
+            public void onResponse(Call<ItemsResponse> call, Response<ItemsResponse> response) {
+                if (progressBarItems != null) {
+                    progressBarItems.setVisibility(View.GONE);
+                }
+
+                if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
+                    Log.d(TAG, "Items disponibles cargados: " + response.body().getData().size());
+                    itemsAdapter.setItems(response.body().getData());
+                    recyclerViewItems.setVisibility(View.VISIBLE);
+                } else {
+                    Log.e(TAG, "Error al cargar items disponibles: " + response.message());
+                    Toast.makeText(getContext(), "No hay items disponibles", Toast.LENGTH_SHORT).show();
+                    recyclerViewItems.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ItemsResponse> call, Throwable t) {
+                if (progressBarItems != null) {
+                    progressBarItems.setVisibility(View.GONE);
+                }
+                recyclerViewItems.setVisibility(View.VISIBLE);
+                
+                Log.e(TAG, "Error de red al cargar items disponibles", t);
+                Toast.makeText(getContext(), "Error de conexión", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
+     * Carga los items que el alumno YA compró
+     */
+    private void cargarMisItems() {
+        if (progressBarItems != null) {
+            progressBarItems.setVisibility(View.VISIBLE);
+        }
+        recyclerViewItems.setVisibility(View.GONE);
+
+        String token = "Bearer " + sessionManager.getToken();
+
+        itemsApiService.obtenerMisItems(token).enqueue(new Callback<ItemsResponse>() {
+            @Override
+            public void onResponse(Call<ItemsResponse> call, Response<ItemsResponse> response) {
+                if (progressBarItems != null) {
+                    progressBarItems.setVisibility(View.GONE);
+                }
+
+                if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
+                    Log.d(TAG, "Items comprados cargados: " + response.body().getData().size());
+                    itemsAdapter.setItems(response.body().getData());
+                    recyclerViewItems.setVisibility(View.VISIBLE);
+                } else {
+                    Log.e(TAG, "Error al cargar items comprados: " + response.message());
+                    Toast.makeText(getContext(), "No tienes items comprados", Toast.LENGTH_SHORT).show();
+                    recyclerViewItems.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ItemsResponse> call, Throwable t) {
+                if (progressBarItems != null) {
+                    progressBarItems.setVisibility(View.GONE);
+                }
+                recyclerViewItems.setVisibility(View.VISIBLE);
+                
+                Log.e(TAG, "Error de red al cargar items comprados", t);
+                Toast.makeText(getContext(), "Error de conexión", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void cargarItemsPorTipo(String tipo) {
@@ -216,7 +295,7 @@ public class TiendaFragment extends Fragment implements ItemsAdapter.OnItemClick
 
         String token = "Bearer " + sessionManager.getToken();
 
-        itemsApiService.obtenerItemsDesbloqueados(token).enqueue(new Callback<ItemsResponse>() {
+        itemsApiService.obtenerMisItems(token).enqueue(new Callback<ItemsResponse>() {
             @Override
             public void onResponse(Call<ItemsResponse> call, Response<ItemsResponse> response) {
                 if (progressBarItems != null) {
@@ -265,54 +344,41 @@ public class TiendaFragment extends Fragment implements ItemsAdapter.OnItemClick
     }
 
     private void comprarItem(Item item) {
+        // Verificar puntos suficientes
+        if (puntosActualesUsuario < item.getPrecioPuntos()) {
+            Toast.makeText(getContext(), "No tienes suficientes puntos", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
         String token = "Bearer " + sessionManager.getToken();
         
-        ItemsApiService.DesbloquearItemRequest request = new ItemsApiService.DesbloquearItemRequest(item.getId());
+        // Restar puntos (cantidad NEGATIVA)
+        PuntosApiService.PuntosRequest request = new PuntosApiService.PuntosRequest(-item.getPrecioPuntos());
 
-        itemsApiService.desbloquearItem(token, request).enqueue(new Callback<ApiResponse<Object>>() {
-            @Override
-            public void onResponse(Call<ApiResponse<Object>> call, Response<ApiResponse<Object>> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
-                    // Restar puntos usando la API
-                    restarPuntosDelItem(item.getPrecioPuntos());
-                    
-                    Toast.makeText(getContext(), "¡Comprado exitosamente!", Toast.LENGTH_SHORT).show();
-                    // Recargar items para actualizar estado
-                    recargarItemsSegunCategoria();
-                } else {
-                    Toast.makeText(getContext(), "Error: No tienes suficientes puntos", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ApiResponse<Object>> call, Throwable t) {
-                Log.e(TAG, "Error al comprar item", t);
-                Toast.makeText(getContext(), "Error de conexión", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-    
-    private void restarPuntosDelItem(int precio) {
-        String token = "Bearer " + sessionManager.getToken();
-        
-        // Puntos negativos para restar
-        PuntosApiService.PuntosRequest request = new PuntosApiService.PuntosRequest(-precio);
-        
         puntosApiService.canjearPuntos(token, request).enqueue(new Callback<PuntosResponse>() {
             @Override
             public void onResponse(Call<PuntosResponse> call, Response<PuntosResponse> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
-                    // Actualizar puntos en la UI
-                    cargarPuntosUsuario();
-                    Log.d(TAG, "Puntos actualizados después de la compra");
+                    // Actualizar puntos locales
+                    puntosActualesUsuario = response.body().getData().getPuntos();
+                    
+                    Toast.makeText(getContext(), "¡Comprado exitosamente! Puntos restantes: " + puntosActualesUsuario, Toast.LENGTH_SHORT).show();
+                    
+                    // Recargar items disponibles
+                    recargarItemsSegunCategoria();
                 } else {
-                    Log.e(TAG, "Error al actualizar puntos: " + response.message());
+                    String error = "Error al procesar compra";
+                    if (response.body() != null && response.body().getMensaje() != null) {
+                        error = response.body().getMensaje();
+                    }
+                    Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<PuntosResponse> call, Throwable t) {
-                Log.e(TAG, "Error al actualizar puntos", t);
+                Log.e(TAG, "Error al canjear puntos", t);
+                Toast.makeText(getContext(), "Error de conexión al comprar", Toast.LENGTH_SHORT).show();
             }
         });
     }

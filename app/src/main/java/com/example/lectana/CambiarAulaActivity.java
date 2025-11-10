@@ -146,28 +146,54 @@ public class CambiarAulaActivity extends AppCompatActivity {
 
         String token = "Bearer " + sessionManager.getToken();
         
-        // Como no hay endpoint directo para buscar por código, tenemos que pedirle al backend que agregue uno
-        // Por ahora mostramos un mensaje indicando que necesita implementación backend
-        Toast.makeText(this, 
-            "Esta funcionalidad requiere que el backend implemente:\n" +
-            "1. POST /api/alumnos/unirse-aula (con codigo_acceso)\n" +
-            "O alternativamente:\n" +
-            "2. GET /api/aulas/buscar-por-codigo/:codigo", 
-            Toast.LENGTH_LONG).show();
-        
-        mostrarCargando(false);
-        botonCambiarAula.setEnabled(true);
-        
-        // TODO: Cuando el backend implemente el endpoint, usar este código:
-        /*
-        // Opción A: Si implementan POST /api/alumnos/unirse-aula
+        // Usar el endpoint POST /alumnos/unirse-aula
         AlumnoApiService.UnirseAulaRequest request = new AlumnoApiService.UnirseAulaRequest(codigo);
         Call<ApiResponse<AlumnoApiService.UnirseAulaResponse>> call = alumnoApiService.unirseAula(token, request);
         
-        // Opción B: Si implementan GET /aulas/buscar-por-codigo/:codigo
-        // 1. Primero buscar el aula por código para obtener su ID
-        // 2. Luego actualizar perfil con ese ID usando actualizarPerfilAlumno
-        */
+        call.enqueue(new Callback<ApiResponse<AlumnoApiService.UnirseAulaResponse>>() {
+            @Override
+            public void onResponse(@NonNull Call<ApiResponse<AlumnoApiService.UnirseAulaResponse>> call, 
+                                 @NonNull Response<ApiResponse<AlumnoApiService.UnirseAulaResponse>> response) {
+                mostrarCargando(false);
+                botonCambiarAula.setEnabled(true);
+                
+                if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
+                    ApiResponse<AlumnoApiService.UnirseAulaResponse> apiResponse = response.body();
+                    AlumnoApiService.UnirseAulaResponse data = apiResponse.getData();
+                    
+                    if (data != null && data.getAula() != null) {
+                        String nombreAula = data.getAula().getNombreAula();
+                        Toast.makeText(CambiarAulaActivity.this, 
+                            "¡Te has unido a " + nombreAula + "!", 
+                            Toast.LENGTH_LONG).show();
+                        
+                        // Actualizar UI
+                        textoAulaActual.setText("Aula actual: " + nombreAula);
+                        textoAulaActual.setVisibility(View.VISIBLE);
+                        campoCodigo.setText("");
+                        
+                        // Opcional: cerrar la actividad después de 2 segundos
+                        campoCodigo.postDelayed(() -> finish(), 2000);
+                    } else {
+                        Toast.makeText(CambiarAulaActivity.this, 
+                            data != null ? data.getMensaje() : "Error desconocido", 
+                            Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    handleError(response.code(), "Error al cambiar de aula");
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ApiResponse<AlumnoApiService.UnirseAulaResponse>> call, 
+                                @NonNull Throwable t) {
+                mostrarCargando(false);
+                botonCambiarAula.setEnabled(true);
+                Toast.makeText(CambiarAulaActivity.this, 
+                    "Error de conexión: " + t.getMessage(), 
+                    Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void handleError(int code, String defaultMessage) {
