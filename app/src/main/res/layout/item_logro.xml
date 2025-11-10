@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Imagen del logro -->
+        <ImageView
+            android:id="@+id/imagen_logro"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center_horizontal"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_check_circle"
+            android:contentDescription="@string/imagen_logro" />
+
+        <!-- Nombre del logro -->
+        <TextView
+            android:id="@+id/nombre_logro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Logro"
+            android:textAlignment="center"
+            android:textColor="@color/negro"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <!-- Descripción -->
+        <TextView
+            android:id="@+id/descripcion_logro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Descripción del logro"
+            android:textAlignment="center"
+            android:textColor="@color/gris_oscuro"
+            android:textSize="12sp" />
+
+        <!-- Barra de progreso -->
+        <ProgressBar
+            android:id="@+id/progreso_logro"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:layout_marginTop="8dp"
+            android:max="100"
+            android:progress="0"
+            android:progressTint="@color/verde_principal" />
+
+        <!-- Texto de progreso -->
+        <TextView
+            android:id="@+id/texto_progreso_logro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="0%"
+            android:textAlignment="center"
+            android:textColor="@color/gris_oscuro"
+            android:textSize="12sp" />
+
+        <!-- Badge de desbloqueado -->
+        <TextView
+            android:id="@+id/badge_desbloqueado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/boton_verde"
+            android:paddingStart="12dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="4dp"
+            android:text="✓ Desbloqueado"
+            android:textColor="@color/blanco"
+            android:textSize="12sp"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

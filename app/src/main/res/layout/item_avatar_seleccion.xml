@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="16dp">
+
+        <!-- Imagen del avatar -->
+        <ImageView
+            android:id="@+id/imagen_avatar_item"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/ic_astronaut"
+            android:scaleType="centerCrop"
+            android:background="@drawable/circle_background_azul"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Nombre del avatar -->
+        <TextView
+            android:id="@+id/nombre_avatar_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Astronauta"
+            android:textColor="@color/gris_oscuro"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp" />
+
+        <!-- Badge de equipado (opcional) -->
+        <TextView
+            android:id="@+id/badge_equipado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="✓ Equipado"
+            android:textColor="@color/verde"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:background="@drawable/boton_verde"
+            android:padding="4dp"
+            android:paddingHorizontal="12dp" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

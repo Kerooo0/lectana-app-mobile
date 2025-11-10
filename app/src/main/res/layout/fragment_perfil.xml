@@ -14,7 +14,7 @@
         android:paddingBottom="100dp"
         android:clipToPadding="false">
 
-        <!-- Sección de Perfil -->
+        <!-- Secci├│n de Perfil -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
                 android:padding="24dp"
                 android:gravity="center_horizontal">
 
-                <!-- Foto de perfil con botón de editar -->
+                <!-- Foto de perfil con bot├│n de editar -->
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -107,7 +107,7 @@
 
         </androidx.cardview.widget.CardView>
 
-        <!-- Sección Mis Logros -->
+        <!-- Secci├│n Mis Logros -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -157,7 +157,7 @@
                         android:orientation="horizontal"
                         android:layout_marginBottom="16dp">
 
-                        <!-- Primer Cuento Leído -->
+                        <!-- Primer Cuento Le├¡do -->
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -178,7 +178,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Primer Cuento Leído"
+                                android:text="Primer Cuento Le├¡do"
                                 android:textColor="@color/gris_oscuro"
                                 android:textSize="12sp"
                                 android:textStyle="bold"
@@ -231,7 +231,7 @@
 
                         </LinearLayout>
 
-                        <!-- Racha de 7 Días -->
+                        <!-- Racha de 7 D├¡as -->
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -252,7 +252,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Racha de 7 Días"
+                                android:text="Racha de 7 D├¡as"
                                 android:textColor="@color/gris_oscuro"
                                 android:textSize="12sp"
                                 android:textStyle="bold"
@@ -358,7 +358,7 @@
 
         </androidx.cardview.widget.CardView>
 
-        <!-- Sección Mis Avatares Desbloqueados -->
+        <!-- Secci├│n Mis Avatares Desbloqueados -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -493,7 +493,7 @@
 
         </androidx.cardview.widget.CardView>
 
-        <!-- Sección Configuración de Cuenta -->
+        <!-- Secci├│n Configuraci├│n de Cuenta -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -541,7 +541,7 @@
 
                 </LinearLayout>
 
-                <!-- Cambiar Contraseña -->
+                <!-- Cambiar Contrasena -->
                 <LinearLayout
                     android:id="@+id/opcion_cambiar_password"
                     android:layout_width="match_parent"
@@ -549,7 +549,10 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:paddingVertical="12dp"
-                    android:layout_marginBottom="8dp">
+                    android:layout_marginBottom="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
 
                     <ImageView
                         android:layout_width="24dp"
@@ -562,7 +565,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Cambiar Contraseña"
+                        android:text="Cambiar Contrasena"
                         android:textColor="@color/gris_oscuro"
                         android:textSize="16sp" />
 
@@ -582,7 +585,10 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:paddingVertical="12dp"
-                    android:layout_marginBottom="8dp">
+                    android:layout_marginBottom="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
 
                     <ImageView
                         android:layout_width="24dp"
@@ -640,7 +646,6 @@
 
                 </LinearLayout>
 
-                <!-- Cerrar Sesión -->
                 <LinearLayout
                     android:id="@+id/opcion_cerrar_sesion"
                     android:layout_width="match_parent"
@@ -660,7 +665,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Cerrar Sesión"
+                        android:text="Cerrar Sesion"
                         android:textColor="@color/rojo"
                         android:textSize="16sp"
                         android:textStyle="bold" />

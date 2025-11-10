@@ -242,5 +242,10 @@
 
     <string name="errorPassword">La contraseña debe contener al menos una mayúscula, un número y un carácter especial.</string>
     <string name="LongitudPasswordError">La contraseña debe contener al menos 6 caracteres.</string>
+    
+    <!-- Strings faltantes para logros y tienda -->
+    <string name="imagen_logro">Imagen del logro</string>
+    <string name="imagen_item">Imagen del item</string>
+    <string name="puntos">Puntos</string>
 
 </resources>

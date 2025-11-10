@@ -21,6 +21,9 @@ public class ApiClient {
     private static EstudiantesApiService estudiantesApiService;
     private static AuthApiService authApiService;
     private static AlumnoApiService alumnoApiService;
+    private static LogrosApiService logrosApiService;
+    private static ItemsApiService itemsApiService;
+    private static PuntosApiService puntosApiService;
 
     private static OkHttpClient getOkHttpClient() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -87,6 +90,27 @@ public class ApiClient {
             alumnoApiService = getRetrofitInstance().create(AlumnoApiService.class);
         }
         return alumnoApiService;
+    }
+
+    public static LogrosApiService getLogrosApiService() {
+        if (logrosApiService == null) {
+            logrosApiService = getRetrofitInstance().create(LogrosApiService.class);
+        }
+        return logrosApiService;
+    }
+
+    public static ItemsApiService getItemsApiService() {
+        if (itemsApiService == null) {
+            itemsApiService = getRetrofitInstance().create(ItemsApiService.class);
+        }
+        return itemsApiService;
+    }
+    
+    public static PuntosApiService getPuntosApiService() {
+        if (puntosApiService == null) {
+            puntosApiService = getRetrofitInstance().create(PuntosApiService.class);
+        }
+        return puntosApiService;
     }
     
     // Alias para compatibilidad
