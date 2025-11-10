@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.example.lectana.models.AlumnoRegistro;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -56,8 +57,10 @@ public class RegistroAlumnoClient {
             datosRegistro.put("password", alumno.getPassword()); // El backend se encarga del hash
             datosRegistro.put("edad", alumno.getEdad());
             
-            // Campo opcional para vincular al aula
-            // datosRegistro.put("codigo_acceso", "ABC123"); // Se puede agregar después
+            // Campo obligatorio para vincular al aula
+            if (alumno.getCodigoAula() != null && !alumno.getCodigoAula().isEmpty()) {
+                datosRegistro.put("codigo_acceso", alumno.getCodigoAula());
+            }
 
             String url = baseUrl.endsWith("/") ? baseUrl + "api/auth/registro-form-alumno" : baseUrl + "/api/auth/registro-form-alumno";
 
@@ -94,11 +97,27 @@ public class RegistroAlumnoClient {
                             
                             if (ok) {
                                 String message = jsonResponse.optString("message", "¡Registro exitoso!");
+                                
+                                // Crear un objeto combinado con token + user data
+                                JSONObject combinedData = new JSONObject();
+                                
+                                // Copiar el token al objeto combinado
+                                String token = jsonResponse.optString("token", "");
+                                combinedData.put("token", token);
+                                
+                                // Copiar todos los datos del user
                                 JSONObject user = jsonResponse.optJSONObject("user");
-                                if (user == null) {
-                                    user = new JSONObject();
+                                if (user != null) {
+                                    JSONArray names = user.names();
+                                    if (names != null) {
+                                        for (int i = 0; i < names.length(); i++) {
+                                            String key = names.getString(i);
+                                            combinedData.put(key, user.get(key));
+                                        }
+                                    }
                                 }
-                                callback.onSuccess(message, user);
+                                
+                                callback.onSuccess(message, combinedData);
                             } else {
                                 String error = jsonResponse.optString("error", "Error desconocido");
                                 callback.onError(error);

@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.example.lectana.R;
 import com.example.lectana.clases.validaciones.ValidacionesPassword;
+import com.example.lectana.models.AlumnoRegistro;
 
 
 public class DatosAccesoAlumno extends Fragment {
@@ -62,6 +63,8 @@ public class DatosAccesoAlumno extends Fragment {
 
         EditText coincidenciaPasswordAlumno = vista.findViewById(R.id.editTextRepetirPasswordAlumno);
 
+        EditText codigoAulaInput = vista.findViewById(R.id.editTextCodigoAula);
+
         volver.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -82,11 +85,26 @@ public class DatosAccesoAlumno extends Fragment {
             public void onClick(View view) {
 
                 if (passwordsValidas && esValida) {
-                    // Guardar email y password en el manager
+                    // Obtener código del aula
+                    String codigoAula = codigoAulaInput.getText().toString().trim().toUpperCase();
+                    
+                    // Validar que tenga exactamente 6 caracteres
+                    if (codigoAula.isEmpty() || codigoAula.length() != 6) {
+                        errorPassword.setVisibility(View.VISIBLE);
+                        errorPassword.setText("El código del aula debe tener 6 caracteres");
+                        return;
+                    }
+                    
+                    // Guardar email, password y código del aula
                     String email = registroManager.getAlumnoRegistro().getEmail();
                     registroManager.guardarDatosAcceso(email, pass1);
                     
+                    // Guardar código del aula
+                    AlumnoRegistro alumno = registroManager.getAlumnoRegistro();
+                    alumno.setCodigoAula(codigoAula);
+                    
                     Log.d("DatosAccesoAlumno", "Password guardado para: " + email);
+                    Log.d("DatosAccesoAlumno", "Código de aula: " + codigoAula);
 
                     Fragment siguiente = new ConfirmacionDatosAlumnos();
                     FragmentManager fragmentManager = getParentFragmentManager();

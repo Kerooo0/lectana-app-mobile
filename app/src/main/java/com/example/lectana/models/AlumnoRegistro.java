@@ -16,6 +16,7 @@ public class AlumnoRegistro {
     private String fechaNacimiento;  // Formato: "YYYY-MM-DD" o "DD/MM/YYYY"
     private String grado;  // Ej: "1", "2", "3", "4", "5", "6" (primaria) o "1", "2", "3", "4", "5" (secundaria)
     private String nacionalidad;
+    private String codigoAula;  // Código de 6 caracteres para unirse a un aula
 
     public AlumnoRegistro() {
     }
@@ -80,5 +81,13 @@ public class AlumnoRegistro {
 
     public void setGrado(String grado) {
         this.grado = grado;
+    }
+
+    public String getCodigoAula() {
+        return codigoAula;
+    }
+
+    public void setCodigoAula(String codigoAula) {
+        this.codigoAula = codigoAula;
     }
 }

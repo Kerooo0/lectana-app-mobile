@@ -161,12 +161,27 @@ public class ConfirmacionDatosAlumnos extends Fragment {
                         // Guardar sesión
                         sessionManager.saveSession(token, role, userData);
                         
-                        Log.d("ConfirmacionAlumno", "✅ SESIÓN GUARDADA AUTOMÁTICAMENTE");
-                        Log.d("ConfirmacionAlumno", "✅ Token: " + token);
+                        Log.d("ConfirmacionAlumno", "✅ SESIÓN GUARDADA - Token: " + token);
                         Log.d("ConfirmacionAlumno", "✅ Role: " + role);
+                        
+                        // Extraer y guardar datos del alumno
+                        JSONObject alumnoData = user.optJSONObject("alumno");
+                        if (alumnoData != null) {
+                            int alumnoId = alumnoData.optInt("id_alumno", 0);
+                            int aulaId = alumnoData.optInt("aula_id_aula", 0);
+                            
+                            Log.d("ConfirmacionAlumno", "✅ Alumno ID: " + alumnoId + ", Aula ID: " + aulaId);
+                            
+                            // Guardar IDs del alumno
+                            if (alumnoId > 0) {
+                                sessionManager.saveAlumnoData(alumnoId, aulaId);
+                                Log.d("ConfirmacionAlumno", "✅ Datos del alumno guardados correctamente");
+                            }
+                        }
                         
                     } catch (Exception e) {
                         Log.e("ConfirmacionAlumno", "❌ Error guardando sesión: " + e.getMessage());
+                        e.printStackTrace();
                     }
 
                     // Limpiar datos guardados
