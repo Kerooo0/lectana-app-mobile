@@ -7,24 +7,28 @@ public class ModeloActividadDetallada {
     private String tipoActividad1;
     private int estudiantesActividad1;
     private String estadoActividad1;
+    private String idActividad1;
     private String nombreActividad2;
     private String tipoActividad2;
     private int estudiantesActividad2;
     private String estadoActividad2;
+    private String idActividad2;
 
     public ModeloActividadDetallada(String id, String tituloHistoria, 
-                                   String nombreActividad1, String tipoActividad1, int estudiantesActividad1, String estadoActividad1,
-                                   String nombreActividad2, String tipoActividad2, int estudiantesActividad2, String estadoActividad2) {
+                                   String nombreActividad1, String tipoActividad1, int estudiantesActividad1, String estadoActividad1, String idActividad1,
+                                   String nombreActividad2, String tipoActividad2, int estudiantesActividad2, String estadoActividad2, String idActividad2) {
         this.id = id;
         this.tituloHistoria = tituloHistoria;
         this.nombreActividad1 = nombreActividad1;
         this.tipoActividad1 = tipoActividad1;
         this.estudiantesActividad1 = estudiantesActividad1;
         this.estadoActividad1 = estadoActividad1;
+        this.idActividad1 = idActividad1;
         this.nombreActividad2 = nombreActividad2;
         this.tipoActividad2 = tipoActividad2;
         this.estudiantesActividad2 = estudiantesActividad2;
         this.estadoActividad2 = estadoActividad2;
+        this.idActividad2 = idActividad2;
     }
 
     // Getters
@@ -34,10 +38,12 @@ public class ModeloActividadDetallada {
     public String getTipoActividad1() { return tipoActividad1; }
     public int getEstudiantesActividad1() { return estudiantesActividad1; }
     public String getEstadoActividad1() { return estadoActividad1; }
+    public String getIdActividad1() { return idActividad1; }
     public String getNombreActividad2() { return nombreActividad2; }
     public String getTipoActividad2() { return tipoActividad2; }
     public int getEstudiantesActividad2() { return estudiantesActividad2; }
     public String getEstadoActividad2() { return estadoActividad2; }
+    public String getIdActividad2() { return idActividad2; }
 
     // Setters
     public void setId(String id) { this.id = id; }
@@ -46,8 +52,10 @@ public class ModeloActividadDetallada {
     public void setTipoActividad1(String tipoActividad1) { this.tipoActividad1 = tipoActividad1; }
     public void setEstudiantesActividad1(int estudiantesActividad1) { this.estudiantesActividad1 = estudiantesActividad1; }
     public void setEstadoActividad1(String estadoActividad1) { this.estadoActividad1 = estadoActividad1; }
+    public void setIdActividad1(String idActividad1) { this.idActividad1 = idActividad1; }
     public void setNombreActividad2(String nombreActividad2) { this.nombreActividad2 = nombreActividad2; }
     public void setTipoActividad2(String tipoActividad2) { this.tipoActividad2 = tipoActividad2; }
     public void setEstudiantesActividad2(int estudiantesActividad2) { this.estudiantesActividad2 = estudiantesActividad2; }
     public void setEstadoActividad2(String estadoActividad2) { this.estadoActividad2 = estadoActividad2; }
+    public void setIdActividad2(String idActividad2) { this.idActividad2 = idActividad2; }
 }

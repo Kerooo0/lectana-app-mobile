@@ -64,12 +64,15 @@
 
             <!-- Actividad 1 -->
             <LinearLayout
+                android:id="@+id/contenedor_actividad_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@drawable/fondo_actividad"
                 android:padding="16dp"
-                android:layout_marginBottom="8dp">
+                android:layout_marginBottom="8dp"
+                android:clickable="true"
+                android:focusable="true">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -164,11 +167,14 @@
 
             <!-- Actividad 2 -->
             <LinearLayout
+                android:id="@+id/contenedor_actividad_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@drawable/fondo_actividad"
-                android:padding="16dp">
+                android:padding="16dp"
+                android:clickable="true"
+                android:focusable="true">
 
                 <LinearLayout
                     android:layout_width="match_parent"

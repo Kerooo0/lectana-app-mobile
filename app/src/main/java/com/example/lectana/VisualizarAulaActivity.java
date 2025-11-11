@@ -220,6 +220,12 @@ public class VisualizarAulaActivity extends AppCompatActivity {
             }
         });
         adaptadorActividadesPorCuento = new AdaptadorActividadesPorCuento(listaCuentosConActividades);
+        adaptadorActividadesPorCuento.setOnActividadClickListener(new AdaptadorActividadesPorCuento.OnActividadClickListener() {
+            @Override
+            public void onActividadClick(String actividadId) {
+                irADetalleActividad(actividadId);
+            }
+        });
         adaptadorProgresoEstudiantes = new AdaptadorProgresoEstudiantes(listaProgresoEstudiantes);
     }
 
@@ -527,9 +533,7 @@ public class VisualizarAulaActivity extends AppCompatActivity {
         if (listaCuentosDetallados == null || listaCuentosDetallados.isEmpty()) {
             mostrarEstadoVacio(true);
             textoEstadoVacio.setText("No hay cuentos asignados");
-            botonAccionEstadoVacio.setText("Gestionar cuentos");
-            botonAccionEstadoVacio.setVisibility(View.VISIBLE);
-            botonAccionEstadoVacio.setOnClickListener(v -> mostrarOpcionesConfiguracion());
+            botonAccionEstadoVacio.setVisibility(View.GONE);
         } else {
             mostrarEstadoVacio(false);
             recyclerViewContenido.setAdapter(adaptadorCuentosDetallados);
@@ -661,10 +665,12 @@ public class VisualizarAulaActivity extends AppCompatActivity {
                     act1.getTipoDisplay(),
                     0, // Por ahora usar valor por defecto para estudiantes
                     "Sin completar",
+                    String.valueOf(act1.getId_actividad()),
                     act2 != null ? act2.getDescripcion() : "",
                     act2 != null ? act2.getTipoDisplay() : "",
                     0, // Por ahora usar valor por defecto para estudiantes
-                    act2 != null ? "Sin completar" : ""
+                    act2 != null ? "Sin completar" : "",
+                    act2 != null ? String.valueOf(act2.getId_actividad()) : ""
                 );
                 
                 actividadesDetalladas.add(actividadDetallada);
@@ -776,6 +782,18 @@ public class VisualizarAulaActivity extends AppCompatActivity {
         intent.putExtra("progreso", estudiante.getProgreso());
         intent.putExtra("activo", estudiante.isActivo());
         startActivity(intent);
+    }
+
+    private void irADetalleActividad(String actividadId) {
+        try {
+            int idActividad = Integer.parseInt(actividadId);
+            Intent intent = new Intent(this, com.example.lectana.docente.DetalleActividadActivity.class);
+            intent.putExtra("actividad_id", idActividad);
+            startActivity(intent);
+        } catch (NumberFormatException e) {
+            Log.e(TAG, "Error al convertir ID de actividad: " + actividadId, e);
+            Toast.makeText(this, "Error al abrir la actividad", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void compartirCodigoAula() {

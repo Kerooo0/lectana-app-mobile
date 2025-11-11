@@ -273,20 +273,21 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center">
 
             <Button
                 android:id="@+id/boton_pestana_actividades"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="56dp"
-                android:layout_weight="1"
-                android:layout_marginEnd="8dp"
+                android:minWidth="200dp"
+                android:paddingHorizontal="32dp"
+                android:background="@drawable/boton_pestana_inactiva"
+                android:gravity="center"
                 android:text="@string/actividades"
                 android:textColor="@color/gris_medio"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:background="@drawable/boton_pestana_inactiva"
-                android:gravity="center"
                 app:backgroundTint="@null" />
 
             <Button
@@ -301,6 +302,7 @@
                 android:textStyle="bold"
                 android:background="@drawable/boton_pestana_inactiva"
                 android:gravity="center"
+                android:visibility="gone"
                 app:backgroundTint="@null" />
 
         </LinearLayout>
