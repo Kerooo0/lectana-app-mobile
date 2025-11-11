@@ -76,15 +76,38 @@ public class LogrosAdapter extends RecyclerView.Adapter<LogrosAdapter.LogroViewH
             progresoLogro.setProgress(progreso);
             textoProgresoLogro.setText(progreso + "%");
 
-            // Mostrar badge si está desbloqueado
+            // Aplicar estilo según estado (bloqueado/desbloqueado)
             if (logro.isDesbloqueado()) {
+                // DESBLOQUEADO: Mostrar en color normal
                 badgeDesbloqueado.setVisibility(View.VISIBLE);
                 progresoLogro.setVisibility(View.GONE);
                 textoProgresoLogro.setVisibility(View.GONE);
+                
+                // Opacidad 100% - totalmente visible
+                itemView.setAlpha(1.0f);
+                imagenLogro.setAlpha(1.0f);
+                nombreLogro.setAlpha(1.0f);
+                descripcionLogro.setAlpha(1.0f);
+                
+                // Color normal para textos
+                nombreLogro.setTextColor(itemView.getContext().getResources().getColor(R.color.gris_oscuro));
+                descripcionLogro.setTextColor(itemView.getContext().getResources().getColor(R.color.gris_medio));
+                
             } else {
+                // BLOQUEADO: Mostrar grisáceo/transparente
                 badgeDesbloqueado.setVisibility(View.GONE);
                 progresoLogro.setVisibility(View.VISIBLE);
                 textoProgresoLogro.setVisibility(View.VISIBLE);
+                
+                // Opacidad 40% - efecto transparente/grisáceo
+                itemView.setAlpha(0.4f);
+                imagenLogro.setAlpha(0.4f);
+                nombreLogro.setAlpha(0.5f);
+                descripcionLogro.setAlpha(0.5f);
+                
+                // Color gris para textos bloqueados
+                nombreLogro.setTextColor(itemView.getContext().getResources().getColor(R.color.gris_medio));
+                descripcionLogro.setTextColor(itemView.getContext().getResources().getColor(R.color.gris_claro));
             }
 
             // Cargar imagen

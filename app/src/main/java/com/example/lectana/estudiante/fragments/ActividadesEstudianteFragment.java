@@ -189,15 +189,18 @@ public class ActividadesEstudianteFragment extends Fragment {
                             // Actividad completada
                             actividad.setCompletada(true);
                             actividadesCompletadas.add(actividad);
+                            Log.d(TAG, "Actividad " + actividad.getId_actividad() + " completada");
                         } else {
                             // Actividad pendiente
                             actividad.setCompletada(false);
                             actividadesPendientes.add(actividad);
+                            Log.d(TAG, "Actividad " + actividad.getId_actividad() + " pendiente (sin respuestas)");
                         }
                     } else {
-                        // Si hay error, asumimos que está pendiente
+                        // Si hay error HTTP (como 500), asumimos que está pendiente
                         actividad.setCompletada(false);
                         actividadesPendientes.add(actividad);
+                        Log.w(TAG, "Actividad " + actividad.getId_actividad() + " marcada como pendiente (error " + response.code() + ")");
                     }
                     
                     // Actualizar lista cuando tengamos todas las actividades verificadas
@@ -208,9 +211,10 @@ public class ActividadesEstudianteFragment extends Fragment {
                 
                 @Override
                 public void onFailure(Call<ApiResponse<List<RespuestaUsuario>>> call, Throwable t) {
-                    // En caso de error, asumir que está pendiente
+                    // En caso de error de red, asumir que está pendiente
                     actividad.setCompletada(false);
                     actividadesPendientes.add(actividad);
+                    Log.w(TAG, "Actividad " + actividad.getId_actividad() + " marcada como pendiente (error de red: " + t.getMessage() + ")");
                     
                     if (actividadesPendientes.size() + actividadesCompletadas.size() == listaActividades.size()) {
                         actualizarListaActividades();

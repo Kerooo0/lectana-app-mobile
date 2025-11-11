@@ -49,6 +49,7 @@ public class InicioFragment extends Fragment {
     
     // Vistas - Actividad pendiente
     private CardView cardActividadPendiente;
+    private LinearLayout contenedorActividadPendiente;
     private TextView textoActividadPendiente;
     private TextView nombreActividadPendiente;
     private Button botonHacerActividad;
@@ -60,10 +61,6 @@ public class InicioFragment extends Fragment {
     
     // Vistas - Continuar lectura (ocultamos por ahora)
     private CardView cardContinuarLectura;
-    
-    // Vistas - Estadísticas (ocultamos por ahora - racha y puntos)
-    private CardView cardRachaLectura;
-    private CardView cardPuntosSemana;
     
     private CuentoApi cuentoMasReciente;
     private Actividad actividadPendiente;
@@ -97,6 +94,7 @@ public class InicioFragment extends Fragment {
         
         // Actividad pendiente
         cardActividadPendiente = root.findViewById(R.id.card_actividad_pendiente);
+        contenedorActividadPendiente = root.findViewById(R.id.contenedor_actividad_pendiente);
         textoActividadPendiente = root.findViewById(R.id.texto_actividad_pendiente);
         nombreActividadPendiente = root.findViewById(R.id.nombre_actividad_pendiente);
         botonHacerActividad = root.findViewById(R.id.boton_hacer_actividad);
@@ -111,10 +109,6 @@ public class InicioFragment extends Fragment {
         if (cardContinuarLectura != null) {
             cardContinuarLectura.setVisibility(View.GONE);
         }
-        
-        // Mantener pero no actualizar (para futuro)
-        cardRachaLectura = root.findViewById(R.id.card_racha_lectura);
-        cardPuntosSemana = root.findViewById(R.id.card_puntos_semana);
         
         // Botón "Ver todos" para ir a la biblioteca
         View botonVerTodos = root.findViewById(R.id.boton_ver_todos_cuentos);
@@ -186,17 +180,21 @@ public class InicioFragment extends Fragment {
         String token = "Bearer " + sessionManager.getToken();
         
         if (aulaId == 0) {
-            ocultarActividadPendiente();
-            Log.w(TAG, "No hay aula asignada");
+            mostrarSinAulaAsignada();
+            Log.w(TAG, "No hay aula asignada - mostrando mensaje");
             return;
         }
         
         actividadesApiService.getActividadesPorAula(token, aulaId).enqueue(new Callback<ActividadesPorAulaResponse>() {
             @Override
             public void onResponse(Call<ActividadesPorAulaResponse> call, Response<ActividadesPorAulaResponse> response) {
+                Log.d(TAG, "Respuesta actividades - Código: " + response.code());
+                
                 if (response.isSuccessful() && response.body() != null) {
                     ActividadesPorAulaResponse data = response.body();
                     List<Actividad> actividades = data.getActividades();
+                    
+                    Log.d(TAG, "Actividades recibidas: " + (actividades != null ? actividades.size() : "null"));
                     
                     if (actividades != null && !actividades.isEmpty()) {
                         // Buscar la primera actividad pendiente
@@ -205,19 +203,21 @@ public class InicioFragment extends Fragment {
                         Log.d(TAG, "Actividades pendientes encontradas: " + actividades.size());
                     } else {
                         mostrarTodasActividadesCompletadas();
-                        Log.d(TAG, "No hay actividades pendientes");
+                        Log.d(TAG, "No hay actividades pendientes - mostrando tarjeta de completado");
                     }
                 } else if (response.code() == 401) {
                     cerrarSesionYRedireccionar();
                 } else {
-                    ocultarActividadPendiente();
-                    Log.w(TAG, "Error al cargar actividades: " + response.code());
+                    // Incluso si hay error, mostrar que no hay actividades
+                    mostrarTodasActividadesCompletadas();
+                    Log.w(TAG, "Error al cargar actividades: " + response.code() + " - mostrando completado");
                 }
             }
             
             @Override
             public void onFailure(Call<ActividadesPorAulaResponse> call, Throwable t) {
-                ocultarActividadPendiente();
+                // En caso de fallo, mostrar que no hay actividades
+                mostrarTodasActividadesCompletadas();
                 Log.e(TAG, "Error de conexión al cargar actividades: " + t.getMessage());
             }
         });
@@ -226,6 +226,13 @@ public class InicioFragment extends Fragment {
     private void mostrarActividadPendiente(int totalPendientes) {
         if (cardActividadPendiente != null && actividadPendiente != null) {
             cardActividadPendiente.setVisibility(View.VISIBLE);
+            
+            // Fondo naranja para actividades pendientes
+            if (contenedorActividadPendiente != null) {
+                contenedorActividadPendiente.setBackgroundColor(
+                    getResources().getColor(R.color.naranjaPastel, null)
+                );
+            }
             
             String mensaje = totalPendientes == 1 ? 
                 "Tenés 1 actividad pendiente" : 
@@ -236,12 +243,14 @@ public class InicioFragment extends Fragment {
             }
             
             if (nombreActividadPendiente != null) {
+                nombreActividadPendiente.setVisibility(View.VISIBLE);
                 String nombre = actividadPendiente.getDescripcion() != null ? 
                     actividadPendiente.getDescripcion() : "Actividad";
                 nombreActividadPendiente.setText(nombre);
             }
             
             if (botonHacerActividad != null) {
+                botonHacerActividad.setVisibility(View.VISIBLE);
                 botonHacerActividad.setText("Hacer");
                 botonHacerActividad.setOnClickListener(v -> irAActividades());
             }
@@ -252,8 +261,15 @@ public class InicioFragment extends Fragment {
         if (cardActividadPendiente != null) {
             cardActividadPendiente.setVisibility(View.VISIBLE);
             
+            // Fondo verde para todas completadas
+            if (contenedorActividadPendiente != null) {
+                contenedorActividadPendiente.setBackgroundColor(
+                    getResources().getColor(R.color.verdeClaro, null)
+                );
+            }
+            
             if (textoActividadPendiente != null) {
-                textoActividadPendiente.setText("Has realizado todas las tareas por ahora");
+                textoActividadPendiente.setText("✅ ¡Genial! Has completado todas las actividades");
             }
             
             if (nombreActividadPendiente != null) {
@@ -261,7 +277,37 @@ public class InicioFragment extends Fragment {
             }
             
             if (botonHacerActividad != null) {
-                botonHacerActividad.setVisibility(View.GONE);
+                botonHacerActividad.setVisibility(View.VISIBLE);
+                botonHacerActividad.setText("Ver todas");
+                botonHacerActividad.setOnClickListener(v -> irAActividades());
+            }
+        }
+    }
+
+    private void mostrarSinAulaAsignada() {
+        if (cardActividadPendiente != null) {
+            cardActividadPendiente.setVisibility(View.VISIBLE);
+            
+            // Fondo azul claro para sin aula
+            if (contenedorActividadPendiente != null) {
+                contenedorActividadPendiente.setBackgroundColor(
+                    getResources().getColor(R.color.celeste_claro, null)
+                );
+            }
+            
+            if (textoActividadPendiente != null) {
+                textoActividadPendiente.setText("📚 Aún no estás en un aula");
+            }
+            
+            if (nombreActividadPendiente != null) {
+                nombreActividadPendiente.setVisibility(View.VISIBLE);
+                nombreActividadPendiente.setText("Pedile a tu docente el código de acceso");
+            }
+            
+            if (botonHacerActividad != null) {
+                botonHacerActividad.setVisibility(View.VISIBLE);
+                botonHacerActividad.setText("Unirse");
+                botonHacerActividad.setOnClickListener(v -> irAUnirseAula());
             }
         }
     }
@@ -423,6 +469,34 @@ public class InicioFragment extends Fragment {
             
             activity.actualizarEstadoTabs("actividades");
         }
+    }
+
+    private void irAUnirseAula() {
+        // Mostrar diálogo para unirse a un aula
+        if (getContext() == null) return;
+        
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
+        builder.setTitle("Unirse a un Aula");
+        builder.setMessage("Para acceder a actividades y contenido, necesitas unirte a un aula con el código que te proporcionó tu docente.");
+        
+        // Input para el código
+        final android.widget.EditText input = new android.widget.EditText(getContext());
+        input.setHint("Código del aula");
+        input.setInputType(android.text.InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+        
+        builder.setPositiveButton("Unirse", (dialog, which) -> {
+            String codigoAula = input.getText().toString().trim();
+            if (!codigoAula.isEmpty()) {
+                // TODO: Implementar llamada al endpoint para unirse al aula
+                Toast.makeText(getContext(), "Funcionalidad en desarrollo. Código: " + codigoAula, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), "Por favor ingresa un código válido", Toast.LENGTH_SHORT).show();
+            }
+        });
+        
+        builder.setNegativeButton("Cancelar", null);
+        builder.show();
     }
 
     private void cerrarSesionYRedireccionar() {

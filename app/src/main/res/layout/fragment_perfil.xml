@@ -144,215 +144,25 @@
 
                 </LinearLayout>
 
-                <!-- Grid de logros -->
-                <LinearLayout
+                <!-- RecyclerView dinámico para logros -->
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content">
 
-                    <!-- Primera fila de logros -->
-                    <LinearLayout
+                    <ProgressBar
+                        android:id="@+id/progress_bar_logros"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:visibility="gone" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_view_logros"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="16dp">
+                        android:nestedScrollingEnabled="false" />
 
-                        <!-- Primer Cuento Le├¡do -->
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:gravity="center_horizontal"
-                            android:layout_marginEnd="8dp">
-
-                            <ImageView
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
-                                android:src="@drawable/ic_book"
-                                android:tint="@color/azul_claro"
-                                android:background="@drawable/circle_background"
-                                android:padding="12dp"
-                                android:layout_marginBottom="8dp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Primer Cuento Le├¡do"
-                                android:textColor="@color/gris_oscuro"
-                                android:textSize="12sp"
-                                android:textStyle="bold"
-                                android:gravity="center"
-                                android:layout_marginBottom="4dp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="10/03/2024"
-                                android:textColor="@color/gris_medio"
-                                android:textSize="10sp" />
-
-                        </LinearLayout>
-
-                        <!-- 5 Actividades Completadas -->
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:gravity="center_horizontal"
-                            android:layout_marginHorizontal="8dp">
-
-                            <ImageView
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
-                                android:src="@drawable/ic_brain"
-                                android:tint="@color/rojoClaro"
-                                android:background="@drawable/circle_background"
-                                android:padding="12dp"
-                                android:layout_marginBottom="8dp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="5 Actividades Completadas"
-                                android:textColor="@color/gris_oscuro"
-                                android:textSize="12sp"
-                                android:textStyle="bold"
-                                android:gravity="center"
-                                android:layout_marginBottom="4dp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="15/03/2024"
-                                android:textColor="@color/gris_medio"
-                                android:textSize="10sp" />
-
-                        </LinearLayout>
-
-                        <!-- Racha de 7 D├¡as -->
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:gravity="center_horizontal"
-                            android:layout_marginStart="8dp">
-
-                            <ImageView
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
-                                android:src="@drawable/ic_flame"
-                                android:tint="@color/naranjaPastel"
-                                android:background="@drawable/circle_background"
-                                android:padding="12dp"
-                                android:layout_marginBottom="8dp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Racha de 7 D├¡as"
-                                android:textColor="@color/gris_oscuro"
-                                android:textSize="12sp"
-                                android:textStyle="bold"
-                                android:gravity="center"
-                                android:layout_marginBottom="4dp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="20/03/2024"
-                                android:textColor="@color/gris_medio"
-                                android:textSize="10sp" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <!-- Segunda fila de logros -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <!-- Maestro de Aventura -->
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:gravity="center_horizontal"
-                            android:layout_marginEnd="8dp">
-
-                            <ImageView
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
-                                android:src="@drawable/ic_map"
-                                android:tint="@color/celeste_claro"
-                                android:background="@drawable/circle_background"
-                                android:padding="12dp"
-                                android:layout_marginBottom="8dp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Maestro de Aventura"
-                                android:textColor="@color/gris_oscuro"
-                                android:textSize="12sp"
-                                android:textStyle="bold"
-                                android:gravity="center"
-                                android:layout_marginBottom="4dp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="25/03/2024"
-                                android:textColor="@color/gris_medio"
-                                android:textSize="10sp" />
-
-                        </LinearLayout>
-
-                        <!-- Coleccionista de Puntos -->
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:gravity="center_horizontal"
-                            android:layout_marginStart="8dp">
-
-                            <ImageView
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
-                                android:src="@drawable/ic_money"
-                                android:tint="@color/amarilloCalido"
-                                android:background="@drawable/circle_background"
-                                android:padding="12dp"
-                                android:layout_marginBottom="8dp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Coleccionista de Puntos"
-                                android:textColor="@color/gris_oscuro"
-                                android:textSize="12sp"
-                                android:textStyle="bold"
-                                android:gravity="center"
-                                android:layout_marginBottom="4dp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="20/03/2024"
-                                android:textColor="@color/gris_medio"
-                                android:textSize="10sp" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                </LinearLayout>
+                </FrameLayout>
 
             </LinearLayout>
 

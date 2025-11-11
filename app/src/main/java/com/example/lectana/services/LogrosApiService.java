@@ -11,9 +11,10 @@ import retrofit2.http.Header;
 public interface LogrosApiService {
     
     /**
-     * Obtiene todos los logros disponibles con el progreso del alumno
+     * Obtiene todos los logros bloqueados (disponibles para desbloquear)
+     * Backend endpoint: GET /api/logros/bloqueados
      */
-    @GET("logros/disponibles")
+    @GET("logros/bloqueados")
     Call<LogrosResponse> obtenerLogrosDisponibles(
             @Header("Authorization") String token
     );

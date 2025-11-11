@@ -63,16 +63,14 @@ public class PerfilFragment extends Fragment {
     private LinearLayout opcionCentroAyuda;
     private LinearLayout opcionCerrarSesion;
     private View botonIrTienda;
-    // TODO: Descomentar cuando se agregue la sección de logros en el layout
-    // private RecyclerView recyclerViewLogros;
-    // private ProgressBar progressBarLogros;
+    private RecyclerView recyclerViewLogros;
+    private ProgressBar progressBarLogros;
     
     // Gestión de sesión
     private SessionManager sessionManager;
     
     // Adapter y API
-    // TODO: Descomentar cuando se agregue la sección de logros en el layout
-    // private LogrosAdapter logrosAdapter;
+    private LogrosAdapter logrosAdapter;
     private LogrosApiService logrosApiService;
     private ItemsApiService itemsApiService;
     private PuntosApiService puntosApiService;
@@ -133,16 +131,14 @@ public class PerfilFragment extends Fragment {
         opcionCentroAyuda = view.findViewById(R.id.opcion_centro_ayuda);
         opcionCerrarSesion = view.findViewById(R.id.opcion_cerrar_sesion);
         botonIrTienda = view.findViewById(R.id.boton_ir_tienda);
-        // TODO: Descomentar cuando se agregue la sección de logros en el layout
-        // recyclerViewLogros = view.findViewById(R.id.recycler_view_logros);
-        // progressBarLogros = view.findViewById(R.id.progress_bar_logros);
+        recyclerViewLogros = view.findViewById(R.id.recycler_view_logros);
+        progressBarLogros = view.findViewById(R.id.progress_bar_logros);
     }
 
     private void configurarRecyclerViewLogros() {
-        // TODO: Descomentar cuando se agregue la sección de logros en el layout
-        // logrosAdapter = new LogrosAdapter();
-        // recyclerViewLogros.setLayoutManager(new GridLayoutManager(getContext(), 3));
-        // recyclerViewLogros.setAdapter(logrosAdapter);
+        logrosAdapter = new LogrosAdapter();
+        recyclerViewLogros.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        recyclerViewLogros.setAdapter(logrosAdapter);
     }
 
     private void configurarListeners() {
@@ -289,16 +285,17 @@ public class PerfilFragment extends Fragment {
     }
 
     private void cargarLogros() {
-        // TODO: Descomentar cuando se agregue la sección de logros en el layout
-        /*
         if (progressBarLogros != null) {
             progressBarLogros.setVisibility(View.VISIBLE);
         }
-        recyclerViewLogros.setVisibility(View.GONE);
+        if (recyclerViewLogros != null) {
+            recyclerViewLogros.setVisibility(View.GONE);
+        }
 
         String token = "Bearer " + sessionManager.getToken();
 
-        logrosApiService.obtenerMisLogros(token).enqueue(new Callback<LogrosResponse>() {
+        // Usar obtenerLogrosDisponibles que trae TODOS los logros (bloqueados y desbloqueados)
+        logrosApiService.obtenerLogrosDisponibles(token).enqueue(new Callback<LogrosResponse>() {
             @Override
             public void onResponse(Call<LogrosResponse> call, Response<LogrosResponse> response) {
                 if (progressBarLogros != null) {
@@ -307,12 +304,18 @@ public class PerfilFragment extends Fragment {
 
                 if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
                     Log.d(TAG, "Logros cargados exitosamente: " + response.body().getData().size());
-                    logrosAdapter.setLogros(response.body().getData());
-                    recyclerViewLogros.setVisibility(View.VISIBLE);
+                    if (logrosAdapter != null) {
+                        logrosAdapter.setLogros(response.body().getData());
+                    }
+                    if (recyclerViewLogros != null) {
+                        recyclerViewLogros.setVisibility(View.VISIBLE);
+                    }
                 } else {
                     Log.e(TAG, "Error al cargar logros: " + response.message());
                     Toast.makeText(getContext(), "No se pudieron cargar los logros", Toast.LENGTH_SHORT).show();
-                    recyclerViewLogros.setVisibility(View.VISIBLE); // Mostrar vacío
+                    if (recyclerViewLogros != null) {
+                        recyclerViewLogros.setVisibility(View.VISIBLE); // Mostrar vacío
+                    }
                 }
             }
 
@@ -321,13 +324,14 @@ public class PerfilFragment extends Fragment {
                 if (progressBarLogros != null) {
                     progressBarLogros.setVisibility(View.GONE);
                 }
-                recyclerViewLogros.setVisibility(View.VISIBLE);
+                if (recyclerViewLogros != null) {
+                    recyclerViewLogros.setVisibility(View.VISIBLE);
+                }
                 
                 Log.e(TAG, "Error de red al cargar logros", t);
                 Toast.makeText(getContext(), "Error de conexión. Verifica tu internet.", Toast.LENGTH_SHORT).show();
             }
         });
-        */
     }
 
     private void mostrarBottomSheetSeleccionAvatar() {
