@@ -1,6 +1,7 @@
 package com.example.lectana.modelos;
 
 import com.google.gson.annotations.SerializedName;
+import java.util.List;
 
 /**
  * Modelo para representar una respuesta posible de una pregunta de actividad
@@ -11,10 +12,11 @@ public class RespuestaActividad {
     private int idRespuestaActividad;
     
     @SerializedName("respuestas")
-    private String respuestas;
+    private List<String> respuestas;
     
+    // Backend sends 0 or 1, not boolean
     @SerializedName("respuesta_correcta")
-    private boolean respuestaCorrecta;
+    private int respuestaCorrecta;
     
     @SerializedName("pregunta_actividad_id_pregunta_actividad")
     private int preguntaActividadId;
@@ -32,20 +34,25 @@ public class RespuestaActividad {
         this.idRespuestaActividad = idRespuestaActividad;
     }
 
-    public String getRespuestas() {
+    public List<String> getRespuestas() {
         return respuestas;
     }
 
-    public void setRespuestas(String respuestas) {
+    public void setRespuestas(List<String> respuestas) {
         this.respuestas = respuestas;
     }
 
     public boolean isRespuestaCorrecta() {
-        return respuestaCorrecta;
+        return respuestaCorrecta == 1;
     }
 
-    public void setRespuestaCorrecta(boolean respuestaCorrecta) {
+    public void setRespuestaCorrecta(int respuestaCorrecta) {
         this.respuestaCorrecta = respuestaCorrecta;
+    }
+    
+    // Helper method for compatibility
+    public void setRespuestaCorrecta(boolean respuestaCorrecta) {
+        this.respuestaCorrecta = respuestaCorrecta ? 1 : 0;
     }
 
     public int getPreguntaActividadId() {

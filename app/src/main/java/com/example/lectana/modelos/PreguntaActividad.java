@@ -17,7 +17,8 @@ public class PreguntaActividad {
     @SerializedName("actividad_id_actividad")
     private int actividadIdActividad;
     
-    @SerializedName("respuesta_actividad")
+    // El backend puede usar "respuesta_actividad" o "respuestas" dependiendo del endpoint
+    @SerializedName(value = "respuestas", alternate = {"respuesta_actividad"})
     private List<RespuestaActividad> respuestaActividad;
     
     // Respuesta del usuario (local, no viene del servidor)

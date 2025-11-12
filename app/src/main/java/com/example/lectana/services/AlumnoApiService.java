@@ -91,12 +91,25 @@ public interface AlumnoApiService {
             @Header("Authorization") String token
     );
 
+    /**
+     * Cambiar de aula del alumno
+     * POST /api/alumnos/cambiarAula
+     * Rol: alumno
+     */
+    @POST("alumnos/cambiarAula")
+    Call<ApiResponse<CambiarAulaResponse>> cambiarAula(
+            @Header("Authorization") String token,
+            @Body CambiarAulaRequest request
+    );
+
     // ============================================
     // MODELOS DE REQUEST/RESPONSE
     // ============================================
 
     /**
      * Request para responder una pregunta
+     * - Para preguntas de opción múltiple: {"respuesta": "ID_como_string"}
+     * - Para preguntas abiertas: {"respuesta": "texto de la respuesta"}
      */
     class ResponderPreguntaRequest {
         @SerializedName("respuesta")
@@ -119,37 +132,75 @@ public interface AlumnoApiService {
      * Response de responder pregunta
      */
     class RespuestaPreguntaResponse {
-        @SerializedName("id_respuesta")
-        private int idRespuesta;
+        @SerializedName("respuestaPregunta")
+        private java.util.List<RespuestaUsuario> respuestaPregunta;
 
-        @SerializedName("mensaje")
-        private String mensaje;
-
-        @SerializedName("es_correcta")
-        private Boolean esCorrecta;
-
-        public int getIdRespuesta() {
-            return idRespuesta;
+        public java.util.List<RespuestaUsuario> getRespuestaPregunta() {
+            return respuestaPregunta;
         }
 
-        public void setIdRespuesta(int idRespuesta) {
-            this.idRespuesta = idRespuesta;
+        public void setRespuestaPregunta(java.util.List<RespuestaUsuario> respuestaPregunta) {
+            this.respuestaPregunta = respuestaPregunta;
         }
 
-        public String getMensaje() {
-            return mensaje;
-        }
+        /**
+         * Modelo de respuesta individual del usuario
+         */
+        public static class RespuestaUsuario {
+            @SerializedName("id_respuesta_usuario")
+            private int idRespuestaUsuario;
 
-        public void setMensaje(String mensaje) {
-            this.mensaje = mensaje;
-        }
+            @SerializedName("respuesta_texto")
+            private String respuestaTexto;
 
-        public Boolean getEsCorrecta() {
-            return esCorrecta;
-        }
+            @SerializedName("fecha_respuesta")
+            private String fechaRespuesta;
 
-        public void setEsCorrecta(Boolean esCorrecta) {
-            this.esCorrecta = esCorrecta;
+            @SerializedName("pregunta_actividad_id_pregunta_actividad")
+            private int preguntaActividadIdPreguntaActividad;
+
+            @SerializedName("alumno_id_alumno")
+            private int alumnoIdAlumno;
+
+            public int getIdRespuestaUsuario() {
+                return idRespuestaUsuario;
+            }
+
+            public void setIdRespuestaUsuario(int idRespuestaUsuario) {
+                this.idRespuestaUsuario = idRespuestaUsuario;
+            }
+
+            public String getRespuestaTexto() {
+                return respuestaTexto;
+            }
+
+            public void setRespuestaTexto(String respuestaTexto) {
+                this.respuestaTexto = respuestaTexto;
+            }
+
+            public String getFechaRespuesta() {
+                return fechaRespuesta;
+            }
+
+            public void setFechaRespuesta(String fechaRespuesta) {
+                this.fechaRespuesta = fechaRespuesta;
+            }
+
+            public int getPreguntaActividadIdPreguntaActividad() {
+                return preguntaActividadIdPreguntaActividad;
+            }
+
+            public void setPreguntaActividadIdPreguntaActividad(int preguntaActividadIdPreguntaActividad) {
+                this.preguntaActividadIdPreguntaActividad = preguntaActividadIdPreguntaActividad;
+            }
+
+            public int getAlumnoIdAlumno() {
+                return alumnoIdAlumno;
+            }
+
+            public void setAlumnoIdAlumno(int alumnoIdAlumno) {
+                this.alumnoIdAlumno = alumnoIdAlumno;
+            }
         }
     }
 
@@ -570,6 +621,66 @@ public interface AlumnoApiService {
 
         public void setAulaAnterior(String aulaAnterior) {
             this.aulaAnterior = aulaAnterior;
+        }
+    }
+
+    /**
+     * Request para cambiar de aula
+     */
+    class CambiarAulaRequest {
+        @SerializedName("aulaId")
+        private int aulaId;
+
+        public CambiarAulaRequest(int aulaId) {
+            this.aulaId = aulaId;
+        }
+
+        public int getAulaId() {
+            return aulaId;
+        }
+
+        public void setAulaId(int aulaId) {
+            this.aulaId = aulaId;
+        }
+    }
+
+    /**
+     * Response al cambiar de aula
+     */
+    class CambiarAulaResponse {
+        @SerializedName("cambioAula")
+        private java.util.List<CambioAulaItem> cambioAula;
+
+        public java.util.List<CambioAulaItem> getCambioAula() {
+            return cambioAula;
+        }
+
+        public void setCambioAula(java.util.List<CambioAulaItem> cambioAula) {
+            this.cambioAula = cambioAula;
+        }
+
+        public static class CambioAulaItem {
+            @SerializedName("alumno_id_alumno")
+            private int alumnoIdAlumno;
+
+            @SerializedName("aula_id_aula")
+            private int aulaIdAula;
+
+            public int getAlumnoIdAlumno() {
+                return alumnoIdAlumno;
+            }
+
+            public void setAlumnoIdAlumno(int alumnoIdAlumno) {
+                this.alumnoIdAlumno = alumnoIdAlumno;
+            }
+
+            public int getAulaIdAula() {
+                return aulaIdAula;
+            }
+
+            public void setAulaIdAula(int aulaIdAula) {
+                this.aulaIdAula = aulaIdAula;
+            }
         }
     }
 }

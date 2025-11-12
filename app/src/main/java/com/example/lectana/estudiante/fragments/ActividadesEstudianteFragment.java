@@ -23,6 +23,7 @@ import com.example.lectana.estudiante.DetalleActividadEstudianteActivity;
 import com.example.lectana.estudiante.ResolverActividadActivity;
 import com.example.lectana.estudiante.adaptadores.ActividadesEstudianteAdapter;
 import com.example.lectana.modelos.Actividad;
+import com.example.lectana.modelos.ActividadAula;
 import com.example.lectana.modelos.ActividadesPorAulaResponse;
 import com.example.lectana.modelos.ApiResponse;
 import com.example.lectana.modelos.RespuestaUsuario;
@@ -53,6 +54,8 @@ public class ActividadesEstudianteFragment extends Fragment {
     private List<Actividad> actividadesPendientes;
     private List<Actividad> actividadesCompletadas;
     private ActividadesEstudianteAdapter adapter;
+    private int totalActividadesEsperadas = 0;
+    private boolean isFirstLoad = true;
 
     @Nullable
     @Override
@@ -134,10 +137,18 @@ public class ActividadesEstudianteFragment extends Fragment {
                 
                 if (response.isSuccessful() && response.body() != null) {
                     ActividadesPorAulaResponse data = response.body();
-                    List<Actividad> actividades = data.getActividades();
-                    Log.d(TAG, "Actividades cargadas: " + (actividades != null ? actividades.size() : 0));
+                    List<ActividadAula> actividadesAula = data.getActividades();
+                    Log.d(TAG, "Registros actividad_aula cargados: " + (actividadesAula != null ? actividadesAula.size() : 0));
                     
-                    if (actividades != null && !actividades.isEmpty()) {
+                    if (actividadesAula != null && !actividadesAula.isEmpty()) {
+                        // Extraer las actividades de los registros de actividad_aula
+                        List<Actividad> actividades = new java.util.ArrayList<>();
+                        for (ActividadAula actividadAula : actividadesAula) {
+                            if (actividadAula.getActividad() != null) {
+                                actividades.add(actividadAula.getActividad());
+                            }
+                        }
+                        Log.d(TAG, "Actividades extraídas: " + actividades.size());
                         verificarActividadesCompletadas(actividades, alumnoId, token);
                     } else {
                         mostrarSinActividades(true);
@@ -168,6 +179,7 @@ public class ActividadesEstudianteFragment extends Fragment {
         
         actividadesPendientes.clear();
         actividadesCompletadas.clear();
+        totalActividadesEsperadas = actividades.size();
         
         // Por ahora, necesitamos verificar cada actividad individualmente
         // En el futuro, podríamos tener un endpoint que devuelva el estado directamente
@@ -204,7 +216,8 @@ public class ActividadesEstudianteFragment extends Fragment {
                     }
                     
                     // Actualizar lista cuando tengamos todas las actividades verificadas
-                    if (actividadesPendientes.size() + actividadesCompletadas.size() == listaActividades.size()) {
+                    int totalVerificadas = actividadesPendientes.size() + actividadesCompletadas.size();
+                    if (totalVerificadas > 0 && totalVerificadas >= getTotalActividadesEsperadas()) {
                         actualizarListaActividades();
                     }
                 }
@@ -216,13 +229,18 @@ public class ActividadesEstudianteFragment extends Fragment {
                     actividadesPendientes.add(actividad);
                     Log.w(TAG, "Actividad " + actividad.getId_actividad() + " marcada como pendiente (error de red: " + t.getMessage() + ")");
                     
-                    if (actividadesPendientes.size() + actividadesCompletadas.size() == listaActividades.size()) {
+                    // Verificar si ya tenemos todas las actividades verificadas
+                    int totalActividades = actividadesPendientes.size() + actividadesCompletadas.size();
+                    if (totalActividades > 0 && totalActividades >= getTotalActividadesEsperadas()) {
                         actualizarListaActividades();
                     }
                 }
             });
-        
-        listaActividades.add(actividad);
+    }
+    
+    private int getTotalActividadesEsperadas() {
+        // Este número se establece cuando se cargan las actividades inicialmente
+        return totalActividadesEsperadas;
     }
 
     private void actualizarListaActividades() {
@@ -246,6 +264,10 @@ public class ActividadesEstudianteFragment extends Fragment {
         // Abrir detalles de la actividad (no importa si está completada)
         Intent intent = new Intent(requireContext(), DetalleActividadEstudianteActivity.class);
         intent.putExtra("actividad_id", actividad.getId_actividad());
+        intent.putExtra("actividad_descripcion", actividad.getDescripcion());
+        intent.putExtra("actividad_tipo", actividad.getTipo());
+        intent.putExtra("actividad_fecha", actividad.getFecha_publicacion());
+        intent.putExtra("cuento_id", actividad.getCuento_id_cuento());
         startActivity(intent);
     }
 
@@ -344,8 +366,14 @@ public class ActividadesEstudianteFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        // Recargar actividades al volver a este fragmento
-        cargarActividades();
+        // Solo recargar actividades después de la primera vez
+        // (cuando volvemos a este fragmento desde otra pantalla)
+        if (!isFirstLoad) {
+            Log.d(TAG, "onResume: Recargando actividades...");
+            cargarActividades();
+        } else {
+            isFirstLoad = false;
+        }
     }
     
     private void cerrarSesionYRedireccionar() {

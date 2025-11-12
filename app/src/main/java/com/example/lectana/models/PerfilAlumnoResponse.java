@@ -26,6 +26,9 @@ public class PerfilAlumnoResponse {
     }
     
     public static class DataPerfil {
+        @SerializedName("id_alumno")
+        private Integer idAlumno;
+        
         @SerializedName("usuario")
         private Usuario usuario;
         
@@ -40,6 +43,14 @@ public class PerfilAlumnoResponse {
         
         @SerializedName("aula_id_aula")
         private Integer aulaId;
+        
+        public Integer getIdAlumno() {
+            return idAlumno;
+        }
+        
+        public void setIdAlumno(Integer idAlumno) {
+            this.idAlumno = idAlumno;
+        }
         
         public Usuario getUsuario() {
             return usuario;

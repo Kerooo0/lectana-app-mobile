@@ -64,6 +64,9 @@ public class ResponderActividadActivity extends AppCompatActivity {
     private List<PreguntaActividad> preguntas;
     private int indicePreguntaActual = 0;
     private OpcionesRespuestaAdapter opcionesAdapter;
+    
+    // Guardar la opción seleccionada actual (para multiple choice)
+    private RespuestaActividad opcionSeleccionadaActual = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -221,11 +224,16 @@ public class ResponderActividadActivity extends AppCompatActivity {
     private void mostrarOpcionesMultiples(List<RespuestaActividad> opciones) {
         recyclerViewOpciones.setVisibility(View.VISIBLE);
         layoutRespuestaAbierta.setVisibility(View.GONE);
+        
+        // Resetear selección al cambiar de pregunta
+        opcionSeleccionadaActual = null;
 
         opcionesAdapter = new OpcionesRespuestaAdapter(opciones, new OpcionesRespuestaAdapter.OnOpcionClickListener() {
             @Override
             public void onOpcionClick(RespuestaActividad opcion, int position) {
-                enviarRespuestaOpcionMultiple(opcion);
+                // Solo guardar la opción seleccionada, NO enviar todavía
+                opcionSeleccionadaActual = opcion;
+                Log.d(TAG, "Opción seleccionada: posición " + position + ", ID: " + opcion.getIdRespuestaActividad());
             }
         });
 
@@ -249,19 +257,40 @@ public class ResponderActividadActivity extends AppCompatActivity {
     private void preguntaSiguiente() {
         PreguntaActividad preguntaActual = preguntas.get(indicePreguntaActual);
 
-        // Si es la última pregunta, mostrar diálogo de confirmación
+        // Validar que se haya respondido la pregunta
+        if (preguntaActual.tieneRespuestas()) {
+            // Es pregunta de opción múltiple, verificar que haya seleccionado una opción
+            if (opcionSeleccionadaActual == null) {
+                Toast.makeText(this, "Por favor selecciona una opción", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        } else {
+            // Es pregunta abierta, verificar que haya escrito algo
+            String respuestaTexto = editRespuestaAbierta.getText() != null ? 
+                    editRespuestaAbierta.getText().toString().trim() : "";
+            if (respuestaTexto.isEmpty()) {
+                Toast.makeText(this, "Por favor escribe una respuesta", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
+        // Si es la última pregunta, enviar y finalizar
         if (indicePreguntaActual == preguntas.size() - 1) {
             if (preguntaActual.tieneRespuestas()) {
-                // Ya respondió, finalizar
-                mostrarDialogoFinalizar();
+                // Opción múltiple - enviar ID de respuesta
+                enviarRespuestaOpcionMultiple(opcionSeleccionadaActual);
             } else {
-                // Pregunta abierta, enviar respuesta y finalizar
+                // Pregunta abierta - enviar texto
                 enviarRespuestaAbierta();
             }
         } else {
-            // No es la última, avanzar
-            indicePreguntaActual++;
-            mostrarPreguntaActual();
+            // No es la última, enviar respuesta y avanzar
+            if (preguntaActual.tieneRespuestas()) {
+                enviarRespuestaOpcionMultiple(opcionSeleccionadaActual);
+            } else {
+                String respuestaTexto = editRespuestaAbierta.getText().toString().trim();
+                enviarRespuestaAbiertaYAvanzar(respuestaTexto);
+            }
         }
     }
 
@@ -270,9 +299,10 @@ public class ResponderActividadActivity extends AppCompatActivity {
         String token = "Bearer " + sessionManager.getToken();
 
         Log.d(TAG, "Enviando respuesta para pregunta ID: " + preguntaActual.getIdPreguntaActividad());
+        Log.d(TAG, "ID de respuesta seleccionada: " + opcionSeleccionada.getIdRespuestaActividad());
         
-        AlumnoApiService.ResponderPreguntaRequest request = 
-                new AlumnoApiService.ResponderPreguntaRequest(opcionSeleccionada.getRespuestas());
+        String respuestaId = String.valueOf(opcionSeleccionada.getIdRespuestaActividad());
+        AlumnoApiService.ResponderPreguntaRequest request = new AlumnoApiService.ResponderPreguntaRequest(respuestaId);
 
         alumnoApiService.responderPregunta(token, preguntaActual.getIdPreguntaActividad(), request)
                 .enqueue(new Callback<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>>() {
@@ -282,8 +312,47 @@ public class ResponderActividadActivity extends AppCompatActivity {
                         if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
                             AlumnoApiService.RespuestaPreguntaResponse data = response.body().getData();
                             
-                            boolean esCorrecta = data != null && Boolean.TRUE.equals(data.getEsCorrecta());
-                            mostrarResultadoRespuesta(esCorrecta, opcionSeleccionada.getRespuestas());
+                            if (data != null && data.getRespuestaPregunta() != null && !data.getRespuestaPregunta().isEmpty()) {
+                                AlumnoApiService.RespuestaPreguntaResponse.RespuestaUsuario respuesta = 
+                                    data.getRespuestaPregunta().get(0);
+                                
+                                Log.d(TAG, "Respuesta guardada con ID: " + respuesta.getIdRespuestaUsuario());
+                                
+                                // Verificar si es correcta
+                                boolean esCorrecta = opcionSeleccionada.isRespuestaCorrecta();
+                                
+                                // Obtener texto de la respuesta del usuario
+                                String textoRespuestaUsuario = opcionSeleccionada.getRespuestas() != null && !opcionSeleccionada.getRespuestas().isEmpty()
+                                    ? opcionSeleccionada.getRespuestas().get(0)
+                                    : "";
+                                
+                                // Obtener la respuesta correcta para mostrar si está incorrecta
+                                String respuestaCorrectaTexto = null;
+                                if (!esCorrecta) {
+                                    PreguntaActividad preguntaActual = preguntas.get(indicePreguntaActual);
+                                    if (preguntaActual.getRespuestaActividad() != null) {
+                                        for (RespuestaActividad ra : preguntaActual.getRespuestaActividad()) {
+                                            if (ra.isRespuestaCorrecta() && ra.getRespuestas() != null && !ra.getRespuestas().isEmpty()) {
+                                                respuestaCorrectaTexto = ra.getRespuestas().get(0);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                
+                                mostrarResultadoRespuesta(esCorrecta, textoRespuestaUsuario, respuestaCorrectaTexto);
+                            } else {
+                                Toast.makeText(ResponderActividadActivity.this,
+                                        "Respuesta enviada",
+                                        Toast.LENGTH_SHORT).show();
+                                // Avanzar a la siguiente pregunta o finalizar
+                                if (indicePreguntaActual < preguntas.size() - 1) {
+                                    indicePreguntaActual++;
+                                    mostrarPreguntaActual();
+                                } else {
+                                    mostrarDialogoFinalizar();
+                                }
+                            }
                             
                         } else {
                             Log.e(TAG, "Error al enviar respuesta: " + response.code());
@@ -317,8 +386,7 @@ public class ResponderActividadActivity extends AppCompatActivity {
 
         Log.d(TAG, "Enviando respuesta abierta para pregunta ID: " + preguntaActual.getIdPreguntaActividad());
 
-        AlumnoApiService.ResponderPreguntaRequest request = 
-                new AlumnoApiService.ResponderPreguntaRequest(respuestaTexto);
+        AlumnoApiService.ResponderPreguntaRequest request = new AlumnoApiService.ResponderPreguntaRequest(respuestaTexto);
 
         alumnoApiService.responderPregunta(token, preguntaActual.getIdPreguntaActividad(), request)
                 .enqueue(new Callback<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>>() {
@@ -326,9 +394,23 @@ public class ResponderActividadActivity extends AppCompatActivity {
                     public void onResponse(Call<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>> call,
                                          Response<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>> response) {
                         if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
-                            Toast.makeText(ResponderActividadActivity.this,
-                                    "Respuesta enviada",
-                                    Toast.LENGTH_SHORT).show();
+                            AlumnoApiService.RespuestaPreguntaResponse data = response.body().getData();
+                            
+                            if (data != null && data.getRespuestaPregunta() != null && !data.getRespuestaPregunta().isEmpty()) {
+                                AlumnoApiService.RespuestaPreguntaResponse.RespuestaUsuario respuesta = 
+                                    data.getRespuestaPregunta().get(0);
+                                
+                                Log.d(TAG, "Respuesta guardada con ID: " + respuesta.getIdRespuestaUsuario());
+                                
+                                Toast.makeText(ResponderActividadActivity.this,
+                                        "Respuesta enviada correctamente",
+                                        Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(ResponderActividadActivity.this,
+                                        "Respuesta enviada",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                            
                             mostrarDialogoFinalizar();
                         } else {
                             Log.e(TAG, "Error al enviar respuesta: " + response.code());
@@ -347,11 +429,66 @@ public class ResponderActividadActivity extends AppCompatActivity {
                     }
                 });
     }
+    
+    private void enviarRespuestaAbiertaYAvanzar(String respuestaTexto) {
+        PreguntaActividad preguntaActual = preguntas.get(indicePreguntaActual);
+        String token = "Bearer " + sessionManager.getToken();
 
-    private void mostrarResultadoRespuesta(boolean esCorrecta, String respuesta) {
-        String mensaje = esCorrecta ? 
-                "¡Correcto! 🎉" : 
-                "Incorrecto. La respuesta fue: " + respuesta;
+        Log.d(TAG, "Enviando respuesta abierta para pregunta ID: " + preguntaActual.getIdPreguntaActividad());
+
+        AlumnoApiService.ResponderPreguntaRequest request = new AlumnoApiService.ResponderPreguntaRequest(respuestaTexto);
+
+        alumnoApiService.responderPregunta(token, preguntaActual.getIdPreguntaActividad(), request)
+                .enqueue(new Callback<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>>() {
+                    @Override
+                    public void onResponse(Call<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>> call,
+                                         Response<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>> response) {
+                        if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
+                            AlumnoApiService.RespuestaPreguntaResponse data = response.body().getData();
+                            
+                            if (data != null && data.getRespuestaPregunta() != null && !data.getRespuestaPregunta().isEmpty()) {
+                                AlumnoApiService.RespuestaPreguntaResponse.RespuestaUsuario respuesta = 
+                                    data.getRespuestaPregunta().get(0);
+                                
+                                Log.d(TAG, "Respuesta guardada con ID: " + respuesta.getIdRespuestaUsuario());
+                            }
+                            
+                            Toast.makeText(ResponderActividadActivity.this,
+                                    "Respuesta enviada",
+                                    Toast.LENGTH_SHORT).show();
+                            
+                            // Avanzar a la siguiente pregunta
+                            indicePreguntaActual++;
+                            mostrarPreguntaActual();
+                            
+                        } else {
+                            Log.e(TAG, "Error al enviar respuesta: " + response.code());
+                            Toast.makeText(ResponderActividadActivity.this,
+                                    "Error al enviar respuesta",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>> call, Throwable t) {
+                        Log.e(TAG, "Error de conexión al enviar respuesta", t);
+                        Toast.makeText(ResponderActividadActivity.this,
+                                "Error de conexión",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void mostrarResultadoRespuesta(boolean esCorrecta, String respuestaUsuario, String respuestaCorrecta) {
+        String mensaje;
+        if (esCorrecta) {
+            mensaje = "¡Correcto! 🎉\n\nTu respuesta: " + respuestaUsuario;
+        } else {
+            mensaje = "Incorrecto ❌\n\nTu respuesta: " + respuestaUsuario;
+            if (respuestaCorrecta != null) {
+                mensaje += "\n\nRespuesta correcta: " + respuestaCorrecta;
+            }
+        }
 
         new AlertDialog.Builder(this)
                 .setTitle(esCorrecta ? "¡Bien hecho!" : "Respuesta incorrecta")
@@ -431,7 +568,12 @@ public class ResponderActividadActivity extends AppCompatActivity {
             // Letras A, B, C, D...
             char letra = (char) ('A' + position);
             holder.textLetraOpcion.setText(String.valueOf(letra));
-            holder.textOpcion.setText(opcion.getRespuestas());
+            
+            // Backend returns respuestas as array, get first element
+            String textoRespuesta = opcion.getRespuestas() != null && !opcion.getRespuestas().isEmpty()
+                ? opcion.getRespuestas().get(0)
+                : "";
+            holder.textOpcion.setText(textoRespuesta);
 
             // Resaltar opción seleccionada
             boolean isSelected = position == selectedPosition;

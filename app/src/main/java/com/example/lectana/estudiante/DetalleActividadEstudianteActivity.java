@@ -59,6 +59,10 @@ public class DetalleActividadEstudianteActivity extends AppCompatActivity {
     private ActividadesApiService actividadesApiService;
     private SessionManager sessionManager;
     private int idActividad;
+    private String descripcionActividad;
+    private String tipoActividad;
+    private String fechaActividad;
+    private int cuentoId;
     private ActividadCompleta actividadCompleta;
     private PreguntasPreviewAdapter preguntasAdapter;
 
@@ -109,7 +113,14 @@ public class DetalleActividadEstudianteActivity extends AppCompatActivity {
 
     private void obtenerDatosIntent() {
         idActividad = getIntent().getIntExtra("actividad_id", 0);
+        descripcionActividad = getIntent().getStringExtra("actividad_descripcion");
+        tipoActividad = getIntent().getStringExtra("actividad_tipo");
+        fechaActividad = getIntent().getStringExtra("actividad_fecha");
+        cuentoId = getIntent().getIntExtra("cuento_id", 0);
+        
         Log.d(TAG, "ID Actividad recibido: " + idActividad);
+        Log.d(TAG, "Descripción: " + descripcionActividad);
+        Log.d(TAG, "Tipo: " + tipoActividad);
 
         if (idActividad == 0) {
             Toast.makeText(this, "Error: ID de actividad no válido", Toast.LENGTH_SHORT).show();
@@ -132,13 +143,24 @@ public class DetalleActividadEstudianteActivity extends AppCompatActivity {
 
                         if (response.isSuccessful() && response.body() != null) {
                             ActividadCompletaResponse data = response.body();
-                            if (data.getActividad() != null) {
-                                actividadCompleta = data.getActividad();
-                                Log.d(TAG, "Actividad completa cargada: " + actividadCompleta.getDescripcion());
+                            List<PreguntaActividad> preguntas = data.getPreguntas();
+                            
+                            if (preguntas != null && !preguntas.isEmpty()) {
+                                Log.d(TAG, "Preguntas cargadas: " + preguntas.size());
+                                
+                                // Crear objeto ActividadCompleta con las preguntas
+                                actividadCompleta = new ActividadCompleta();
+                                actividadCompleta.setIdActividad(idActividad);
+                                actividadCompleta.setDescripcion(descripcionActividad);
+                                actividadCompleta.setTipo(tipoActividad);
+                                actividadCompleta.setFechaPublicacion(fechaActividad);
+                                actividadCompleta.setCuentoIdCuento(cuentoId);
+                                actividadCompleta.setPreguntaActividad(preguntas);
+                                
                                 mostrarDetalleActividad();
                             } else {
                                 Toast.makeText(DetalleActividadEstudianteActivity.this,
-                                        "No se encontraron detalles de la actividad",
+                                        "No se encontraron preguntas para esta actividad",
                                         Toast.LENGTH_SHORT).show();
                                 finish();
                             }

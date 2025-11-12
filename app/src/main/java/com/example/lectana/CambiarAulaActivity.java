@@ -26,7 +26,7 @@ import retrofit2.Response;
 public class CambiarAulaActivity extends AppCompatActivity {
 
     private ImageView botonVolver;
-    private EditText campoCodigo;
+    private EditText campoIdAula;
     private Button botonCambiarAula;
     private ProgressBar progressBar;
     private TextView textoAulaActual;
@@ -49,7 +49,7 @@ public class CambiarAulaActivity extends AppCompatActivity {
 
     private void inicializarComponentes() {
         botonVolver = findViewById(R.id.boton_volver);
-        campoCodigo = findViewById(R.id.campo_codigo_aula);
+        campoIdAula = findViewById(R.id.campo_codigo_aula);
         botonCambiarAula = findViewById(R.id.boton_cambiar_aula);
         progressBar = findViewById(R.id.progress_bar);
         textoAulaActual = findViewById(R.id.texto_aula_actual);
@@ -60,38 +60,36 @@ public class CambiarAulaActivity extends AppCompatActivity {
 
         // Inicialmente deshabilitar el botón
         botonCambiarAula.setEnabled(false);
+        
+        // Actualizar instrucciones
+        textoInstrucciones.setText("Ingresa el código de 6 caracteres proporcionado por tu docente para unirte a su aula.");
     }
 
     private void configurarListeners() {
         botonVolver.setOnClickListener(v -> finish());
 
         // Habilitar botón solo si el código tiene 6 caracteres
-        campoCodigo.addTextChangedListener(new TextWatcher() {
+        campoIdAula.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                botonCambiarAula.setEnabled(s.length() == 6);
+                String texto = s.toString().trim();
+                boolean esValido = texto.length() == 6;
+                botonCambiarAula.setEnabled(esValido);
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-                // Convertir a mayúsculas automáticamente
-                String upper = s.toString().toUpperCase();
-                if (!s.toString().equals(upper)) {
-                    campoCodigo.setText(upper);
-                    campoCodigo.setSelection(upper.length());
-                }
-            }
+            public void afterTextChanged(Editable s) {}
         });
 
         botonCambiarAula.setOnClickListener(v -> {
-            String codigo = campoCodigo.getText().toString().trim();
-            if (codigo.length() == 6) {
-                cambiarAula(codigo);
+            String codigoAula = campoIdAula.getText().toString().trim().toUpperCase();
+            if (codigoAula.length() == 6) {
+                unirseAula(codigoAula);
             } else {
-                Toast.makeText(this, "El código debe tener 6 caracteres", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Por favor ingresa un código de 6 caracteres", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -115,7 +113,7 @@ public class CambiarAulaActivity extends AppCompatActivity {
                         if (aulaResponse.getAula() != null) {
                             aulaActualId = aulaResponse.getAula().getIdAula();
                             String nombreAula = aulaResponse.getAula().getNombreAula();
-                            textoAulaActual.setText("Aula actual: " + nombreAula);
+                            textoAulaActual.setText("Aula actual: " + nombreAula + " (ID: " + aulaActualId + ")");
                             textoAulaActual.setVisibility(View.VISIBLE);
                         } else {
                             textoAulaActual.setText("No estás asignado a ninguna aula");
@@ -140,14 +138,14 @@ public class CambiarAulaActivity extends AppCompatActivity {
         });
     }
 
-    private void cambiarAula(String codigo) {
+    private void unirseAula(String codigoAcceso) {
         mostrarCargando(true);
         botonCambiarAula.setEnabled(false);
 
         String token = "Bearer " + sessionManager.getToken();
         
         // Usar el endpoint POST /alumnos/unirse-aula
-        AlumnoApiService.UnirseAulaRequest request = new AlumnoApiService.UnirseAulaRequest(codigo);
+        AlumnoApiService.UnirseAulaRequest request = new AlumnoApiService.UnirseAulaRequest(codigoAcceso);
         Call<ApiResponse<AlumnoApiService.UnirseAulaResponse>> call = alumnoApiService.unirseAula(token, request);
         
         call.enqueue(new Callback<ApiResponse<AlumnoApiService.UnirseAulaResponse>>() {
@@ -162,25 +160,34 @@ public class CambiarAulaActivity extends AppCompatActivity {
                     AlumnoApiService.UnirseAulaResponse data = apiResponse.getData();
                     
                     if (data != null && data.getAula() != null) {
+                        int nuevoAulaId = data.getAula().getIdAula();
                         String nombreAula = data.getAula().getNombreAula();
+                        
                         Toast.makeText(CambiarAulaActivity.this, 
-                            "¡Te has unido a " + nombreAula + "!", 
+                            data.getMensaje() != null ? data.getMensaje() : "¡Te has unido a " + nombreAula + "!", 
                             Toast.LENGTH_LONG).show();
                         
-                        // Actualizar UI
-                        textoAulaActual.setText("Aula actual: " + nombreAula);
-                        textoAulaActual.setVisibility(View.VISIBLE);
-                        campoCodigo.setText("");
+                        // Actualizar SessionManager con el nuevo aula ID
+                        int alumnoId = sessionManager.getAlumnoId();
+                        sessionManager.saveAlumnoData(alumnoId, nuevoAulaId);
                         
-                        // Opcional: cerrar la actividad después de 2 segundos
-                        campoCodigo.postDelayed(() -> finish(), 2000);
+                        // Actualizar UI
+                        textoAulaActual.setText("Aula actual: " + nombreAula + " (ID: " + nuevoAulaId + ")");
+                        textoAulaActual.setVisibility(View.VISIBLE);
+                        campoIdAula.setText("");
+                        
+                        // Cerrar la actividad después de 2 segundos
+                        campoIdAula.postDelayed(() -> {
+                            setResult(RESULT_OK);
+                            finish();
+                        }, 2000);
                     } else {
                         Toast.makeText(CambiarAulaActivity.this, 
-                            data != null ? data.getMensaje() : "Error desconocido", 
+                            "Error: No se recibió información del aula", 
                             Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    handleError(response.code(), "Error al cambiar de aula");
+                    handleError(response.code(), "Error al unirse al aula");
                 }
             }
 
@@ -221,7 +228,15 @@ public class CambiarAulaActivity extends AppCompatActivity {
 
     private void mostrarCargando(boolean mostrar) {
         progressBar.setVisibility(mostrar ? View.VISIBLE : View.GONE);
-        campoCodigo.setEnabled(!mostrar);
-        botonCambiarAula.setEnabled(!mostrar && campoCodigo.getText().length() == 6);
+        campoIdAula.setEnabled(!mostrar);
+        
+        // Solo habilitar el botón si no está cargando y el campo tiene 6 caracteres
+        if (!mostrar) {
+            String texto = campoIdAula.getText() != null ? campoIdAula.getText().toString().trim() : "";
+            boolean esValido = texto.length() == 6;
+            botonCambiarAula.setEnabled(esValido);
+        } else {
+            botonCambiarAula.setEnabled(false);
+        }
     }
 }

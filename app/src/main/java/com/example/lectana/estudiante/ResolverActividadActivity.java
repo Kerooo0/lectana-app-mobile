@@ -245,7 +245,11 @@ public class ResolverActividadActivity extends AppCompatActivity {
         // Agregar opciones
         for (RespuestaActividad respuesta : pregunta.getRespuestaActividad()) {
             RadioButton radioButton = new RadioButton(this);
-            radioButton.setText(respuesta.getRespuestas());
+            // Backend returns respuestas as array, get first element
+            String textoRespuesta = respuesta.getRespuestas() != null && !respuesta.getRespuestas().isEmpty() 
+                ? respuesta.getRespuestas().get(0) 
+                : "";
+            radioButton.setText(textoRespuesta);
             radioButton.setTextSize(16);
             radioButton.setPadding(16, 16, 16, 16);
             radioButton.setId(respuesta.getIdRespuestaActividad());

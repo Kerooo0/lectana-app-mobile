@@ -21,6 +21,7 @@ import com.example.lectana.DetalleCuentoActivity;
 import com.example.lectana.R;
 import com.example.lectana.auth.SessionManager;
 import com.example.lectana.modelos.Actividad;
+import com.example.lectana.modelos.ActividadAula;
 import com.example.lectana.modelos.ActividadesPorAulaResponse;
 import com.example.lectana.modelos.CuentoApi;
 import com.example.lectana.modelos.CuentosResponse;
@@ -128,6 +129,12 @@ public class InicioFragment extends Fragment {
         call.enqueue(new Callback<ApiResponse<CuentosResponse>>() {
             @Override
             public void onResponse(Call<ApiResponse<CuentosResponse>> call, Response<ApiResponse<CuentosResponse>> response) {
+                // Verificar que el fragment sigue vinculado antes de actualizar UI
+                if (!isAdded()) {
+                    Log.w(TAG, "Fragment no está vinculado - ignorando respuesta de cuento reciente");
+                    return;
+                }
+                
                 if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
                     CuentosResponse cuentosResponse = response.body().getData();
                     if (cuentosResponse != null && cuentosResponse.getCuentos() != null && !cuentosResponse.getCuentos().isEmpty()) {
@@ -146,6 +153,12 @@ public class InicioFragment extends Fragment {
             
             @Override
             public void onFailure(Call<ApiResponse<CuentosResponse>> call, Throwable t) {
+                // Verificar que el fragment sigue vinculado antes de actualizar UI
+                if (!isAdded()) {
+                    Log.w(TAG, "Fragment no está vinculado - ignorando fallo de cuento reciente");
+                    return;
+                }
+                
                 ocultarNovedad();
                 Log.e(TAG, "Error de conexión al cargar cuento: " + t.getMessage());
             }
@@ -188,19 +201,25 @@ public class InicioFragment extends Fragment {
         actividadesApiService.getActividadesPorAula(token, aulaId).enqueue(new Callback<ActividadesPorAulaResponse>() {
             @Override
             public void onResponse(Call<ActividadesPorAulaResponse> call, Response<ActividadesPorAulaResponse> response) {
+                // Verificar que el fragment sigue vinculado antes de actualizar UI
+                if (!isAdded()) {
+                    Log.w(TAG, "Fragment no está vinculado - ignorando respuesta de actividades");
+                    return;
+                }
+                
                 Log.d(TAG, "Respuesta actividades - Código: " + response.code());
                 
                 if (response.isSuccessful() && response.body() != null) {
                     ActividadesPorAulaResponse data = response.body();
-                    List<Actividad> actividades = data.getActividades();
+                    List<ActividadAula> actividadesAula = data.getActividades();
                     
-                    Log.d(TAG, "Actividades recibidas: " + (actividades != null ? actividades.size() : "null"));
+                    Log.d(TAG, "Registros actividad_aula recibidos: " + (actividadesAula != null ? actividadesAula.size() : "null"));
                     
-                    if (actividades != null && !actividades.isEmpty()) {
-                        // Buscar la primera actividad pendiente
-                        actividadPendiente = actividades.get(0); // Usamos la primera por ahora
-                        mostrarActividadPendiente(actividades.size());
-                        Log.d(TAG, "Actividades pendientes encontradas: " + actividades.size());
+                    if (actividadesAula != null && !actividadesAula.isEmpty()) {
+                        // Extraer la actividad del primer registro de actividad_aula
+                        actividadPendiente = actividadesAula.get(0).getActividad();
+                        mostrarActividadPendiente(actividadesAula.size());
+                        Log.d(TAG, "Actividades pendientes encontradas: " + actividadesAula.size());
                     } else {
                         mostrarTodasActividadesCompletadas();
                         Log.d(TAG, "No hay actividades pendientes - mostrando tarjeta de completado");
@@ -216,6 +235,12 @@ public class InicioFragment extends Fragment {
             
             @Override
             public void onFailure(Call<ActividadesPorAulaResponse> call, Throwable t) {
+                // Verificar que el fragment sigue vinculado antes de actualizar UI
+                if (!isAdded()) {
+                    Log.w(TAG, "Fragment no está vinculado - ignorando fallo de actividades");
+                    return;
+                }
+                
                 // En caso de fallo, mostrar que no hay actividades
                 mostrarTodasActividadesCompletadas();
                 Log.e(TAG, "Error de conexión al cargar actividades: " + t.getMessage());
@@ -224,6 +249,11 @@ public class InicioFragment extends Fragment {
     }
 
     private void mostrarActividadPendiente(int totalPendientes) {
+        // Verificar que el fragment sigue vinculado antes de acceder a recursos
+        if (!isAdded()) {
+            return;
+        }
+        
         if (cardActividadPendiente != null && actividadPendiente != null) {
             cardActividadPendiente.setVisibility(View.VISIBLE);
             
