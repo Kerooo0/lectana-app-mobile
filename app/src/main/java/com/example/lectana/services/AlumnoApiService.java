@@ -20,9 +20,10 @@ public interface AlumnoApiService {
      * Responder a una pregunta de actividad
      * POST /api/alumnos/responder-pregunta/:id_pregunta
      * Rol: alumno
+     * NOTA: Este endpoint NO usa ApiResponse, devuelve directamente RespuestaPreguntaResponse
      */
     @POST("alumnos/responder-pregunta/{id_pregunta}")
-    Call<ApiResponse<RespuestaPreguntaResponse>> responderPregunta(
+    Call<RespuestaPreguntaResponse> responderPregunta(
             @Header("Authorization") String token,
             @Path("id_pregunta") int idPregunta,
             @Body ResponderPreguntaRequest request

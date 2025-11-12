@@ -305,18 +305,19 @@ public class ResponderActividadActivity extends AppCompatActivity {
         AlumnoApiService.ResponderPreguntaRequest request = new AlumnoApiService.ResponderPreguntaRequest(respuestaId);
 
         alumnoApiService.responderPregunta(token, preguntaActual.getIdPreguntaActividad(), request)
-                .enqueue(new Callback<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>>() {
+                .enqueue(new Callback<AlumnoApiService.RespuestaPreguntaResponse>() {
                     @Override
-                    public void onResponse(Call<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>> call,
-                                         Response<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>> response) {
-                        if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
-                            AlumnoApiService.RespuestaPreguntaResponse data = response.body().getData();
+                    public void onResponse(Call<AlumnoApiService.RespuestaPreguntaResponse> call,
+                                         Response<AlumnoApiService.RespuestaPreguntaResponse> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            AlumnoApiService.RespuestaPreguntaResponse data = response.body();
                             
-                            if (data != null && data.getRespuestaPregunta() != null && !data.getRespuestaPregunta().isEmpty()) {
+                            if (data.getRespuestaPregunta() != null && !data.getRespuestaPregunta().isEmpty()) {
                                 AlumnoApiService.RespuestaPreguntaResponse.RespuestaUsuario respuesta = 
                                     data.getRespuestaPregunta().get(0);
                                 
                                 Log.d(TAG, "Respuesta guardada con ID: " + respuesta.getIdRespuestaUsuario());
+                                Log.d(TAG, "alumno_id_alumno: " + respuesta.getAlumnoIdAlumno());
                                 
                                 // Verificar si es correcta
                                 boolean esCorrecta = opcionSeleccionada.isRespuestaCorrecta();
@@ -363,7 +364,7 @@ public class ResponderActividadActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>> call, Throwable t) {
+                    public void onFailure(Call<AlumnoApiService.RespuestaPreguntaResponse> call, Throwable t) {
                         Log.e(TAG, "Error de conexión al enviar respuesta", t);
                         Toast.makeText(ResponderActividadActivity.this,
                                 "Error de conexión",
@@ -389,18 +390,19 @@ public class ResponderActividadActivity extends AppCompatActivity {
         AlumnoApiService.ResponderPreguntaRequest request = new AlumnoApiService.ResponderPreguntaRequest(respuestaTexto);
 
         alumnoApiService.responderPregunta(token, preguntaActual.getIdPreguntaActividad(), request)
-                .enqueue(new Callback<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>>() {
+                .enqueue(new Callback<AlumnoApiService.RespuestaPreguntaResponse>() {
                     @Override
-                    public void onResponse(Call<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>> call,
-                                         Response<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>> response) {
-                        if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
-                            AlumnoApiService.RespuestaPreguntaResponse data = response.body().getData();
+                    public void onResponse(Call<AlumnoApiService.RespuestaPreguntaResponse> call,
+                                         Response<AlumnoApiService.RespuestaPreguntaResponse> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            AlumnoApiService.RespuestaPreguntaResponse data = response.body();
                             
-                            if (data != null && data.getRespuestaPregunta() != null && !data.getRespuestaPregunta().isEmpty()) {
+                            if (data.getRespuestaPregunta() != null && !data.getRespuestaPregunta().isEmpty()) {
                                 AlumnoApiService.RespuestaPreguntaResponse.RespuestaUsuario respuesta = 
                                     data.getRespuestaPregunta().get(0);
                                 
                                 Log.d(TAG, "Respuesta guardada con ID: " + respuesta.getIdRespuestaUsuario());
+                                Log.d(TAG, "alumno_id_alumno: " + respuesta.getAlumnoIdAlumno());
                                 
                                 Toast.makeText(ResponderActividadActivity.this,
                                         "Respuesta enviada correctamente",
@@ -421,7 +423,7 @@ public class ResponderActividadActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>> call, Throwable t) {
+                    public void onFailure(Call<AlumnoApiService.RespuestaPreguntaResponse> call, Throwable t) {
                         Log.e(TAG, "Error de conexión al enviar respuesta", t);
                         Toast.makeText(ResponderActividadActivity.this,
                                 "Error de conexión",
@@ -439,18 +441,19 @@ public class ResponderActividadActivity extends AppCompatActivity {
         AlumnoApiService.ResponderPreguntaRequest request = new AlumnoApiService.ResponderPreguntaRequest(respuestaTexto);
 
         alumnoApiService.responderPregunta(token, preguntaActual.getIdPreguntaActividad(), request)
-                .enqueue(new Callback<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>>() {
+                .enqueue(new Callback<AlumnoApiService.RespuestaPreguntaResponse>() {
                     @Override
-                    public void onResponse(Call<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>> call,
-                                         Response<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>> response) {
-                        if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
-                            AlumnoApiService.RespuestaPreguntaResponse data = response.body().getData();
+                    public void onResponse(Call<AlumnoApiService.RespuestaPreguntaResponse> call,
+                                         Response<AlumnoApiService.RespuestaPreguntaResponse> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            AlumnoApiService.RespuestaPreguntaResponse data = response.body();
                             
-                            if (data != null && data.getRespuestaPregunta() != null && !data.getRespuestaPregunta().isEmpty()) {
+                            if (data.getRespuestaPregunta() != null && !data.getRespuestaPregunta().isEmpty()) {
                                 AlumnoApiService.RespuestaPreguntaResponse.RespuestaUsuario respuesta = 
                                     data.getRespuestaPregunta().get(0);
                                 
                                 Log.d(TAG, "Respuesta guardada con ID: " + respuesta.getIdRespuestaUsuario());
+                                Log.d(TAG, "alumno_id_alumno: " + respuesta.getAlumnoIdAlumno());
                             }
                             
                             Toast.makeText(ResponderActividadActivity.this,
@@ -470,7 +473,7 @@ public class ResponderActividadActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>> call, Throwable t) {
+                    public void onFailure(Call<AlumnoApiService.RespuestaPreguntaResponse> call, Throwable t) {
                         Log.e(TAG, "Error de conexión al enviar respuesta", t);
                         Toast.makeText(ResponderActividadActivity.this,
                                 "Error de conexión",

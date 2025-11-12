@@ -370,7 +370,7 @@ public class ResolverActividadActivity extends AppCompatActivity {
         btnEnviarRespuestas.setEnabled(false);
 
         // Preparar lista de respuestas
-        List<Call<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>>> llamadas = new ArrayList<>();
+        List<Call<AlumnoApiService.RespuestaPreguntaResponse>> llamadas = new ArrayList<>();
         
         for (PreguntaActividad pregunta : preguntas) {
             String respuestaTexto = respuestasUsuario.get(pregunta.getIdPreguntaActividad());
@@ -379,7 +379,7 @@ public class ResolverActividadActivity extends AppCompatActivity {
                 AlumnoApiService.ResponderPreguntaRequest request = 
                         new AlumnoApiService.ResponderPreguntaRequest(respuestaTexto);
                 
-                Call<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>> call = alumnoApiService.responderPregunta(
+                Call<AlumnoApiService.RespuestaPreguntaResponse> call = alumnoApiService.responderPregunta(
                     "Bearer " + token,
                     pregunta.getIdPreguntaActividad(),
                     request
@@ -393,7 +393,7 @@ public class ResolverActividadActivity extends AppCompatActivity {
         enviarRespuestaRecursiva(llamadas, 0);
     }
 
-    private void enviarRespuestaRecursiva(List<Call<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>>> llamadas, int index) {
+    private void enviarRespuestaRecursiva(List<Call<AlumnoApiService.RespuestaPreguntaResponse>> llamadas, int index) {
         if (index >= llamadas.size()) {
             // Todas las respuestas enviadas exitosamente
             progressBarCarga.setVisibility(View.GONE);
@@ -410,12 +410,12 @@ public class ResolverActividadActivity extends AppCompatActivity {
             return;
         }
 
-        Call<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>> call = llamadas.get(index);
-        call.enqueue(new Callback<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>>() {
+        Call<AlumnoApiService.RespuestaPreguntaResponse> call = llamadas.get(index);
+        call.enqueue(new Callback<AlumnoApiService.RespuestaPreguntaResponse>() {
             @Override
-            public void onResponse(Call<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>> call, 
-                                 Response<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
+            public void onResponse(Call<AlumnoApiService.RespuestaPreguntaResponse> call, 
+                                 Response<AlumnoApiService.RespuestaPreguntaResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
                     // Continuar con la siguiente respuesta
                     enviarRespuestaRecursiva(llamadas, index + 1);
                 } else {
@@ -429,7 +429,7 @@ public class ResolverActividadActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ApiResponse<AlumnoApiService.RespuestaPreguntaResponse>> call, Throwable t) {
+            public void onFailure(Call<AlumnoApiService.RespuestaPreguntaResponse> call, Throwable t) {
                 progressBarCarga.setVisibility(View.GONE);
                 btnEnviarRespuestas.setEnabled(true);
                 
