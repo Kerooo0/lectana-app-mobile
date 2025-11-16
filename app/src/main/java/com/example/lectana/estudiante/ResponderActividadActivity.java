@@ -146,9 +146,9 @@ public class ResponderActividadActivity extends AppCompatActivity {
 
                         if (response.isSuccessful() && response.body() != null) {
                             ActividadCompletaResponse data = response.body();
-                            if (data.getActividad() != null) {
-                                actividadCompleta = data.getActividad();
-                                preguntas = actividadCompleta.getPreguntaActividad();
+                            if (data != null) {
+                                actividadCompleta = data;
+                                preguntas = data.getPreguntaActividad();
                                 
                                 if (preguntas != null && !preguntas.isEmpty()) {
                                     Log.d(TAG, "Actividad cargada con " + preguntas.size() + " preguntas");

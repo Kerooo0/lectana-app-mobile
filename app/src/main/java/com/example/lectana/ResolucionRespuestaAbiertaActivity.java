@@ -1,23 +1,226 @@
 package com.example.lectana;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.lectana.R;
+
+import com.example.lectana.auth.SessionManager;
+import com.example.lectana.modelos.ActividadCompletaResponse;
+import com.example.lectana.modelos.ApiResponse;
+import com.example.lectana.modelos.RespuestaUsuario;
+import com.example.lectana.services.ActividadesApiService;
+import com.example.lectana.services.AlumnoApiService;
+import com.example.lectana.services.ApiClient;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ResolucionRespuestaAbiertaActivity extends AppCompatActivity {
+
+    private int idActividad;
+    private String tituloActividad;
+    private SessionManager sessionManager;
+    private ActividadesApiService actividadesService;
+    private AlumnoApiService alumnoService;
+    private ExecutorService executorService;
+
+    private ProgressBar progressBar;
+    private TextView tvTitulo;
+    private LinearLayout containerPreguntas;
+    private Button btnEnviar;
+
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_respuesta_abierta);
+        setContentView(R.layout.activity_resolucion_respuesta_abierta);
+
+        inicializarVistas();
+        
+        sessionManager = new SessionManager(this);
+        actividadesService = ApiClient.getActividadesApiService();
+        alumnoService = ApiClient.getAlumnoApiService();
+        executorService = Executors.newSingleThreadExecutor();
+
+        // Obtener datos del intent
+        if (getIntent() != null) {
+            idActividad = getIntent().getIntExtra("id_actividad", 0);
+            tituloActividad = getIntent().getStringExtra("titulo_actividad");
+        }
+
+        if (idActividad > 0) {
+            cargarActividad();
+        } else {
+            mostrarError("ID de actividad no válido");
+        }
     }
 
-    public void onClickEnviar(View v) {
-        Toast.makeText(this, "Respuesta enviada", Toast.LENGTH_SHORT).show();
-        finish();
+    private void inicializarVistas() {
+        progressBar = new ProgressBar(this);
+        tvTitulo = new TextView(this);
+        containerPreguntas = new LinearLayout(this);
+        btnEnviar = new Button(this);
+        
+        btnEnviar.setOnClickListener(v -> enviarRespuestas());
+    }
+
+    private void cargarActividad() {
+        mostrarCargando(true);
+        String token = "Bearer " + sessionManager.getToken();
+
+        executorService.execute(() -> {
+            Call<ActividadCompletaResponse> call = actividadesService.getActividadCompleta(token, idActividad);
+
+            call.enqueue(new Callback<ActividadCompletaResponse>() {
+                @Override
+                public void onResponse(Call<ActividadCompletaResponse> call, Response<ActividadCompletaResponse> response) {
+                    runOnUiThread(() -> {
+                        mostrarCargando(false);
+                        if (response.isSuccessful() && response.body() != null) {
+                            ActividadCompletaResponse res = response.body();
+                            if (res.getPreguntas() != null && !res.getPreguntas().isEmpty()) {
+                                mostrarActividadCompleta(res);
+                            } else {
+                                mostrarError("No se pudo cargar la actividad");
+                            }
+                        } else {
+                            Log.e("ResolucionRA", "Error: " + response.code());
+                            mostrarError("Error al cargar la actividad");
+                        }
+                    });
+                }
+
+                @Override
+                public void onFailure(Call<ActividadCompletaResponse> call, Throwable t) {
+                    runOnUiThread(() -> {
+                        mostrarCargando(false);
+                        Log.e("ResolucionRA", "Error: " + t.getMessage());
+                        mostrarError("Error de conexión");
+                    });
+                }
+            });
+        });
+    }
+
+    private void mostrarActividadCompleta(ActividadCompletaResponse response) {
+        tvTitulo.setText(tituloActividad != null ? tituloActividad : "Actividad");
+        
+        containerPreguntas.removeAllViews();
+
+        if (response.getPreguntas() != null) {
+            
+            for (var pregunta : response.getPreguntas()) {
+                // Crear TextView para la pregunta
+                TextView tvPregunta = new TextView(this);
+                tvPregunta.setText(pregunta.getEnunciado());
+                tvPregunta.setTextSize(16);
+                tvPregunta.setTextColor(getResources().getColor(R.color.gris_oscuro));
+                tvPregunta.setPadding(0, 16, 0, 8);
+                tvPregunta.setTag(pregunta.getIdPreguntaActividad());
+                containerPreguntas.addView(tvPregunta);
+
+                // Crear EditText para la respuesta abierta
+                EditText etRespuesta = new EditText(this);
+                etRespuesta.setHint("Escribe tu respuesta aquí...");
+                etRespuesta.setMinHeight(120);
+                etRespuesta.setTag("edit_" + pregunta.getIdPreguntaActividad());
+                etRespuesta.setBackgroundResource(R.drawable.boton_blanco_rectangular);
+                etRespuesta.setPadding(16, 16, 16, 16);
+                containerPreguntas.addView(etRespuesta);
+            }
+        }
+    }
+
+    private void enviarRespuestas() {
+        mostrarCargando(true);
+        String token = "Bearer " + sessionManager.getToken();
+
+        // Obtener todas las respuestas
+        for (int i = 0; i < containerPreguntas.getChildCount(); i++) {
+            var child = containerPreguntas.getChildAt(i);
+            
+            if (child instanceof EditText) {
+                EditText editText = (EditText) child;
+                String respuestaTexto = editText.getText().toString().trim();
+
+                if (respuestaTexto.isEmpty()) {
+                    mostrarCargando(false);
+                    Toast.makeText(this, "Por favor responde todas las preguntas", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Obtener ID de pregunta
+                String tag = editText.getTag().toString();
+                int idPregunta = Integer.parseInt(tag.replace("edit_", ""));
+
+                // Crear respuesta
+                RespuestaUsuario respuesta = new RespuestaUsuario();
+                respuesta.setPreguntaActividadId(idPregunta);
+                respuesta.setRespuestaTexto(respuestaTexto);
+
+                // Enviar respuesta
+                enviarRespuesta(token, respuesta);
+            }
+        }
+    }
+
+    private void enviarRespuesta(String token, RespuestaUsuario respuesta) {
+        executorService.execute(() -> {
+            Call<AlumnoApiService.RespuestaPreguntaResponse> call = alumnoService.responderPregunta(token, respuesta.getPreguntaActividadId(),
+                    new AlumnoApiService.ResponderPreguntaRequest(respuesta.getRespuestaTexto()));
+
+            call.enqueue(new Callback<AlumnoApiService.RespuestaPreguntaResponse>() {
+                @Override
+                public void onResponse(Call<AlumnoApiService.RespuestaPreguntaResponse> call, Response<AlumnoApiService.RespuestaPreguntaResponse> response) {
+                    runOnUiThread(() -> {
+                        if (response.isSuccessful() && response.body() != null) {
+                            Log.d("ResolucionRA", "Respuesta enviada");
+                            mostrarCargando(false);
+                            Toast.makeText(ResolucionRespuestaAbiertaActivity.this, 
+                                "¡Respuesta enviada correctamente!", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            mostrarCargando(false);
+                            mostrarError("Error al enviar la respuesta");
+                        }
+                    });
+                }
+
+                @Override
+                public void onFailure(Call<AlumnoApiService.RespuestaPreguntaResponse> call, Throwable t) {
+                    runOnUiThread(() -> {
+                        mostrarCargando(false);
+                        Log.e("ResolucionRA", "Error: " + t.getMessage());
+                        mostrarError("Error: " + t.getMessage());
+                    });
+                }
+            });
+        });
+    }
+
+    private void mostrarCargando(boolean mostrar) {
+        progressBar.setVisibility(mostrar ? android.view.View.VISIBLE : android.view.View.GONE);
+    }
+
+    private void mostrarError(String mensaje) {
+        Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        executorService.shutdown();
     }
 }
 

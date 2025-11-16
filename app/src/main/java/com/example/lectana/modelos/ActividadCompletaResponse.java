@@ -5,43 +5,21 @@ import java.util.List;
 
 /**
  * Respuesta del endpoint GET /api/actividades/actividadCompleta/:idActividad
- * Backend devuelve solo las preguntas con sus respuestas
+ * Backend devuelve la actividad completa con todas sus preguntas
+ * NOTA: El backend retorna directamente ActividadCompleta (sin envolver)
  */
-public class ActividadCompletaResponse {
+public class ActividadCompletaResponse extends ActividadCompleta {
     
-    @SerializedName("actividadCompleta")
-    private List<PreguntaActividad> preguntas;
-
-    public ActividadCompletaResponse() {
-    }
-
+    /**
+     * Obtener las preguntas de la actividad
+     * (compatibilidad con código que espera getPreguntas)
+     */
     public List<PreguntaActividad> getPreguntas() {
-        return preguntas;
+        return this.getPreguntaActividad();
     }
 
     public void setPreguntas(List<PreguntaActividad> preguntas) {
-        this.preguntas = preguntas;
-    }
-    
-    /**
-     * Método de compatibilidad - construye un objeto ActividadCompleta
-     * a partir de las preguntas devueltas
-     */
-    public ActividadCompleta getActividad() {
-        if (preguntas == null || preguntas.isEmpty()) {
-            return null;
-        }
-        
-        // Crear actividad completa a partir de las preguntas
-        ActividadCompleta actividad = new ActividadCompleta();
-        actividad.setPreguntaActividad(preguntas);
-        
-        // Obtener id_actividad del primer pregunta
-        if (preguntas.get(0) != null) {
-            actividad.setIdActividad(preguntas.get(0).getActividadIdActividad());
-        }
-        
-        return actividad;
+        this.setPreguntaActividad(preguntas);
     }
 }
 

@@ -174,8 +174,8 @@ public class ResolverActividadActivity extends AppCompatActivity {
                 
                 if (response.isSuccessful() && response.body() != null) {
                     ActividadCompletaResponse actividadResponse = response.body();
-                    if (actividadResponse.getActividad() != null) {
-                        preguntas = actividadResponse.getActividad().getPreguntaActividad();
+                    if (actividadResponse != null) {
+                        preguntas = actividadResponse.getPreguntaActividad();
                         
                         if (preguntas == null || preguntas.isEmpty()) {
                             Toast.makeText(ResolverActividadActivity.this, 

@@ -1,11 +1,13 @@
 package com.example.lectana.modelos;
 
 import com.google.gson.annotations.SerializedName;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Respuesta del endpoint GET /api/actividades/actividadesPorAula/:id_aula
- * Backend devuelve registros de la tabla intermedia actividad_aula con datos nested
+ * Backend retorna registros de la tabla intermedia actividad_aula con datos nested
+ * NOTA: El backend puede retornar { actividades: [...] } o directamente [...]
  */
 public class ActividadesPorAulaResponse {
     
@@ -16,6 +18,9 @@ public class ActividadesPorAulaResponse {
     }
 
     public List<ActividadAula> getActividades() {
+        if (actividades == null) {
+            return new ArrayList<>();
+        }
         return actividades;
     }
 
