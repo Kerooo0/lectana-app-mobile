@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    android:layout_marginHorizontal="4dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+        <!-- Avatar del estudiante -->
+        <ImageView
+            android:id="@+id/avatar_estudiante"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_person"
+            android:tint="@color/gris_medio"
+            android:background="@drawable/circle_background"
+            android:layout_marginEnd="16dp" />
+
+        <!-- Información del estudiante -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/nombre_estudiante_progreso"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ana García"
+                android:textColor="@color/gris_oscuro"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tiempo_ultima_actividad"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hace 1 hora"
+                android:textColor="@color/gris_medio"
+                android:textSize="13sp"
+                android:layout_marginTop="2dp" />
+
+        </LinearLayout>
+
+        <!-- Progreso del estudiante -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="end">
+
+            <!-- Puntuación y porcentaje -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="4dp">
+
+                <TextView
+                    android:id="@+id/puntuacion_estudiante"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4/5"
+                    android:textColor="@color/gris_oscuro"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginEnd="8dp" />
+
+                <TextView
+                    android:id="@+id/porcentaje_progreso"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="92%"
+                    android:textColor="@color/verde"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <!-- Barra de progreso -->
+            <LinearLayout
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <View
+                    android:id="@+id/barra_progreso_rellena"
+                    android:layout_width="0dp"
+                    android:layout_height="6dp"
+                    android:layout_weight="0.92"
+                    android:background="@drawable/barra_progreso_verde" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="6dp"
+                    android:layout_weight="0.08"
+                    android:background="@color/gris_claro" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    android:foreground="?android:attr/selectableItemBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <!-- Icono de estado -->
+        <ImageView
+            android:id="@+id/iconoEstado"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_activity_pending"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="16dp"
+            android:contentDescription="Estado de la actividad" />
+
+        <!-- Contenido -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <!-- Título del cuento -->
+            <TextView
+                android:id="@+id/textCuentoTitulo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="El Principito"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/azul_fuerte"
+                android:layout_marginBottom="4dp" />
+
+            <!-- Descripción -->
+            <TextView
+                android:id="@+id/textDescripcion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Actividad sobre los personajes principales"
+                android:textSize="14sp"
+                android:textColor="@color/gris_oscuro"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Info adicional -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <!-- Tipo -->
+                <TextView
+                    android:id="@+id/textTipo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Opción Múltiple"
+                    android:textSize="12sp"
+                    android:textColor="@color/gris_medio"
+                    android:drawableStart="@drawable/ic_actividades"
+                    android:drawablePadding="4dp"
+                    android:drawableTint="@color/gris_medio"
+                    android:layout_marginEnd="16dp" />
+
+                <!-- Fecha de entrega -->
+                <TextView
+                    android:id="@+id/textFechaEntrega"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Vence: 15 Nov 2025"
+                    android:textSize="12sp"
+                    android:textColor="@color/gris_medio"
+                    android:drawableStart="@drawable/ic_calendar"
+                    android:drawablePadding="4dp"
+                    android:drawableTint="@color/gris_medio" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Estado (texto) -->
+        <TextView
+            android:id="@+id/textEstado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pendiente"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/naranja_advertencia"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="8dp" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

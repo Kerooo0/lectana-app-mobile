@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp"
+    app:cardBackgroundColor="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header con descripción y botones -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textDescripcion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Descripción de la actividad"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:maxLines="2"
+                    android:ellipsize="end" />
+
+                <TextView
+                    android:id="@+id/textTipo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Opción Múltiple"
+                    android:textSize="12sp"
+                    android:textColor="@color/accent"
+                    android:background="@drawable/badge_secondary"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="2dp"
+                    android:layout_marginTop="4dp" />
+
+            </LinearLayout>
+
+            <!-- Botones de acción -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/btnEditar"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_edit"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Editar actividad"
+                    android:layout_marginEnd="4dp" />
+
+                <ImageButton
+                    android:id="@+id/btnAsignarAulas"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_classroom"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Asignar aulas"
+                    android:layout_marginEnd="4dp" />
+
+                <ImageButton
+                    android:id="@+id/btnEliminar"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_delete"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Eliminar actividad"
+                    android:tint="@color/error" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Información adicional -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp">
+
+            <TextView
+                android:id="@+id/textFechaCreacion"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="15/01/2024"
+                android:textSize="12sp"
+                android:textColor="@color/text_secondary"
+                android:drawableStart="@drawable/ic_calendar"
+                android:drawablePadding="4dp" />
+
+            <TextView
+                android:id="@+id/textTotalPreguntas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Preguntas: 3"
+                android:textSize="12sp"
+                android:textColor="@color/text_secondary"
+                android:layout_marginEnd="12dp" />
+
+            <TextView
+                android:id="@+id/textTotalAulas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Aulas: 1"
+                android:textSize="12sp"
+                android:textColor="@color/text_secondary" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
+

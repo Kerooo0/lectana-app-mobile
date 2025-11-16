@@ -16,8 +16,10 @@ import com.example.lectana.R;
 
 
 
-
 public class registro_pregunta extends AppCompatActivity {
+
+
+
 
     String opcionSeleccionada = null;
     CardView cardDocente, cardAlumno;
@@ -35,6 +37,14 @@ public class registro_pregunta extends AppCompatActivity {
         cardAlumno = findViewById(R.id.cardAlumno);
         volver = findViewById(R.id.flechaRegistro);
         btnContinuar = findViewById(R.id.btnOpcionRegistro);
+
+        if (savedInstanceState != null) {
+            opcionSeleccionada = savedInstanceState.getString("opcionSeleccionada");
+            if (opcionSeleccionada != null) {
+                cambioEstado(opcionSeleccionada);
+            }
+        }
+
 
         cardDocente.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,17 +93,17 @@ public class registro_pregunta extends AppCompatActivity {
 
     private void cambioEstado(String opcion){
 
-      if (opcionSeleccionada.equalsIgnoreCase("docente")){
+        if (opcionSeleccionada.equalsIgnoreCase("docente")){
 
-          cardDocente.setSelected(true);
-          cardAlumno.setSelected(false);
+            cardDocente.setSelected(true);
+            cardAlumno.setSelected(false);
 
 
-      } else {
-          cardAlumno.setSelected(true);
-          cardDocente.setSelected(false);
+        } else {
+            cardAlumno.setSelected(true);
+            cardDocente.setSelected(false);
 
-      }
+        }
 
 
 
@@ -108,11 +118,15 @@ public class registro_pregunta extends AppCompatActivity {
 
             if( opcionSeleccionada.equalsIgnoreCase("docente") ){
 
-                Toast.makeText(registro_pregunta.this, "Vas hacia registro docente", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(registro_pregunta.this, RegistroActivity.class);
+                intent.putExtra("seleccion", "Docente");
+                startActivity(intent);
 
             } else {
 
-                Toast.makeText(registro_pregunta.this, "Vas hacia registro alumno", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(registro_pregunta.this, RegistroActivity.class);
+                intent.putExtra("seleccion", "Alumno");
+                startActivity(intent);
 
             }
 
@@ -128,6 +142,12 @@ public class registro_pregunta extends AppCompatActivity {
 
     }
 
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("opcionSeleccionada", opcionSeleccionada);
+    }
 
 
 }

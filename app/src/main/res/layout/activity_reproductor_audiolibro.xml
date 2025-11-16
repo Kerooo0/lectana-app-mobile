@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <!-- Header con botón de volver -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:paddingHorizontal="16dp"
+        android:gravity="center_vertical"
+        android:background="@color/celeste_claro">
+
+        <ImageView
+            android:id="@+id/boton_volver_reproductor"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_arrow_back"
+            android:tint="@color/azul_fuerte"
+            android:padding="6dp"
+            android:background="?attr/selectableItemBackgroundBorderless" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Reproduciendo Audiolibro"
+            android:textColor="@color/azul_fuerte"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.05" />
+
+    </RelativeLayout>
+
+    <!-- Contenedor principal con scroll -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:paddingTop="24dp"
+            android:paddingBottom="32dp">
+
+            <!-- Imagen del cuento (cover art) -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                android:layout_marginBottom="24dp"
+                app:cardBackgroundColor="@color/grisClaro">
+
+                <ImageView
+                    android:id="@+id/imagen_cuento"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:scaleType="centerCrop"
+                    android:contentDescription="Portada del cuento" />
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Título del cuento -->
+            <TextView
+                android:id="@+id/titulo_audiolibro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="El Gato Con Botas"
+                android:textColor="@color/azul_fuerte"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Autor -->
+            <TextView
+                android:id="@+id/autor_audiolibro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Charles Perrault"
+                android:textColor="@color/gris_medio"
+                android:textSize="18sp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:layout_marginBottom="32dp" />
+
+            <!-- SeekBar con labels de tiempo -->
+            <SeekBar
+                android:id="@+id/seek_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:progressTint="@color/azul_fuerte"
+                android:thumbTint="@color/azul_fuerte"
+                android:progressBackgroundTint="@color/grisClaro"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Tiempo actual y duración -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="24dp">
+
+                <TextView
+                    android:id="@+id/tiempo_actual"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="0:00"
+                    android:textColor="@color/gris_medio"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tiempo_total"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="10:32"
+                    android:textColor="@color/gris_medio"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <!-- Controles principales (retroceder, play/pause, avanzar) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginBottom="32dp">
+
+                <!-- Botón retroceder 10 segundos -->
+                <LinearLayout
+                    android:id="@+id/boton_retroceder"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:background="@drawable/circle_background_azul"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:contentDescription="Retroceder 10 segundos">
+
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@drawable/ic_arrow_back"
+                        android:tint="@color/white" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="10s"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="2dp" />
+
+                </LinearLayout>
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    app:cardCornerRadius="40dp"
+                    app:cardElevation="8dp"
+                    app:cardBackgroundColor="@color/azul_fuerte">
+
+                    <ImageView
+                        android:id="@+id/boton_play_pause"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_play_circle"
+                        android:tint="@color/white"
+                        android:padding="22dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Reproducir o pausar" />
+
+                </androidx.cardview.widget.CardView>
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <!-- Botón avanzar 10 segundos -->
+                <LinearLayout
+                    android:id="@+id/boton_avanzar"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:background="@drawable/circle_background_azul"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:contentDescription="Avanzar 10 segundos">
+
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@drawable/ic_arrow_forward"
+                        android:tint="@color/white" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="10s"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="2dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Controles de velocidad -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@color/celeste_claro">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Velocidad"
+                        android:textColor="@color/azul_fuerte"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:layout_marginEnd="16dp" />
+
+                    <TextView
+                        android:id="@+id/vel_0_5"
+                        android:layout_width="52dp"
+                        android:layout_height="40dp"
+                        android:text="0.5x"
+                        android:gravity="center"
+                        android:textColor="@color/azul_fuerte"
+                        android:textSize="14sp"
+                        android:background="@drawable/boton_velocidad_no_seleccionado"
+                        android:clickable="true"
+                        android:focusable="true" />
+
+                    <TextView
+                        android:id="@+id/vel_1"
+                        android:layout_width="52dp"
+                        android:layout_height="40dp"
+                        android:text="1x"
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:background="@drawable/boton_velocidad_seleccionado"
+                        android:layout_marginHorizontal="8dp"
+                        android:clickable="true"
+                        android:focusable="true" />
+
+                    <TextView
+                        android:id="@+id/vel_1_5"
+                        android:layout_width="52dp"
+                        android:layout_height="40dp"
+                        android:text="1.5x"
+                        android:gravity="center"
+                        android:textColor="@color/azul_fuerte"
+                        android:textSize="14sp"
+                        android:background="@drawable/boton_velocidad_no_seleccionado"
+                        android:clickable="true"
+                        android:focusable="true" />
+
+                    <TextView
+                        android:id="@+id/vel_2"
+                        android:layout_width="52dp"
+                        android:layout_height="40dp"
+                        android:text="2x"
+                        android:gravity="center"
+                        android:textColor="@color/azul_fuerte"
+                        android:textSize="14sp"
+                        android:background="@drawable/boton_velocidad_no_seleccionado"
+                        android:layout_marginStart="8dp"
+                        android:clickable="true"
+                        android:focusable="true" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!-- ProgressBar de carga (oculto por defecto) -->
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:indeterminateTint="@color/azul_fuerte" />
+
+</LinearLayout>
+

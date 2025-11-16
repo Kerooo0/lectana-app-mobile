@@ -6,31 +6,15 @@
     android:layout_height="wrap_content">
 
 
-    <Button
-        android:id="@+id/boton_registrarse"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="32dp"
-        android:background="@drawable/boton_verde"
-        android:text="@string/btn_registro"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        app:backgroundTint="@null"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.133" />
-
     <TextView
         android:id="@+id/textoTenesCuenta"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
-        android:layout_marginTop="44dp"
         android:text="@string/preguntaRegistro"
+        android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/boton_registrarse" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/IniciarSesionRegistro"
@@ -41,6 +25,7 @@
         android:focusable="true"
         android:gravity="center"
         android:minHeight="48dp"
+        android:visibility="visible"
         android:text="@string/registroIniciarSesion"
         android:textColor="@color/azul_claro"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
@@ -54,11 +39,12 @@
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="38dp"
-        android:orientation="horizontal"
+        android:layout_marginTop="12dp"
         android:background="@drawable/fondo_footer_registro"
         android:gravity="center"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textoTenesCuenta">
 
@@ -68,38 +54,38 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:textColor="@color/azul_links"
+            android:layout_weight="1"
             android:clickable="true"
             android:focusable="true"
-            android:minHeight="48dp"
             android:gravity="center"
-            android:layout_weight="1"
-            android:text="@string/terminosCondiciones" />
+            android:minHeight="48dp"
+            android:text="@string/terminosCondiciones"
+            android:textColor="@color/azul_links" />
 
         <TextView
             android:id="@+id/privacidad"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/azul_links"
+            android:layout_weight="1"
             android:clickable="true"
             android:focusable="true"
-            android:minHeight="48dp"
             android:gravity="center"
-            android:layout_weight="1"
-            android:text="@string/privacidad" />
+            android:minHeight="48dp"
+            android:text="@string/privacidad"
+            android:textColor="@color/azul_links" />
 
         <TextView
             android:id="@+id/soporteRegistro"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/azul_links"
-            android:clickable="true"
-            android:focusable="true"
-            android:minHeight="48dp"
-            android:gravity="center"
             android:layout_marginEnd="20dp"
             android:layout_weight="1"
-            android:text="@string/soporte" />
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:minHeight="48dp"
+            android:text="@string/soporte"
+            android:textColor="@color/azul_links" />
 
     </LinearLayout>
 

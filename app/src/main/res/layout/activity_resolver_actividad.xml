@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/blanco">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:background="@drawable/gradiante_verde_azul"
+        android:gravity="center_vertical"
+        android:elevation="4dp">
+
+        <ImageButton
+            android:id="@+id/btnVolver"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_arrow_back"
+            android:background="@drawable/boton_circular_gris"
+            android:tint="@color/blanco"
+            android:contentDescription="Volver" />
+
+        <TextView
+            android:id="@+id/textTituloActividad"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="16dp"
+            android:text="Actividad"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/blanco"
+            android:maxLines="2"
+            android:ellipsize="end" />
+
+    </LinearLayout>
+
+    <!-- Barra de progreso -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@color/gris_claro">
+
+        <TextView
+            android:id="@+id/textProgresoPregunta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pregunta 1 de 5"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/azul_fuerte"
+            android:layout_marginBottom="8dp" />
+
+        <ProgressBar
+            android:id="@+id/progressBarActividad"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:max="100"
+            android:progress="20"
+            android:progressDrawable="@drawable/barra_progreso_azul" />
+
+    </LinearLayout>
+
+    <!-- Contenido scrolleable -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <!-- Enunciado de la pregunta -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Pregunta"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/gris_medio"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:id="@+id/textEnunciado"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="¿Cuál es el personaje principal del cuento?"
+                        android:textSize="18sp"
+                        android:textColor="@color/gris_oscuro"
+                        android:lineSpacingExtra="4dp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Layout para pregunta de opción múltiple -->
+            <LinearLayout
+                android:id="@+id/layoutRespuestaMultiple"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Selecciona una opción:"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/azul_fuerte"
+                    android:layout_marginBottom="16dp" />
+
+                <RadioGroup
+                    android:id="@+id/radioGroupOpciones"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <!-- RadioButtons se agregarán dinámicamente -->
+                </RadioGroup>
+
+            </LinearLayout>
+
+            <!-- Layout para pregunta abierta -->
+            <LinearLayout
+                android:id="@+id/layoutRespuestaAbierta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tu respuesta:"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/azul_fuerte"
+                    android:layout_marginBottom="16dp" />
+
+                <EditText
+                    android:id="@+id/editTextRespuestaAbierta"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:background="@drawable/campo_texto_estilo"
+                    android:padding="16dp"
+                    android:hint="Escribe tu respuesta aquí..."
+                    android:gravity="top|start"
+                    android:inputType="textMultiLine|textCapSentences"
+                    android:maxLength="500"
+                    android:textSize="16sp"
+                    android:textColor="@color/gris_oscuro" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Máximo 500 caracteres"
+                    android:textSize="12sp"
+                    android:textColor="@color/gris_medio"
+                    android:layout_marginTop="8dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!-- Botones de navegación -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:background="@color/blanco"
+        android:elevation="8dp"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/btnAnterior"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="Anterior"
+            android:textColor="@color/azul_fuerte"
+            android:textStyle="bold"
+            android:background="@drawable/boton_blanco_rectangular"
+            android:drawableStart="@drawable/ic_arrow_back"
+            android:drawableTint="@color/azul_fuerte"
+            android:drawablePadding="8dp"
+            android:gravity="center" />
+
+        <Button
+            android:id="@+id/btnSiguiente"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="Siguiente"
+            android:textColor="@color/blanco"
+            android:textStyle="bold"
+            android:background="@drawable/boton_azul_rectangular"
+            android:drawableEnd="@drawable/ic_arrow_forward"
+            android:drawableTint="@color/blanco"
+            android:drawablePadding="8dp"
+            android:gravity="center" />
+
+        <Button
+            android:id="@+id/btnEnviarRespuestas"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="Enviar Respuestas"
+            android:textColor="@color/blanco"
+            android:textStyle="bold"
+            android:background="@drawable/boton_verde"
+            android:drawableEnd="@drawable/ic_check_circle"
+            android:drawableTint="@color/blanco"
+            android:drawablePadding="8dp"
+            android:gravity="center"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <!-- ProgressBar de carga -->
+    <ProgressBar
+        android:id="@+id/progressBarCarga"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:indeterminateTint="@color/azul_fuerte" />
+
+</LinearLayout>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+        <!-- RadioButton para selección única -->
+        <RadioButton
+            android:id="@+id/radio_button_aula"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:buttonTint="@color/verde" />
+
+        <!-- Icono del aula -->
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_classroom"
+            android:tint="@color/azul_claro"
+            android:layout_marginEnd="12dp" />
+
+        <!-- Información del aula -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/nombre_aula_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3°A - Lengua y Literatura"
+                android:textColor="@color/gris_oscuro"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/codigo_aula_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Código: ABC123"
+                android:textColor="@color/gris_medio"
+                android:textSize="14sp"
+                android:layout_marginTop="2dp" />
+
+            <!-- Información adicional -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_students"
+                    android:tint="@color/azul_claro"
+                    android:contentDescription="Estudiantes"
+                    android:layout_marginEnd="4dp" />
+
+                <TextView
+                    android:id="@+id/numero_estudiantes_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="24 estudiantes"
+                    android:textColor="@color/azul_claro"
+                    android:textSize="12sp"
+                    android:layout_marginEnd="12dp" />
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_book"
+                    android:tint="@color/gris_medio"
+                    android:contentDescription="Cuentos"
+                    android:layout_marginEnd="4dp" />
+
+                <TextView
+                    android:id="@+id/numero_cuentos_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="5 cuentos"
+                    android:textColor="@color/gris_medio"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Indicador de selección -->
+        <ImageView
+            android:id="@+id/icono_aula_seleccionada"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_check_circle"
+            android:tint="@color/verde"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

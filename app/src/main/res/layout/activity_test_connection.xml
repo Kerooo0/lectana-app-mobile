@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/white">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Prueba de Conexión con Backend"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:layout_marginBottom="24dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="URL del Backend: https://lectana-backend.onrender.com"
+        android:textSize="14sp"
+        android:textColor="@color/gris_medio"
+        android:gravity="center"
+        android:layout_marginBottom="32dp" />
+
+    <Button
+        android:id="@+id/btnTestBasic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Probar Conexión Básica"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/azul_semi_oscuro"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/btnTestHealth"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Probar Endpoint /health"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/azul_semi_oscuro"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/btnTestLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Probar Endpoint /api/auth/login"
+        android:layout_marginBottom="32dp"
+        android:backgroundTint="@color/azul_semi_oscuro"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Resultado:"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_marginBottom="8dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/textViewResult"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Presiona un botón para probar la conexión"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:background="@color/gris_claro"
+            android:padding="16dp"
+            android:fontFamily="monospace" />
+
+    </ScrollView>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Volver al Login"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/boton_borde"
+        android:textColor="@color/black"
+        android:onClick="volverAlLogin" />
+
+</LinearLayout>

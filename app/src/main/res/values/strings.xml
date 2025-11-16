@@ -1,5 +1,20 @@
 <resources>
+    // Datos básicos
     <string name="app_name">Lectana</string>
+    <string name="datosBasicos">Datos básicos</string>
+    <string name="nombre">Nombre</string>
+    <string name="apellido">Apellido</string>
+    <string name="dni">DNI</string>
+    <string name="email">Email</string>
+    <string name="telefono">Teléfono</string>
+    <string name="contraseña">Contraseña</string>
+    <string name="confirmaPassword">Confirmar contraseña</string>
+    <string name="edad">Edad</string>
+    <string name="pais">País</string>
+    <string name="datosPersonales">Datos personales</string>
+    <string name="codigoAula">Código de aula</string>
+    <string name="continuar">Continuar</string>
+    <string name="ambos">Ambos</string>
     // inicio
     <string name="titulo_inicio">¡Bienvenido a Lectana!</string>
     <string name="sub_inicio">Tú biblioteca digital educativa</string>
@@ -7,8 +22,6 @@
     <string name="descripcion_logo">Logo de lectana</string>
     //login
     <string name="iniciar_sesion">Iniciar Sesion</string>
-    <string name="email">Email</string>
-    <string name="contraseña">Contraseña</string>
     <string name="registrarse">¿No tenés cuenta? Registrate</string>
     <string name="invitado">Explorar sin cuenta</string>
     <string name="ejemplo_email">pepito@gmail.com</string>
@@ -47,6 +60,192 @@
     <string name="soporte">Soporte</string>
     <string name="flechaVolver">Volver</string>
     <string name="btn_registro">Siguiente</string>
+    <string name="estoyConAdulto">Estoy con un adulto</string>
 
+
+    <!-- rango de edades alumnos -->
+
+    <string name="preescolar">Preescolar</string>
+    <string name="primaria">Primaria</string>
+    <string name="primariaInicial">Primaria inicial</string>
+    <string name="secundaria">Secundaria</string>
+    <string name="avanzado">Avanzado</string>
+
+    <string name="edadPreescolar">4–6 años</string>
+    <string name="edadPrimariaInicial">7–9 años</string>
+    <string name="edadPrimaria">10–12 años</string>
+    <string name="edadSecundaria">13–15 años</string>
+    <string name="edadAvanzado">16+ años</string>
+
+    <!-- Cards de advertencia -->
+    <string name="importante">¡Importante!</string>
+    <string name="mensajeAdvertenciaPreescolar">Necesitás la ayuda de un adulto para crear tu cuenta.</string>
+    <string name="mensajeAdvertenciaPrimario">Podés registrarte con ayuda de un adulto o con tu código de aula.</string>
+    <!-- Fragment registro alumno -->
+    <string name="pregunta_edad_alumno">¿Cuántos años tenés?</string>
+
+    <!-- Barra de progreso -->
+    <string name="pasoUno">Paso 1 de </string>
+    <string name="pasoDos">Paso 2 de </string>
+    <string name="pasoTres">Paso 3 de </string>
+    <string name="pasoCuatro">Paso 4 de</string>
+
+    <!-- Numeros -->
+
+    <string name="tres">3</string>
+    <string name="cuatro">4</string>
+
+    <!-- DatosBasicos -->
+
+
+    <!-- item opciones del alumno -->
+    <string name="opcion_edad">rango de edad del alumno</string>
+    <string name="seguridad">Seguridad: </string>
+    <string name="nivelSeguridad">Débil</string>
+    <!-- DatosAcceso -->
+    <string name="datosAcceso">Datos de acceso</string>
+    <string name="repetirPassword">Repetir contraseña</string>
+    <string name="codigoAulaRegistro">Código del aula (opcional)</string>
+    <string name="codigoAulaRegistroSubtitulo">Código del aula</string>
+    <string name="infoCodigoAula">Este código te lo da tu docente (opcional)</string>
+    <!-- Confirmacion de datos del alumno -->
+    <string name="confirmacionDatos">Confirmación de datos</string>
+    <string name="textoConfirmacionDatos">¡Listo! Ya podés comenzar a leer y resolver actividades.
+    </string>
+    <string name="btnCrearCuenta">Crear cuenta</string>
+    <string name="progresoAlumnoDocente">Recorda que tú docente puede ver tú progreso.</string>
+
+    <!-- Creación de cuenta exitosa -->
+    <string name="creacionAlumnoExitosa">¡Tu cuenta fue creada con exito!</string>
+    <string name="mensajeCreacionAlumnoExitoso">Ahora podés guardar tu progreso, crear favoritos y unirte a aulas virtuales</string>
+    <string name="explorarBiblioteca">Explorar biblioteca</string>
+
+    <!-- Registro de docentes -->
+    // Datos personales docente
+    <string name="registroDocente">Registro Docente</string>
+    <string name="mensajeDni">Solo números, sin puntos ni guiones</string>
+    <string name="telefonoOpc">Teléfono (opcional)</string>
+    <string name="datosInstitucionales">Datos institucionales</string>
+    <string name="nombreInstitucion">Nombre de la institución</string>
+    <string name="ejemploInstitucion">Ej: Escuela Nº 123</string>
+    <string name="provinciaRegion">Provincia/Region(Opcional)</string>
+    <string name="nivelEducativo">Nivel educativo</string>
+
+
+    <!-- Estados de la password -->
+    <string name="malo">Mala</string>
+    <string name="buena">Buena</string>
+    <string name="coincidenciaPassword">Las contraseñas no coinciden</string>
+
+    <!-- Panel Docente -->
+    <string name="panel_docente">Panel Docente</string>
+    <string name="bienvenida_profesor">Bienvenida, Prof. García</string>
+    <string name="aulas">Aulas</string>
+    <string name="estudiantes">Alumnos</string>
+    <string name="cuentos_asignados">Cuentos</string>
+    <string name="acciones_rapidas">Acciones Rápidas</string>
+    <string name="crear_nueva_aula">Crear Nueva Aula</string>
+    <string name="asignar_cuento_aula">Asignar Cuento a Aula</string>
+    <string name="mis_aulas">Mis Aulas</string>
+    <string name="estudiantes_activos_hoy">estudiantes activos hoy</string>
+    <string name="ver_detalles">Ver Detalles</string>
+    <string name="codigo_aula">Código:</string>
+    <string name="estudiantes_text">estudiantes</string>
+    <string name="descripcion_notificaciones">Notificaciones</string>
+    <string name="descripcion_configuracion">Configuración</string>
+    <!-- Crear Nueva Aula - Paso 1 -->
+    <string name="crear_nueva_aula_titulo">Crear Nueva Aula</string>
+    <string name="nombre_del_aula">Nombre del Aula</string>
+    <string name="ejemplo_nombre_aula">Ej: 3°A - Lengua</string>
+    <string name="nombre_del_colegio">Nombre del Colegio</string>
+    <string name="ejemplo_nombre_colegio">Ej: Colegio San Martín</string>
+    <string name="grado">Grado</string>
+    <string name="ejemplo_grado">3°</string>
+    <string name="seccion">Sección</string>
+    <string name="ejemplo_seccion">A</string>
+    <string name="materia">Materia</string>
+    <string name="ejemplo_materia">Lengua y Literatura</string>
+    <string name="descripcion_opcional">Descripción (Opcional)</string>
+    <string name="ejemplo_descripcion">Descripción del aula...</string>
+    <string name="vista_previa">Vista Previa</string>
+    <string name="codigo_generado_automaticamente">Código: Se generará automáticamente</string>
+    <string name="crear_aula">Crear Aula</string>
+    <string name="cancelar">Cancelar</string>
+    
+    <!-- Seleccionar Cuentos - Paso 2 -->
+    <string name="seleccionar_cuentos_titulo">Seleccionar Cuentos</string>
+    <string name="configurar_aula">Configurar Aula</string>
+    <string name="cuentos_disponibles">Cuentos Disponibles</string>
+    <string name="finalizar_aula">Finalizar Aula</string>
+    <string name="cuentos_seleccionados">Cuentos Seleccionados</string>
+    <string name="descripcion_estadisticas">Estadísticas</string>
+    
+    <!-- Visualizar Aula -->
+    <string name="agregar_estudiante">Agregar Estudiante</string>
+    <string name="actividades">Actividades</string>
+    <string name="hace_minutos">Hace %d min</string>
+    <string name="hace_horas">Hace %d hora</string>
+    <string name="hace_dias">Hace %d días</string>
+    <string name="activo_ahora">Activo ahora</string>
+    <string name="lectura_comprensiva">Lectura Comprensiva</string>
+    <string name="fecha_actividad" formatted="false">%d de %s, %d</string>
+    <string name="enero">Enero</string>
+    <string name="febrero">Febrero</string>
+    <string name="marzo">Marzo</string>
+    <string name="abril">Abril</string>
+    <string name="mayo">Mayo</string>
+    <string name="junio">Junio</string>
+    <string name="julio">Julio</string>
+    <string name="agosto">Agosto</string>
+    <string name="septiembre">Septiembre</string>
+    <string name="octubre">Octubre</string>
+    <string name="noviembre">Noviembre</string>
+    <string name="crear_actividad">Crear Actividad</string>
+    <string name="explorar_cuentos">Explorar Cuentos</string>
+    <string name="asignar_cuento">Asignar Cuento</string>
+    <string name="buscar_cuentos">Buscar cuentos...</string>
+    <string name="todos">Todos</string>
+    <string name="clasicos">Clásicos</string>
+    <string name="aventura">Aventura</string>
+    <string name="edad_8_12">8-12 años</string>
+    <string name="asignar">Asignar</string>
+    <string name="confirmar_asignaciones">Confirmar Asignaciones</string>
+    <string name="seleccionar_cuento">Seleccioná un cuento</string>
+    <string name="titulo_actividad">Título de la Actividad</string>
+    <string name="ejemplo_titulo_actividad">Ej: Comprensión del Capítulo 1</string>
+    <string name="tipo_actividad">Tipo de Actividad</string>
+    <string name="opcion_multiple">Opción Múltiple</string>
+    <string name="respuesta_abierta">Respuesta Abierta</string>
+    <string name="pregunta">Pregunta</string>
+    <string name="ejemplo_pregunta">Escribe tu pregunta aquí...</string>
+    <string name="fecha_entrega">Fecha de Entrega</string>
+    <string name="crear_actividad_boton">Crear Actividad</string>
+    <string name="opciones_respuesta">Opciones de Respuesta</string>
+    <string name="opcion_a">Opción A</string>
+    <string name="opcion_b">Opción B</string>
+    <string name="opcion_c">Opción C</string>
+    <string name="correcta">Correcta</string>
+    <string name="agregar_pregunta">AGREGAR PREGUNTA</string>
+    <string name="enunciado_pregunta">Enunciado de la Pregunta *</string>
+    <string name="respuestas_ejemplo">Respuestas de Ejemplo (Opcional)</string>
+    <string name="agregar_ejemplo">AGREGAR EJEMPLO</string>
+    <string name="ejemplo">EJEMPLO</string>
+    <string name="respuesta_ejemplo_1">Respuesta 1...</string>
+    <string name="respuesta_ejemplo_2">Respuesta 2...</string>
+    <string name="crear_preguntas_respuestas">Crear Preguntas y Respuestas</string>
+    <string name="crea_preguntas_actividad">Crea las preguntas para tu actividad. Las respuestas son opcionales y solo sirven como ejemplos.</string>
+    <string name="crea_preguntas_respuestas_actividad">Crea las preguntas y respuestas para tu actividad. Marca al menos una respuesta correcta por pregunta.</string>
+    <string name="tiempo_lectura">Tiempo de lectura</string>
+    <string name="pregunta_numero">Pregunta %d</string>
+
+    <!-- Errores password -->
+
+    <string name="errorPassword">La contraseña debe contener al menos una mayúscula, un número y un carácter especial.</string>
+    <string name="LongitudPasswordError">La contraseña debe contener al menos 6 caracteres.</string>
+    
+    <!-- Strings faltantes para logros y tienda -->
+    <string name="imagen_logro">Imagen del logro</string>
+    <string name="imagen_item">Imagen del item</string>
+    <string name="puntos">Puntos</string>
 
 </resources>

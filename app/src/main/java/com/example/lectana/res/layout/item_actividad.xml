@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/card_seleccionada"
+    android:layout_margin="8dp">
+
+    <TextView
+        android:id="@+id/tv_titulo_item_actividad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Título de Actividad"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#333333"
+        android:paddingBottom="8dp" />
+
+    <TextView
+        android:id="@+id/tv_descripcion_item_actividad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Descripción de la actividad"
+        android:textSize="14sp"
+        android:textColor="#666666"
+        android:paddingBottom="12dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="space-between"
+        android:paddingTop="8dp">
+
+        <TextView
+            android:id="@+id/tv_estado_item_actividad"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Pendiente"
+            android:textSize="12sp"
+            android:textColor="#FF9800"
+            android:gravity="center_vertical" />
+
+        <Button
+            android:id="@+id/btn_realizar_actividad"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Realizar"
+            android:background="@drawable/boton_azul_rectangular"
+            android:textColor="#FFFFFF"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="8dp"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+</LinearLayout>

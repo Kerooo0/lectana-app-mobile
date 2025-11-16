@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/background_light">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Detalle de Actividad"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        android:layout_marginBottom="24dp" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="2dp"
+        app:cardBackgroundColor="@android:color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/textDescripcion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Descripción de la actividad"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:id="@+id/textTipo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Opción Múltiple"
+                android:textSize="14sp"
+                android:textColor="@color/accent"
+                android:background="@drawable/badge_secondary"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:id="@+id/textFechaCreacion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Fecha: 15/01/2024"
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/textCuento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cuento: El Gato Con Botas"
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/textTotalPreguntas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Preguntas: 3"
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/textTotalAulas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Aulas: 1"
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/blanco">
+
+    <!-- Toolbar -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="4dp"
+        app:cardElevation="4dp"
+        app:cardCornerRadius="0dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:background="@color/blanco">
+
+            <ImageView
+                android:id="@+id/boton_volver"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_arrow_back"
+                android:contentDescription="Volver"
+                android:clickable="true"
+                android:focusable="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Cambiar Aula"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/gris_oscuro" />
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Contenido -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <!-- Icono de aula -->
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:src="@drawable/ic_classroom"
+                android:contentDescription="Aula"
+                app:tint="@color/azul" />
+
+            <!-- Título -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:text="Únete a una nueva aula"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/gris_oscuro" />
+
+            <!-- Aula actual -->
+            <TextView
+                android:id="@+id/texto_aula_actual"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:text="Aula actual: Sin asignar"
+                android:textSize="14sp"
+                android:textColor="@color/gris_medio"
+                android:visibility="gone" />
+
+            <!-- Instrucciones -->
+            <TextView
+                android:id="@+id/texto_instrucciones"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Ingresa el código de 6 caracteres proporcionado por tu docente para unirte a su aula."
+                android:textSize="14sp"
+                android:textColor="@color/gris_medio"
+                android:gravity="center"
+                android:lineSpacingExtra="4dp" />
+
+            <!-- Campo código de aula -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:hint="Código de aula"
+                app:boxStrokeColor="@color/azul"
+                app:hintTextColor="@color/azul">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/campo_codigo_aula"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textCapCharacters"
+                    android:maxLength="6"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:letterSpacing="0.2"
+                    android:textAllCaps="true" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Nota informativa -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/campo_texto_estilo"
+                android:padding="12dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_info"
+                    android:layout_marginEnd="8dp"
+                    app:tint="@color/azul" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Al cambiar de aula, tendrás acceso a las actividades y materiales del nuevo grupo."
+                    android:textSize="12sp"
+                    android:textColor="@color/gris_medio" />
+
+            </LinearLayout>
+
+            <!-- Progress Bar -->
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="24dp"
+                android:visibility="gone" />
+
+            <!-- Botón cambiar aula -->
+            <Button
+                android:id="@+id/boton_cambiar_aula"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="32dp"
+                android:background="@drawable/boton_azul_rectangular"
+                android:text="Cambiar Aula"
+                android:textColor="@color/blanco"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:enabled="false" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

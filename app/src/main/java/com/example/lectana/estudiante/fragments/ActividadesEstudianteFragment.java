@@ -1,0 +1,393 @@
+package com.example.lectana.estudiante.fragments;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.lectana.R;
+import com.example.lectana.auth.SessionManager;
+import com.example.lectana.estudiante.DetalleActividadEstudianteActivity;
+import com.example.lectana.estudiante.ResolverActividadActivity;
+import com.example.lectana.estudiante.adaptadores.ActividadesEstudianteAdapter;
+import com.example.lectana.modelos.Actividad;
+import com.example.lectana.modelos.ActividadAula;
+import com.example.lectana.modelos.ActividadesPorAulaResponse;
+import com.example.lectana.modelos.ApiResponse;
+import com.example.lectana.modelos.RespuestaUsuario;
+import com.example.lectana.services.ActividadesApiService;
+import com.example.lectana.services.ApiClient;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class ActividadesEstudianteFragment extends Fragment {
+    private static final String TAG = "ActividadesEstudiante";
+    
+    private RecyclerView recyclerViewActividades;
+    private ProgressBar progressBar;
+    private LinearLayout layoutSinActividades;
+    private TextView textSinActividades;
+    private TextView textContadorActividades;
+    private TextView textContadorPendientes;
+    private TextView textContadorCompletadas;
+    
+    private ActividadesApiService actividadesApiService;
+    private SessionManager sessionManager;
+    private List<Actividad> listaActividades;
+    private List<Actividad> actividadesPendientes;
+    private List<Actividad> actividadesCompletadas;
+    private ActividadesEstudianteAdapter adapter;
+    private int totalActividadesEsperadas = 0;
+    private boolean isFirstLoad = true;
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.fragment_actividades_estudiante, container, false);
+        
+        Log.d(TAG, "=== INICIANDO ActividadesEstudianteFragment ===");
+        
+        try {
+            inicializarComponentes(root);
+            configurarRecyclerView();
+            cargarActividades();
+        } catch (Exception e) {
+            Log.e(TAG, "Error durante la inicialización", e);
+            Toast.makeText(requireContext(), "Error inicializando actividades: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+        
+        return root;
+    }
+
+    private void inicializarComponentes(View root) {
+        Log.d(TAG, "Inicializando componentes...");
+        
+        recyclerViewActividades = root.findViewById(R.id.recyclerViewActividades);
+        progressBar = root.findViewById(R.id.progressBar);
+        layoutSinActividades = root.findViewById(R.id.layoutSinActividades);
+        textSinActividades = root.findViewById(R.id.textSinActividades);
+        textContadorActividades = root.findViewById(R.id.textContadorActividades);
+        textContadorPendientes = root.findViewById(R.id.textContadorPendientes);
+        textContadorCompletadas = root.findViewById(R.id.textContadorCompletadas);
+        
+        sessionManager = new SessionManager(requireContext());
+        actividadesApiService = ApiClient.getActividadesApiService();
+        listaActividades = new ArrayList<>();
+        actividadesPendientes = new ArrayList<>();
+        actividadesCompletadas = new ArrayList<>();
+        
+        Log.d(TAG, "Componentes inicializados correctamente");
+    }
+
+    private void configurarRecyclerView() {
+        Log.d(TAG, "Configurando RecyclerView...");
+        
+        adapter = new ActividadesEstudianteAdapter(listaActividades, new ActividadesEstudianteAdapter.OnActividadClickListener() {
+            @Override
+            public void onActividadClick(Actividad actividad) {
+                Log.d(TAG, "Click en actividad: " + actividad.getId_actividad());
+                abrirResolverActividad(actividad);
+            }
+        });
+        
+        recyclerViewActividades.setLayoutManager(new LinearLayoutManager(requireContext()));
+        recyclerViewActividades.setAdapter(adapter);
+        
+        Log.d(TAG, "RecyclerView configurado");
+    }
+
+    private void cargarActividades() {
+        Log.d(TAG, "Cargando actividades...");
+        mostrarCargando(true);
+        
+        int aulaId = sessionManager.getAulaId();
+        int alumnoId = sessionManager.getAlumnoId();
+        String token = "Bearer " + sessionManager.getToken();
+        
+        Log.d(TAG, "Aula ID: " + aulaId + ", Alumno ID: " + alumnoId);
+        
+        // Si los IDs no están guardados, obtenerlos desde /api/auth/me
+        if (aulaId == 0 || alumnoId == 0) {
+            Log.d(TAG, "IDs no encontrados, obteniendo desde /api/auth/me...");
+            obtenerYGuardarIdsAlumno(token);
+            return;
+        }
+        
+        actividadesApiService.getActividadesPorAula(token, aulaId).enqueue(new Callback<ActividadesPorAulaResponse>() {
+            @Override
+            public void onResponse(Call<ActividadesPorAulaResponse> call, Response<ActividadesPorAulaResponse> response) {
+                mostrarCargando(false);
+                
+                if (response.isSuccessful() && response.body() != null) {
+                    ActividadesPorAulaResponse data = response.body();
+                    List<ActividadAula> actividadesAula = data.getActividades();
+                    Log.d(TAG, "Registros actividad_aula cargados: " + (actividadesAula != null ? actividadesAula.size() : 0));
+                    
+                    if (actividadesAula != null && !actividadesAula.isEmpty()) {
+                        // Extraer las actividades de los registros de actividad_aula
+                        List<Actividad> actividades = new java.util.ArrayList<>();
+                        for (ActividadAula actividadAula : actividadesAula) {
+                            if (actividadAula.getActividad() != null) {
+                                actividades.add(actividadAula.getActividad());
+                            }
+                        }
+                        Log.d(TAG, "Actividades extraídas: " + actividades.size());
+                        verificarActividadesCompletadas(actividades, alumnoId, token);
+                    } else {
+                        mostrarSinActividades(true);
+                        actualizarContadores();
+                    }
+                } else if (response.code() == 401) {
+                    // Token expirado - cerrar sesión y redirigir al login
+                    Log.e(TAG, "Token expirado - cerrando sesión");
+                    Toast.makeText(requireContext(), "Tu sesión ha expirado. Por favor, inicia sesión nuevamente.", Toast.LENGTH_LONG).show();
+                    cerrarSesionYRedireccionar();
+                } else {
+                    Log.e(TAG, "Error en respuesta: " + response.code());
+                    Toast.makeText(requireContext(), "Error al cargar actividades", Toast.LENGTH_SHORT).show();
+                }
+            }
+            
+            @Override
+            public void onFailure(Call<ActividadesPorAulaResponse> call, Throwable t) {
+                mostrarCargando(false);
+                Log.e(TAG, "Error de conexión: " + t.getMessage());
+                Toast.makeText(requireContext(), "Error de conexión: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void verificarActividadesCompletadas(List<Actividad> actividades, int alumnoId, String token) {
+        Log.d(TAG, "Verificando actividades completadas...");
+        
+        actividadesPendientes.clear();
+        actividadesCompletadas.clear();
+        totalActividadesEsperadas = actividades.size();
+        
+        // Por ahora, necesitamos verificar cada actividad individualmente
+        // En el futuro, podríamos tener un endpoint que devuelva el estado directamente
+        for (Actividad actividad : actividades) {
+            verificarSiActividadCompletada(actividad, alumnoId, token);
+        }
+    }
+
+    private void verificarSiActividadCompletada(Actividad actividad, int alumnoId, String token) {
+        actividadesApiService.getRespuestasAlumnoActividad(token, alumnoId, actividad.getId_actividad())
+            .enqueue(new Callback<ApiResponse<List<RespuestaUsuario>>>() {
+                @Override
+                public void onResponse(Call<ApiResponse<List<RespuestaUsuario>>> call,
+                                     Response<ApiResponse<List<RespuestaUsuario>>> response) {
+                    if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
+                        List<RespuestaUsuario> respuestas = response.body().getData();
+                        
+                        if (respuestas != null && respuestas.size() > 0) {
+                            // Actividad completada
+                            actividad.setCompletada(true);
+                            actividadesCompletadas.add(actividad);
+                            Log.d(TAG, "Actividad " + actividad.getId_actividad() + " completada");
+                        } else {
+                            // Actividad pendiente
+                            actividad.setCompletada(false);
+                            actividadesPendientes.add(actividad);
+                            Log.d(TAG, "Actividad " + actividad.getId_actividad() + " pendiente (sin respuestas)");
+                        }
+                    } else {
+                        // Si hay error HTTP (como 500), asumimos que está pendiente
+                        actividad.setCompletada(false);
+                        actividadesPendientes.add(actividad);
+                        Log.w(TAG, "Actividad " + actividad.getId_actividad() + " marcada como pendiente (error " + response.code() + ")");
+                    }
+                    
+                    // Actualizar lista cuando tengamos todas las actividades verificadas
+                    int totalVerificadas = actividadesPendientes.size() + actividadesCompletadas.size();
+                    if (totalVerificadas > 0 && totalVerificadas >= getTotalActividadesEsperadas()) {
+                        actualizarListaActividades();
+                    }
+                }
+                
+                @Override
+                public void onFailure(Call<ApiResponse<List<RespuestaUsuario>>> call, Throwable t) {
+                    // En caso de error de red, asumir que está pendiente
+                    actividad.setCompletada(false);
+                    actividadesPendientes.add(actividad);
+                    Log.w(TAG, "Actividad " + actividad.getId_actividad() + " marcada como pendiente (error de red: " + t.getMessage() + ")");
+                    
+                    // Verificar si ya tenemos todas las actividades verificadas
+                    int totalActividades = actividadesPendientes.size() + actividadesCompletadas.size();
+                    if (totalActividades > 0 && totalActividades >= getTotalActividadesEsperadas()) {
+                        actualizarListaActividades();
+                    }
+                }
+            });
+    }
+    
+    private int getTotalActividadesEsperadas() {
+        // Este número se establece cuando se cargan las actividades inicialmente
+        return totalActividadesEsperadas;
+    }
+
+    private void actualizarListaActividades() {
+        Log.d(TAG, "Actualizando lista de actividades...");
+        
+        // Ordenar: primero pendientes, luego completadas
+        listaActividades.clear();
+        listaActividades.addAll(actividadesPendientes);
+        listaActividades.addAll(actividadesCompletadas);
+        
+        adapter.notifyDataSetChanged();
+        mostrarSinActividades(listaActividades.isEmpty());
+        actualizarContadores();
+        
+        Log.d(TAG, "Lista actualizada - Total: " + listaActividades.size() + 
+                 ", Pendientes: " + actividadesPendientes.size() + 
+                 ", Completadas: " + actividadesCompletadas.size());
+    }
+
+    private void abrirResolverActividad(Actividad actividad) {
+        // Abrir detalles de la actividad (no importa si está completada)
+        Intent intent = new Intent(requireContext(), DetalleActividadEstudianteActivity.class);
+        intent.putExtra("actividad_id", actividad.getId_actividad());
+        intent.putExtra("actividad_descripcion", actividad.getDescripcion());
+        intent.putExtra("actividad_tipo", actividad.getTipo());
+        intent.putExtra("actividad_fecha", actividad.getFecha_publicacion());
+        intent.putExtra("cuento_id", actividad.getCuento_id_cuento());
+        startActivity(intent);
+    }
+
+    private void mostrarCargando(boolean mostrar) {
+        if (progressBar != null) {
+            progressBar.setVisibility(mostrar ? View.VISIBLE : View.GONE);
+        }
+        if (recyclerViewActividades != null) {
+            recyclerViewActividades.setVisibility(mostrar ? View.GONE : View.VISIBLE);
+        }
+    }
+
+    private void mostrarSinActividades(boolean mostrar) {
+        if (layoutSinActividades != null) {
+            layoutSinActividades.setVisibility(mostrar ? View.VISIBLE : View.GONE);
+        }
+        if (recyclerViewActividades != null) {
+            recyclerViewActividades.setVisibility(mostrar ? View.GONE : View.VISIBLE);
+        }
+    }
+
+    private void actualizarContadores() {
+        if (textContadorActividades != null) {
+            textContadorActividades.setText("Total: " + listaActividades.size() + " actividades");
+        }
+        if (textContadorPendientes != null) {
+            textContadorPendientes.setText("Pendientes: " + actividadesPendientes.size());
+        }
+        if (textContadorCompletadas != null) {
+            textContadorCompletadas.setText("Completadas: " + actividadesCompletadas.size());
+        }
+    }
+
+    /**
+     * Obtener IDs del alumno desde /api/auth/me y guardarlos en sesión
+     */
+    private void obtenerYGuardarIdsAlumno(String token) {
+        Log.d(TAG, "Llamando a /api/auth/me para obtener IDs...");
+        
+        com.example.lectana.services.AuthApiService authApiService = 
+            com.example.lectana.services.ApiClient.getAuthApiService();
+        
+        authApiService.obtenerDatosUsuario(token).enqueue(
+            new Callback<com.example.lectana.services.AuthApiService.MeResponse>() {
+                @Override
+                public void onResponse(Call<com.example.lectana.services.AuthApiService.MeResponse> call,
+                                     Response<com.example.lectana.services.AuthApiService.MeResponse> response) {
+                    if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
+                        com.example.lectana.services.AuthApiService.MeResponse meData = response.body();
+                        com.example.lectana.services.AuthApiService.Alumno alumno = meData.getAlumno();
+                        
+                        if (alumno != null) {
+                            int idAlumno = alumno.getIdAlumno();
+                            Integer aulaId = alumno.getAulaIdAula();
+                            
+                            Log.d(TAG, "IDs obtenidos - ID Alumno: " + idAlumno + ", Aula ID: " + aulaId);
+                            
+                            // Guardar IDs en SessionManager
+                            if (aulaId != null && aulaId > 0) {
+                                sessionManager.saveAlumnoData(idAlumno, aulaId);
+                                // Reintentar cargar actividades con los IDs correctos
+                                cargarActividades();
+                            } else {
+                                mostrarCargando(false);
+                                Toast.makeText(requireContext(), 
+                                    "No estás asignado a ninguna aula. Por favor contacta a tu docente.", 
+                                    Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            mostrarCargando(false);
+                            Toast.makeText(requireContext(), 
+                                "Error: No se encontraron datos del alumno", 
+                                Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        mostrarCargando(false);
+                        Log.e(TAG, "Error en respuesta de /api/auth/me: " + response.code());
+                        Toast.makeText(requireContext(), 
+                            "Error al obtener datos del alumno", 
+                            Toast.LENGTH_SHORT).show();
+                    }
+                }
+                
+                @Override
+                public void onFailure(Call<com.example.lectana.services.AuthApiService.MeResponse> call, Throwable t) {
+                    mostrarCargando(false);
+                    Log.e(TAG, "Error al llamar /api/auth/me", t);
+                    Toast.makeText(requireContext(), 
+                        "Error de conexión: " + t.getMessage(), 
+                        Toast.LENGTH_SHORT).show();
+                }
+            }
+        );
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Solo recargar actividades después de la primera vez
+        // (cuando volvemos a este fragmento desde otra pantalla)
+        if (!isFirstLoad) {
+            Log.d(TAG, "onResume: Recargando actividades...");
+            cargarActividades();
+        } else {
+            isFirstLoad = false;
+        }
+    }
+    
+    private void cerrarSesionYRedireccionar() {
+        if (sessionManager != null) {
+            sessionManager.clearSession();
+        }
+        
+        // Redirigir a Login
+        Intent intent = new Intent(requireContext(), com.example.lectana.Login.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        
+        if (getActivity() != null) {
+            getActivity().finish();
+        }
+    }
+}

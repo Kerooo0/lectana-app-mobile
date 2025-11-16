@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/fondo_claro"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Actividades Asignadas"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:textColor="@color/gris_oscuro"
+        android:layout_marginBottom="12dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/boton_blanco_rectangular"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="La Abeja Haragana" android:textStyle="bold" android:textColor="@color/gris_oscuro" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Comprensión lectora" android:textColor="@color/gris_medio" android:textSize="12sp" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pendiente" android:textColor="@color/naranja" android:textSize="12sp" />
+            </LinearLayout>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="Realizar actividad"
+                android:background="@drawable/boton_verde"
+                android:textColor="@android:color/white"
+                android:paddingHorizontal="12dp"
+                android:onClick="onClickAbrirOM" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/boton_blanco_rectangular"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="El Principito – Capítulo 1" android:textStyle="bold" android:textColor="@color/gris_oscuro" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Opción Múltiple" android:textColor="@color/gris_medio" android:textSize="12sp" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Completada" android:textColor="@color/verde" android:textSize="12sp" />
+            </LinearLayout>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="Realizar actividad"
+                android:enabled="false"
+                android:background="@drawable/boton_blanco_rectangular"
+                android:textColor="@color/gris_medio"
+                android:paddingHorizontal="12dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/boton_blanco_rectangular"
+            android:padding="12dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="El Gato con Botas – Vocabulario" android:textStyle="bold" android:textColor="@color/gris_oscuro" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Respuesta Abierta" android:textColor="@color/gris_medio" android:textSize="12sp" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pendiente" android:textColor="@color/naranja" android:textSize="12sp" />
+            </LinearLayout>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="Realizar actividad"
+                android:background="@drawable/boton_verde"
+                android:textColor="@android:color/white"
+                android:paddingHorizontal="12dp"
+                android:onClick="onClickAbrirRA" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
+
+

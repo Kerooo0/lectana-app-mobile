@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+        <!-- Imagen del item -->
+        <ImageView
+            android:id="@+id/imagen_item"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_astronaut"
+            android:contentDescription="@string/imagen_item" />
+
+        <!-- Información del item -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="16dp"
+            android:orientation="vertical">
+
+            <!-- Nombre -->
+            <TextView
+                android:id="@+id/nombre_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Avatar"
+                android:textColor="@color/negro"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <!-- Descripción -->
+            <TextView
+                android:id="@+id/descripcion_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Descripción del item"
+                android:textColor="@color/gris_oscuro"
+                android:textSize="12sp" />
+
+            <!-- Categoría y tipo -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tipo_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/badge_activa"
+                    android:paddingStart="8dp"
+                    android:paddingTop="2dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="2dp"
+                    android:text="Avatar"
+                    android:textColor="@color/blanco"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/categoria_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/badge_edad"
+                    android:paddingStart="8dp"
+                    android:paddingTop="2dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="2dp"
+                    android:text="Superhéroe"
+                    android:textColor="@color/blanco"
+                    android:textSize="10sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Precio o estado -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <!-- Precio en puntos -->
+            <LinearLayout
+                android:id="@+id/layout_precio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:visibility="visible">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_star"
+                    android:contentDescription="@string/puntos"
+                    app:tint="@color/amarillo" />
+
+                <TextView
+                    android:id="@+id/precio_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="100"
+                    android:textColor="@color/negro"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <!-- Badge de desbloqueado -->
+            <TextView
+                android:id="@+id/badge_desbloqueado"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/boton_verde"
+                android:paddingStart="12dp"
+                android:paddingTop="4dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="4dp"
+                android:text="✓ Comprado"
+                android:textColor="@color/blanco"
+                android:textSize="12sp"
+                android:visibility="gone" />
+
+            <!-- Botón comprar -->
+            <Button
+                android:id="@+id/boton_comprar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/boton_azul_rectangular"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:text="Comprar"
+                android:textColor="@color/blanco"
+                android:textSize="12sp"
+                android:visibility="visible" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

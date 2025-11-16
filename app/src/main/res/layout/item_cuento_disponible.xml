@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+        <!-- Checkbox para selección -->
+        <CheckBox
+            android:id="@+id/checkbox_cuento"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:buttonTint="@color/verde" />
+
+        <!-- Imagen del cuento -->
+        <ImageView
+            android:id="@+id/imagen_cuento"
+            android:layout_width="60dp"
+            android:layout_height="80dp"
+            android:src="@drawable/imagen_cuento_placeholder"
+            android:scaleType="centerCrop"
+            android:contentDescription="Imagen del cuento"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/borde_redondeado_imagen_cuento" />
+
+        <!-- Información del cuento -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/titulo_cuento"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Caperucita Roja"
+                android:textColor="@color/gris_oscuro"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:maxLines="2"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/autor_cuento"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hermanos Grimm"
+                android:textColor="@color/gris_medio"
+                android:textSize="14sp"
+                android:layout_marginTop="2dp" />
+
+            <!-- Fila con edad, rating y tiempo -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/badge_edad"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4-6"
+                    android:background="@drawable/badge_edad"
+                    android:textColor="@color/gris_oscuro"
+                    android:textSize="11sp"
+                    android:paddingHorizontal="6dp"
+                    android:paddingVertical="2dp"
+                    android:layout_marginEnd="6dp" />
+
+                <TextView
+                    android:id="@+id/rating_cuento"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4.5★"
+                    android:textColor="@color/amarilloCalido"
+                    android:textSize="12sp"
+                    android:layout_marginEnd="6dp" />
+
+                <ImageView
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:src="@drawable/ic_clock"
+                    android:tint="@color/gris_medio"
+                    android:contentDescription="Tiempo de lectura"
+                    android:layout_marginEnd="2dp" />
+
+                <TextView
+                    android:id="@+id/tiempo_lectura"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="15 min"
+                    android:textColor="@color/gris_medio"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+            <!-- Género -->
+            <TextView
+                android:id="@+id/genero_cuento"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Clásico"
+                android:textColor="@color/azul_claro"
+                android:textSize="12sp"
+                android:layout_marginTop="2dp" />
+
+            <!-- Badge ya asignado -->
+            <TextView
+                android:id="@+id/badge_ya_asignado"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="Ya asignado"
+                android:textColor="@android:color/white"
+                android:textSize="11sp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="3dp"
+                android:background="@color/verde"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+        <!-- Botón de vista previa -->
+        <ImageView
+            android:id="@+id/boton_vista_previa"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_eye"
+            android:tint="@color/gris_medio"
+            android:contentDescription="@string/vista_previa"
+            android:background="@drawable/boton_circular_gris"
+            android:padding="6dp" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
