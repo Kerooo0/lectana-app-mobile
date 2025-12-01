@@ -55,6 +55,10 @@ public class Item {
         this.id = id;
     }
 
+    public void setId(int id) {
+        this.id = String.valueOf(id);
+    }
+
     public String getNombre() {
         return nombre;
     }
@@ -93,6 +97,14 @@ public class Item {
 
     public void setPrecioPuntos(int precioPuntos) {
         this.precioPuntos = precioPuntos;
+    }
+
+    public int getPrecio() {
+        return precioPuntos;
+    }
+
+    public void setPrecio(int precio) {
+        this.precioPuntos = precio;
     }
 
     public String getUrlImagen() {

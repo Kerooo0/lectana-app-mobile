@@ -2,9 +2,11 @@ package com.example.lectana.services;
 
 import com.example.lectana.models.ApiResponse;
 import com.example.lectana.models.ItemsResponse;
+import com.example.lectana.models.CompraAvatarResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Header;
 import retrofit2.http.Path;
 
@@ -32,6 +34,15 @@ public interface ItemsApiService {
      */
     @GET("items/mis-items")
     Call<ItemsResponse> obtenerMisItems(
+            @Header("Authorization") String token
+    );
+
+    /**
+     * Compra un avatar usando puntos
+     */
+    @POST("items/comprar/{id}")
+    Call<CompraAvatarResponse> comprarAvatar(
+            @Path("id") int id,
             @Header("Authorization") String token
     );
 }

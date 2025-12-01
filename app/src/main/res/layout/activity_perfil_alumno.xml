@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/white">
+
+    <!-- Título -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mi Perfil"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:layout_marginBottom="16dp" />
+
+    <!-- ScrollView para el contenido -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Avatar Actual -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginBottom="24dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Avatar Actual"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="12dp" />
+
+                <ImageView
+                    android:id="@+id/ivAvatarActual"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:scaleType="centerInside"
+                    android:contentDescription="Avatar actual"
+                    android:background="@drawable/boton_circular_gris" />
+            </LinearLayout>
+
+            <!-- Selector de Avatares -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="24dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cambiar Avatar"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <Spinner
+                    android:id="@+id/spinnerAvatares"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/campo_texto_rectangular" />
+            </LinearLayout>
+
+            <!-- Datos del Perfil -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Información Personal"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Nombre -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nombre"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="4dp" />
+
+                    <EditText
+                        android:id="@+id/etNombrePerfil"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:background="@drawable/campo_texto_rectangular"
+                        android:padding="12dp"
+                        android:inputType="text"
+                        android:enabled="false" />
+                </LinearLayout>
+
+                <!-- Apellido -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Apellido"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="4dp" />
+
+                    <EditText
+                        android:id="@+id/etApellidoPerfil"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:background="@drawable/campo_texto_rectangular"
+                        android:padding="12dp"
+                        android:inputType="text"
+                        android:enabled="false" />
+                </LinearLayout>
+
+                <!-- Email -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Email"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="4dp" />
+
+                    <EditText
+                        android:id="@+id/etEmailPerfil"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:background="@drawable/campo_texto_rectangular"
+                        android:padding="12dp"
+                        android:inputType="textEmailAddress"
+                        android:enabled="false" />
+                </LinearLayout>
+
+                <!-- Edad -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Edad"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="4dp" />
+
+                    <EditText
+                        android:id="@+id/etEdadPerfil"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:background="@drawable/campo_texto_rectangular"
+                        android:padding="12dp"
+                        android:inputType="number"
+                        android:enabled="false" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- ProgressBar -->
+    <ProgressBar
+        android:id="@+id/pbCargando"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+</LinearLayout>

@@ -18,6 +18,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import com.example.lectana.R;
 import com.example.lectana.auth.SessionManager;
 import com.example.lectana.estudiante.adapters.ItemsAdapter;
@@ -184,7 +187,17 @@ public class TiendaFragment extends Fragment implements ItemsAdapter.OnItemClick
 
                 if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
                     Log.d(TAG, "Items disponibles cargados: " + response.body().getData().size());
-                    itemsAdapter.setItems(response.body().getData());
+                    List<Item> items = new ArrayList<>();
+                    for (ItemsResponse.Item itemResponse : response.body().getData()) {
+                        Item item = new Item();
+                        item.setId(itemResponse.getId());
+                        item.setNombre(itemResponse.getNombre());
+                        item.setDescripcion(itemResponse.getDescripcion());
+                        item.setPrecio(itemResponse.getPrecio());
+                        item.setUrlImagen(itemResponse.getUrlImagen());
+                        items.add(item);
+                    }
+                    itemsAdapter.setItems(items);
                     recyclerViewItems.setVisibility(View.VISIBLE);
                 } else {
                     Log.e(TAG, "Error al cargar items disponibles: " + response.message());
@@ -225,8 +238,18 @@ public class TiendaFragment extends Fragment implements ItemsAdapter.OnItemClick
                 }
 
                 if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
-                    Log.d(TAG, "Items comprados cargados: " + response.body().getData().size());
-                    itemsAdapter.setItems(response.body().getData());
+                    Log.d(TAG, "Items por tipo cargados: " + response.body().getData().size());
+                    List<Item> items = new ArrayList<>();
+                    for (ItemsResponse.Item itemResponse : response.body().getData()) {
+                        Item item = new Item();
+                        item.setId(itemResponse.getId());
+                        item.setNombre(itemResponse.getNombre());
+                        item.setDescripcion(itemResponse.getDescripcion());
+                        item.setPrecio(itemResponse.getPrecio());
+                        item.setUrlImagen(itemResponse.getUrlImagen());
+                        items.add(item);
+                    }
+                    itemsAdapter.setItems(items);
                     recyclerViewItems.setVisibility(View.VISIBLE);
                 } else {
                     Log.e(TAG, "Error al cargar items comprados: " + response.message());
@@ -256,7 +279,8 @@ public class TiendaFragment extends Fragment implements ItemsAdapter.OnItemClick
 
         String token = "Bearer " + sessionManager.getToken();
 
-        itemsApiService.obtenerItemsPorTipo(token, tipo).enqueue(new Callback<ItemsResponse>() {
+        // Use obtenerItemsDisponibles instead of obtenerItemsPorTipo (which returns 404)
+        itemsApiService.obtenerItemsDisponibles(token).enqueue(new Callback<ItemsResponse>() {
             @Override
             public void onResponse(Call<ItemsResponse> call, Response<ItemsResponse> response) {
                 if (progressBarItems != null) {
@@ -265,7 +289,18 @@ public class TiendaFragment extends Fragment implements ItemsAdapter.OnItemClick
 
                 if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
                     Log.d(TAG, "Items de tipo " + tipo + " cargados: " + response.body().getData().size());
-                    itemsAdapter.setItems(response.body().getData());
+                    // Convertir ItemsResponse.Item a Item
+                    List<Item> items = new ArrayList<>();
+                    for (ItemsResponse.Item itemResponse : response.body().getData()) {
+                        Item item = new Item();
+                        item.setId(itemResponse.getId());
+                        item.setNombre(itemResponse.getNombre());
+                        item.setDescripcion(itemResponse.getDescripcion());
+                        item.setPrecio(itemResponse.getPrecio());
+                        item.setUrlImagen(itemResponse.getUrlImagen());
+                        items.add(item);
+                    }
+                    itemsAdapter.setItems(items);
                     recyclerViewItems.setVisibility(View.VISIBLE);
                 } else {
                     Log.e(TAG, "Error al cargar items por tipo: " + response.message());
@@ -303,8 +338,18 @@ public class TiendaFragment extends Fragment implements ItemsAdapter.OnItemClick
                 }
 
                 if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
-                    Log.d(TAG, "Items desbloqueados cargados: " + response.body().getData().size());
-                    itemsAdapter.setItems(response.body().getData());
+                    Log.d(TAG, "Items por búsqueda cargados: " + response.body().getData().size());
+                    List<Item> items = new ArrayList<>();
+                    for (ItemsResponse.Item itemResponse : response.body().getData()) {
+                        Item item = new Item();
+                        item.setId(itemResponse.getId());
+                        item.setNombre(itemResponse.getNombre());
+                        item.setDescripcion(itemResponse.getDescripcion());
+                        item.setPrecio(itemResponse.getPrecio());
+                        item.setUrlImagen(itemResponse.getUrlImagen());
+                        items.add(item);
+                    }
+                    itemsAdapter.setItems(items);
                     recyclerViewItems.setVisibility(View.VISIBLE);
                 } else {
                     Log.e(TAG, "Error al cargar items desbloqueados: " + response.message());

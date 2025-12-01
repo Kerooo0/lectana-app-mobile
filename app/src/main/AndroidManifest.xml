@@ -138,6 +138,12 @@
             android:exported="false" />
         
         <activity
+            android:name=".PerfilAlumnoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".estudiante.TiendaActivity"
+            android:exported="false" />
+        <activity
             android:name=".TiendaActivity"
             android:exported="false" />
         <activity

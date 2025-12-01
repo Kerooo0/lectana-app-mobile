@@ -1,57 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/fondo_claro">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/white">
 
+    <!-- Encabezado -->
     <LinearLayout
-        android:id="@+id/header_tienda"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/azul_fuerte"
-        android:padding="16dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/boton_volver_tienda"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:src="@drawable/ic_arrow_back"
-            android:tint="@android:color/white"
-            android:padding="4dp" />
+        android:orientation="vertical"
+        android:layout_marginBottom="16dp">
 
         <TextView
-            android:layout_width="0dp"
+            android:id="@+id/tvTituloTienda"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Tienda"
-            android:textColor="@android:color/white"
-            android:textSize="20sp"
+            android:text="Tienda de Avatares"
+            android:textSize="24sp"
             android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:id="@+id/tvPuntosActuales"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Puntos disponibles: 0"
+            android:textSize="16sp"
+            android:textColor="@android:color/holo_blue_dark"
             android:gravity="center" />
-
-        <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:src="@drawable/ic_store"
-            android:tint="@android:color/white"
-            android:padding="4dp" />
-
     </LinearLayout>
 
-    <TextView
+    <!-- RecyclerView con Grid -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvAvataresTienda"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginBottom="12dp" />
+
+    <!-- ProgressBar -->
+    <ProgressBar
+        android:id="@+id/pbCargandoTienda"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="En construcción: tienda de recompensas"
-        android:textColor="@color/gris_medio"
-        android:layout_marginTop="24dp"
-        app:layout_constraintTop_toBottomOf="@id/header_tienda"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_gravity="center"
+        android:visibility="gone" />
+</LinearLayout>
 
 

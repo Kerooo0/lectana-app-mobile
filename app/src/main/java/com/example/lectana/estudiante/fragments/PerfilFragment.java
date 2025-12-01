@@ -20,6 +20,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import com.example.lectana.CambiarPasswordEstudianteActivity;
 import com.example.lectana.EditarPerfilEstudianteActivity;
 import com.example.lectana.Login;
@@ -360,23 +363,34 @@ public class PerfilFragment extends Fragment {
         recyclerViewAvatares.setVisibility(View.GONE);
 
         String token = "Bearer " + sessionManager.getToken();
-        itemsApiService.obtenerItemsPorTipo(token, "avatar").enqueue(new Callback<ItemsResponse>() {
+        itemsApiService.obtenerItemsDisponibles(token).enqueue(new Callback<ItemsResponse>() {
             @Override
             public void onResponse(Call<ItemsResponse> call, Response<ItemsResponse> response) {
                 progressBarAvatares.setVisibility(View.GONE);
                 
                 if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
                     // Filtrar solo avatares desbloqueados
-                    java.util.List<Item> avataresDesbloqueados = new java.util.ArrayList<>();
-                    for (Item item : response.body().getData()) {
+                    List<Item> avataresDesbloqueados = new ArrayList<>();
+                    List<Item> items = new ArrayList<>();
+                    for (ItemsResponse.Item itemResponse : response.body().getData()) {
+                        Item item = new Item();
+                        item.setId(itemResponse.getId());
+                        item.setNombre(itemResponse.getNombre());
+                        item.setDescripcion(itemResponse.getDescripcion());
+                        item.setPrecio(itemResponse.getPrecio());
+                        item.setUrlImagen(itemResponse.getUrlImagen());
+                        items.add(item);
+                    }
+                    for (Item item : items) {
                         if (item.isDesbloqueado()) {
                             avataresDesbloqueados.add(item);
                         }
                     }
                     
                     if (avataresDesbloqueados.isEmpty()) {
+                        // Mostrar mensaje de que no hay avatares, pero mantener visible el diálogo
                         Toast.makeText(getContext(), "No tienes avatares desbloqueados. ¡Visita la tienda!", Toast.LENGTH_LONG).show();
-                        bottomSheetDialog.dismiss();
+                        // No cerrar el diálogo, permitir que se siga viendo
                     } else {
                         avatarAdapter.setAvatares(avataresDesbloqueados);
                         avatarAdapter.setAvatarEquipado(avatarEquipadoActual);
