@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+
+import java.util.List;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -14,7 +16,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.lectana.auth.SessionManager;
 import com.example.lectana.modelos.ActividadCompletaResponse;
+import com.example.lectana.modelos.ActividadCompletaResponseWrapper;
 import com.example.lectana.modelos.ApiResponse;
+import com.example.lectana.modelos.PreguntaActividad;
 import com.example.lectana.modelos.RespuestaUsuario;
 import com.example.lectana.services.ActividadesApiService;
 import com.example.lectana.services.AlumnoApiService;
@@ -80,17 +84,18 @@ public class ResolucionRespuestaAbiertaActivity extends AppCompatActivity {
         String token = "Bearer " + sessionManager.getToken();
 
         executorService.execute(() -> {
-            Call<ActividadCompletaResponse> call = actividadesService.getActividadCompleta(token, idActividad);
+            Call<ActividadCompletaResponseWrapper> call = actividadesService.getActividadCompleta(token, idActividad);
 
-            call.enqueue(new Callback<ActividadCompletaResponse>() {
+            call.enqueue(new Callback<ActividadCompletaResponseWrapper>() {
                 @Override
-                public void onResponse(Call<ActividadCompletaResponse> call, Response<ActividadCompletaResponse> response) {
+                public void onResponse(Call<ActividadCompletaResponseWrapper> call, Response<ActividadCompletaResponseWrapper> response) {
                     runOnUiThread(() -> {
                         mostrarCargando(false);
                         if (response.isSuccessful() && response.body() != null) {
-                            ActividadCompletaResponse res = response.body();
-                            if (res.getPreguntas() != null && !res.getPreguntas().isEmpty()) {
-                                mostrarActividadCompleta(res);
+                            ActividadCompletaResponseWrapper wrapper = response.body();
+                            List<PreguntaActividad> preguntas = wrapper.getActividadCompleta();
+                            if (preguntas != null && !preguntas.isEmpty()) {
+                                mostrarActividadCompleta(preguntas);
                             } else {
                                 mostrarError("No se pudo cargar la actividad");
                             }
@@ -102,7 +107,7 @@ public class ResolucionRespuestaAbiertaActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<ActividadCompletaResponse> call, Throwable t) {
+                public void onFailure(Call<ActividadCompletaResponseWrapper> call, Throwable t) {
                     runOnUiThread(() -> {
                         mostrarCargando(false);
                         Log.e("ResolucionRA", "Error: " + t.getMessage());
@@ -113,14 +118,14 @@ public class ResolucionRespuestaAbiertaActivity extends AppCompatActivity {
         });
     }
 
-    private void mostrarActividadCompleta(ActividadCompletaResponse response) {
+    private void mostrarActividadCompleta(List<PreguntaActividad> preguntas) {
         tvTitulo.setText(tituloActividad != null ? tituloActividad : "Actividad");
         
         containerPreguntas.removeAllViews();
 
-        if (response.getPreguntas() != null) {
+        if (preguntas != null) {
             
-            for (var pregunta : response.getPreguntas()) {
+            for (var pregunta : preguntas) {
                 // Crear TextView para la pregunta
                 TextView tvPregunta = new TextView(this);
                 tvPregunta.setText(pregunta.getEnunciado());

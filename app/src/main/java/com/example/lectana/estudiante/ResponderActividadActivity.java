@@ -19,7 +19,9 @@ import com.example.lectana.R;
 import com.example.lectana.auth.SessionManager;
 import com.example.lectana.modelos.ActividadCompleta;
 import com.example.lectana.modelos.ActividadCompletaResponse;
+import com.example.lectana.modelos.ActividadCompletaResponseWrapper;
 import com.example.lectana.modelos.ApiResponse;
+import com.example.lectana.modelos.MarcarActividadCompletadaRequest;
 import com.example.lectana.modelos.PreguntaActividad;
 import com.example.lectana.modelos.RespuestaActividad;
 import com.example.lectana.services.ActividadesApiService;
@@ -138,17 +140,16 @@ public class ResponderActividadActivity extends AppCompatActivity {
         String token = "Bearer " + sessionManager.getToken();
 
         actividadesApiService.getActividadCompleta(token, idActividad)
-                .enqueue(new Callback<ActividadCompletaResponse>() {
+                .enqueue(new Callback<ActividadCompletaResponseWrapper>() {
                     @Override
-                    public void onResponse(Call<ActividadCompletaResponse> call,
-                                         Response<ActividadCompletaResponse> response) {
+                    public void onResponse(Call<ActividadCompletaResponseWrapper> call,
+                                         Response<ActividadCompletaResponseWrapper> response) {
                         mostrarCargando(false);
 
                         if (response.isSuccessful() && response.body() != null) {
-                            ActividadCompletaResponse data = response.body();
-                            if (data != null) {
-                                actividadCompleta = data;
-                                preguntas = data.getPreguntaActividad();
+                            ActividadCompletaResponseWrapper wrapper = response.body();
+                            if (wrapper != null) {
+                                preguntas = wrapper.getActividadCompleta();
                                 
                                 if (preguntas != null && !preguntas.isEmpty()) {
                                     Log.d(TAG, "Actividad cargada con " + preguntas.size() + " preguntas");
@@ -175,7 +176,7 @@ public class ResponderActividadActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<ActividadCompletaResponse> call, Throwable t) {
+                    public void onFailure(Call<ActividadCompletaResponseWrapper> call, Throwable t) {
                         mostrarCargando(false);
                         Log.e(TAG, "Error de conexión: " + t.getMessage(), t);
                         Toast.makeText(ResponderActividadActivity.this,
@@ -514,11 +515,40 @@ public class ResponderActividadActivity extends AppCompatActivity {
                 .setTitle("Finalizar actividad")
                 .setMessage("¿Has completado todas las preguntas. ¿Deseas finalizar la actividad?")
                 .setPositiveButton("Finalizar", (dialog, which) -> {
-                    Toast.makeText(this, "Actividad completada", Toast.LENGTH_SHORT).show();
-                    finish();
+                    marcarActividadCompletada();
                 })
                 .setNegativeButton("Revisar", (dialog, which) -> dialog.dismiss())
                 .show();
+    }
+
+    private void marcarActividadCompletada() {
+        String token = "Bearer " + sessionManager.getToken();
+        com.example.lectana.modelos.MarcarActividadCompletadaRequest request = 
+            new com.example.lectana.modelos.MarcarActividadCompletadaRequest(idActividad);
+
+        alumnoApiService.marcarActividadCompletada(token, request)
+                .enqueue(new Callback<ApiResponse<com.example.lectana.modelos.ResultadoActividad>>() {
+                    @Override
+                    public void onResponse(Call<ApiResponse<com.example.lectana.modelos.ResultadoActividad>> call, 
+                                         Response<ApiResponse<com.example.lectana.modelos.ResultadoActividad>> response) {
+                        if (response.isSuccessful()) {
+                            Log.d(TAG, "Actividad marcada como completada");
+                            Toast.makeText(ResponderActividadActivity.this, "Actividad completada", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            Log.e(TAG, "Error al marcar actividad completada: " + response.code());
+                            Toast.makeText(ResponderActividadActivity.this, "Error al guardar progreso", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ApiResponse<com.example.lectana.modelos.ResultadoActividad>> call, Throwable t) {
+                        Log.e(TAG, "Error de conexión al marcar actividad completada", t);
+                        Toast.makeText(ResponderActividadActivity.this, "Error de conexión", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                });
     }
 
     private void mostrarDialogoSalir() {

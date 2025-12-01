@@ -103,6 +103,17 @@ public interface AlumnoApiService {
             @Body CambiarAulaRequest request
     );
 
+    /**
+     * Marcar actividad como completada
+     * POST /api/respuestas-usuario/completar
+     * Rol: alumno
+     */
+    @POST("respuestas-usuario/completar")
+    Call<ApiResponse<com.example.lectana.modelos.ResultadoActividad>> marcarActividadCompletada(
+            @Header("Authorization") String token,
+            @Body com.example.lectana.modelos.MarcarActividadCompletadaRequest request
+    );
+
     // ============================================
     // MODELOS DE REQUEST/RESPONSE
     // ============================================

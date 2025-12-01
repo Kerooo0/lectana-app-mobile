@@ -671,4 +671,128 @@ public class ActividadesRepository {
         
         return actividad;
     }
+
+    // ============================================
+    // MÉTODOS PARA SISTEMA DE COMPLETACIÓN
+    // ============================================
+
+    /**
+     * Marcar actividad como completada
+     * POST /api/respuesta-usuario/completar
+     */
+    public void marcarActividadCompletada(int actividadId, ActividadesCallback<com.example.lectana.modelos.ResultadoActividad> callback) {
+        String token = sessionManager.getToken();
+        Log.d(TAG, "=== MARCAR ACTIVIDAD COMPLETADA ===");
+        
+        if (token == null || token.isEmpty()) {
+            callback.onError("Token de autenticación no encontrado");
+            return;
+        }
+
+        String authHeader = "Bearer " + token;
+        ActividadesApiService api = ApiClient.getActividadesApiService();
+        
+        com.example.lectana.modelos.MarcarActividadCompletadaRequest request = 
+            new com.example.lectana.modelos.MarcarActividadCompletadaRequest(actividadId);
+
+        Call<ApiResponse<com.example.lectana.modelos.ResultadoActividad>> call = 
+            api.marcarActividadCompletada(authHeader, request);
+
+        call.enqueue(new Callback<ApiResponse<com.example.lectana.modelos.ResultadoActividad>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<com.example.lectana.modelos.ResultadoActividad>> call, Response<ApiResponse<com.example.lectana.modelos.ResultadoActividad>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d(TAG, "✓ Actividad marcada como completada");
+                    callback.onSuccess(response.body().getData());
+                } else {
+                    Log.e(TAG, "✗ Error al marcar actividad: " + response.code());
+                    callback.onError("Error: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<com.example.lectana.modelos.ResultadoActividad>> call, Throwable t) {
+                Log.e(TAG, "✗ Fallo en marcar actividad completada", t);
+                callback.onError(t.getMessage());
+            }
+        });
+    }
+
+    /**
+     * Obtener respuestas de una actividad (para docente)
+     * GET /api/docentes/actividades/{id}/respuestas
+     */
+    public void obtenerRespuestasActividad(int actividadId, ActividadesCallback<com.example.lectana.modelos.RespuestasActividadResponse> callback) {
+        String token = sessionManager.getToken();
+        Log.d(TAG, "=== OBTENER RESPUESTAS ACTIVIDAD (DOCENTE) ===");
+        
+        if (token == null || token.isEmpty()) {
+            callback.onError("Token de autenticación no encontrado");
+            return;
+        }
+
+        String authHeader = "Bearer " + token;
+        ActividadesApiService api = ApiClient.getActividadesApiService();
+
+        Call<ApiResponse<com.example.lectana.modelos.RespuestasActividadResponse>> call = 
+            api.obtenerRespuestasActividad(authHeader, actividadId);
+
+        call.enqueue(new Callback<ApiResponse<com.example.lectana.modelos.RespuestasActividadResponse>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<com.example.lectana.modelos.RespuestasActividadResponse>> call, Response<ApiResponse<com.example.lectana.modelos.RespuestasActividadResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d(TAG, "✓ Respuestas obtenidas: " + response.body().getData().getTotalPreguntas() + " preguntas");
+                    callback.onSuccess(response.body().getData());
+                } else {
+                    Log.e(TAG, "✗ Error al obtener respuestas: " + response.code());
+                    callback.onError("Error: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<com.example.lectana.modelos.RespuestasActividadResponse>> call, Throwable t) {
+                Log.e(TAG, "✗ Fallo al obtener respuestas de actividad", t);
+                callback.onError(t.getMessage());
+            }
+        });
+    }
+
+    /**
+     * Obtener respuestas de un aula (para docente)
+     * GET /api/docentes/aula/{aulaId}/respuestas
+     */
+    public void obtenerRespuestasAula(int aulaId, ActividadesCallback<com.example.lectana.modelos.RespuestasAulaResponse> callback) {
+        String token = sessionManager.getToken();
+        Log.d(TAG, "=== OBTENER RESPUESTAS AULA (DOCENTE) ===");
+        
+        if (token == null || token.isEmpty()) {
+            callback.onError("Token de autenticación no encontrado");
+            return;
+        }
+
+        String authHeader = "Bearer " + token;
+        ActividadesApiService api = ApiClient.getActividadesApiService();
+
+        Call<ApiResponse<com.example.lectana.modelos.RespuestasAulaResponse>> call = 
+            api.obtenerRespuestasAula(authHeader, aulaId);
+
+        call.enqueue(new Callback<ApiResponse<com.example.lectana.modelos.RespuestasAulaResponse>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<com.example.lectana.modelos.RespuestasAulaResponse>> call, Response<ApiResponse<com.example.lectana.modelos.RespuestasAulaResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d(TAG, "✓ Respuestas del aula obtenidas: " + response.body().getData().getTotal() + " respuestas totales");
+                    callback.onSuccess(response.body().getData());
+                } else {
+                    Log.e(TAG, "✗ Error al obtener respuestas del aula: " + response.code());
+                    callback.onError("Error: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<com.example.lectana.modelos.RespuestasAulaResponse>> call, Throwable t) {
+                Log.e(TAG, "✗ Fallo al obtener respuestas del aula", t);
+                callback.onError(t.getMessage());
+            }
+        });
+    }
 }

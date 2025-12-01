@@ -4,6 +4,7 @@ import com.example.lectana.modelos.Actividad;
 import com.example.lectana.modelos.ActividadesDocenteResponse;
 import com.example.lectana.modelos.ActividadesPorAulaResponse;
 import com.example.lectana.modelos.ActividadCompletaResponse;
+import com.example.lectana.modelos.ActividadCompletaResponseWrapper;
 import com.example.lectana.modelos.ApiResponse;
 import com.example.lectana.modelos.AsignarAulasRequest;
 import com.example.lectana.modelos.CrearActividadRequest;
@@ -47,10 +48,10 @@ public interface ActividadesApiService {
      * Obtener detalles completos de una actividad (con preguntas y respuestas)
      * GET /api/actividades/actividadCompleta/:idActividad
      * Rol: alumno, docente, administrador
-     * Devuelve: { actividadCompleta: {...} }
+     * Devuelve: { actividadCompleta: [...preguntas...] }
      */
     @GET("actividades/actividadCompleta/{idActividad}")
-    Call<ActividadCompletaResponse> getActividadCompleta(
+    Call<ActividadCompletaResponseWrapper> getActividadCompleta(
             @Header("Authorization") String token,
             @Path("idActividad") int idActividad
     );
@@ -180,6 +181,44 @@ public interface ActividadesApiService {
     Call<ApiResponse<com.example.lectana.modelos.EstadisticasActividad>> getEstadisticasActividad(
             @Header("Authorization") String token,
             @Path("id") int actividadId
+    );
+
+    // ============================================
+    // ENDPOINTS PARA SISTEMA DE COMPLETACIÓN
+    // ============================================
+
+    /**
+     * Marcar actividad como completada
+     * POST /api/respuestas-usuario/completar
+     * Body: { "actividadId": int }
+     * Response: { "ok": true, "mensaje": "Actividad marcada como completada", "resultado": {...} }
+     */
+    @POST("respuestas-usuario/completar")
+    Call<ApiResponse<com.example.lectana.modelos.ResultadoActividad>> marcarActividadCompletada(
+            @Header("Authorization") String token,
+            @Body com.example.lectana.modelos.MarcarActividadCompletadaRequest request
+    );
+
+    /**
+     * Obtener respuestas de una actividad (para docente)
+     * GET /api/docentes/actividades/{id}/respuestas
+     * Response: { "ok": true, "respuestas": [...], "total_preguntas": int }
+     */
+    @GET("docentes/actividades/{id}/respuestas")
+    Call<ApiResponse<com.example.lectana.modelos.RespuestasActividadResponse>> obtenerRespuestasActividad(
+            @Header("Authorization") String token,
+            @Path("id") int actividadId
+    );
+
+    /**
+     * Obtener respuestas de un aula (para docente)
+     * GET /api/docentes/aula/{aulaId}/respuestas
+     * Response: { "ok": true, "respuestas": [...], "total": int }
+     */
+    @GET("docentes/aula/{aulaId}/respuestas")
+    Call<ApiResponse<com.example.lectana.modelos.RespuestasAulaResponse>> obtenerRespuestasAula(
+            @Header("Authorization") String token,
+            @Path("aulaId") int aulaId
     );
 }
 

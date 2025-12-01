@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.lectana.R;
 import com.example.lectana.modelos.ActividadCompleta;
 import com.example.lectana.modelos.ActividadCompletaResponse;
+import com.example.lectana.modelos.ActividadCompletaResponseWrapper;
 import com.example.lectana.modelos.ApiResponse;
 import com.example.lectana.modelos.Actividad;
 import com.example.lectana.modelos.PreguntaActividad;
@@ -162,20 +163,20 @@ public class ResolverActividadActivity extends AppCompatActivity {
     private void cargarPreguntas() {
         progressBarCarga.setVisibility(View.VISIBLE);
         
-        Call<ActividadCompletaResponse> call = actividadesApiService.getActividadCompleta(
+        Call<ActividadCompletaResponseWrapper> call = actividadesApiService.getActividadCompleta(
             "Bearer " + token,
             actividad.getIdActividad()
         );
 
-        call.enqueue(new Callback<ActividadCompletaResponse>() {
+        call.enqueue(new Callback<ActividadCompletaResponseWrapper>() {
             @Override
-            public void onResponse(Call<ActividadCompletaResponse> call, Response<ActividadCompletaResponse> response) {
+            public void onResponse(Call<ActividadCompletaResponseWrapper> call, Response<ActividadCompletaResponseWrapper> response) {
                 progressBarCarga.setVisibility(View.GONE);
                 
                 if (response.isSuccessful() && response.body() != null) {
-                    ActividadCompletaResponse actividadResponse = response.body();
-                    if (actividadResponse != null) {
-                        preguntas = actividadResponse.getPreguntaActividad();
+                    ActividadCompletaResponseWrapper wrapper = response.body();
+                    if (wrapper != null) {
+                        preguntas = wrapper.getActividadCompleta();
                         
                         if (preguntas == null || preguntas.isEmpty()) {
                             Toast.makeText(ResolverActividadActivity.this, 
@@ -198,7 +199,7 @@ public class ResolverActividadActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ActividadCompletaResponse> call, Throwable t) {
+            public void onFailure(Call<ActividadCompletaResponseWrapper> call, Throwable t) {
                 progressBarCarga.setVisibility(View.GONE);
                 Toast.makeText(ResolverActividadActivity.this, 
                     "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
@@ -396,17 +397,8 @@ public class ResolverActividadActivity extends AppCompatActivity {
     private void enviarRespuestaRecursiva(List<Call<AlumnoApiService.RespuestaPreguntaResponse>> llamadas, int index) {
         if (index >= llamadas.size()) {
             // Todas las respuestas enviadas exitosamente
-            progressBarCarga.setVisibility(View.GONE);
-            
-            new AlertDialog.Builder(this)
-                .setTitle("¡Éxito!")
-                .setMessage("Tus respuestas han sido enviadas correctamente")
-                .setPositiveButton("Aceptar", (dialog, which) -> {
-                    setResult(RESULT_OK);
-                    finish();
-                })
-                .setCancelable(false)
-                .show();
+            // Ahora marcar la actividad como completada
+            marcarActividadCompletada();
             return;
         }
 
@@ -437,6 +429,66 @@ public class ResolverActividadActivity extends AppCompatActivity {
                     "Error de conexión al enviar respuesta " + (index + 1), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    /**
+     * Marcar la actividad como completada en el backend
+     * POST /api/respuesta-usuario/completar
+     */
+    private void marcarActividadCompletada() {
+        String tokenHeader = "Bearer " + token;
+        
+        com.example.lectana.modelos.MarcarActividadCompletadaRequest request = 
+            new com.example.lectana.modelos.MarcarActividadCompletadaRequest(actividad.getId_actividad());
+        
+        alumnoApiService.marcarActividadCompletada(tokenHeader, request)
+            .enqueue(new Callback<com.example.lectana.modelos.ApiResponse<com.example.lectana.modelos.ResultadoActividad>>() {
+                @Override
+                public void onResponse(Call<com.example.lectana.modelos.ApiResponse<com.example.lectana.modelos.ResultadoActividad>> call,
+                                     Response<com.example.lectana.modelos.ApiResponse<com.example.lectana.modelos.ResultadoActividad>> response) {
+                    progressBarCarga.setVisibility(View.GONE);
+                    
+                    if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
+                        // Actividad marcada como completada exitosamente
+                        new AlertDialog.Builder(ResolverActividadActivity.this)
+                            .setTitle("¡Éxito!")
+                            .setMessage("Tus respuestas han sido enviadas correctamente.\nLa actividad ha sido marcada como completada.")
+                            .setPositiveButton("Aceptar", (dialog, which) -> {
+                                setResult(RESULT_OK);
+                                finish();
+                            })
+                            .setCancelable(false)
+                            .show();
+                    } else {
+                        // Si falla marcar completada, mostrar mensaje pero permitir cerrar
+                        new AlertDialog.Builder(ResolverActividadActivity.this)
+                            .setTitle("Éxito Parcial")
+                            .setMessage("Tus respuestas han sido enviadas, pero hubo un problema al registrar el estado.")
+                            .setPositiveButton("Aceptar", (dialog, which) -> {
+                                setResult(RESULT_OK);
+                                finish();
+                            })
+                            .setCancelable(false)
+                            .show();
+                    }
+                }
+                
+                @Override
+                public void onFailure(Call<com.example.lectana.modelos.ApiResponse<com.example.lectana.modelos.ResultadoActividad>> call, Throwable t) {
+                    progressBarCarga.setVisibility(View.GONE);
+                    
+                    // Si falla la conexión, igual permitir cerrar
+                    new AlertDialog.Builder(ResolverActividadActivity.this)
+                        .setTitle("Éxito Parcial")
+                        .setMessage("Tus respuestas han sido enviadas.\n(Error al registrar estado: " + t.getMessage() + ")")
+                        .setPositiveButton("Aceptar", (dialog, which) -> {
+                            setResult(RESULT_OK);
+                            finish();
+                        })
+                        .setCancelable(false)
+                        .show();
+                }
+            });
     }
 
     @Override

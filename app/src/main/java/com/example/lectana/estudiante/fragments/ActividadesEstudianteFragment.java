@@ -169,7 +169,10 @@ public class ActividadesEstudianteFragment extends Fragment {
             public void onFailure(Call<ActividadesPorAulaResponse> call, Throwable t) {
                 mostrarCargando(false);
                 Log.e(TAG, "Error de conexión: " + t.getMessage());
-                Toast.makeText(requireContext(), "Error de conexión: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                // Verificar que el fragmento está aún vinculado antes de mostrar Toast
+                if (isAdded()) {
+                    Toast.makeText(requireContext(), "Error de conexión: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
@@ -179,63 +182,18 @@ public class ActividadesEstudianteFragment extends Fragment {
         
         actividadesPendientes.clear();
         actividadesCompletadas.clear();
-        totalActividadesEsperadas = actividades.size();
         
-        // Por ahora, necesitamos verificar cada actividad individualmente
-        // En el futuro, podríamos tener un endpoint que devuelva el estado directamente
+        // Temporalmente, mostrar todas las actividades como pendientes
+        // El endpoint de verificación de estado tiene un error de schema en el backend
+        // TODO: Una vez se corrija el backend, restaurar la verificación individual
+        
         for (Actividad actividad : actividades) {
-            verificarSiActividadCompletada(actividad, alumnoId, token);
+            actividad.setCompletada(false);
+            actividadesPendientes.add(actividad);
+            Log.d(TAG, "Actividad " + actividad.getId_actividad() + " mostrada como pendiente");
         }
-    }
-
-    private void verificarSiActividadCompletada(Actividad actividad, int alumnoId, String token) {
-        actividadesApiService.getRespuestasAlumnoActividad(token, alumnoId, actividad.getId_actividad())
-            .enqueue(new Callback<ApiResponse<List<RespuestaUsuario>>>() {
-                @Override
-                public void onResponse(Call<ApiResponse<List<RespuestaUsuario>>> call,
-                                     Response<ApiResponse<List<RespuestaUsuario>>> response) {
-                    if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
-                        List<RespuestaUsuario> respuestas = response.body().getData();
-                        
-                        if (respuestas != null && respuestas.size() > 0) {
-                            // Actividad completada
-                            actividad.setCompletada(true);
-                            actividadesCompletadas.add(actividad);
-                            Log.d(TAG, "Actividad " + actividad.getId_actividad() + " completada");
-                        } else {
-                            // Actividad pendiente
-                            actividad.setCompletada(false);
-                            actividadesPendientes.add(actividad);
-                            Log.d(TAG, "Actividad " + actividad.getId_actividad() + " pendiente (sin respuestas)");
-                        }
-                    } else {
-                        // Si hay error HTTP (como 500), asumimos que está pendiente
-                        actividad.setCompletada(false);
-                        actividadesPendientes.add(actividad);
-                        Log.w(TAG, "Actividad " + actividad.getId_actividad() + " marcada como pendiente (error " + response.code() + ")");
-                    }
-                    
-                    // Actualizar lista cuando tengamos todas las actividades verificadas
-                    int totalVerificadas = actividadesPendientes.size() + actividadesCompletadas.size();
-                    if (totalVerificadas > 0 && totalVerificadas >= getTotalActividadesEsperadas()) {
-                        actualizarListaActividades();
-                    }
-                }
-                
-                @Override
-                public void onFailure(Call<ApiResponse<List<RespuestaUsuario>>> call, Throwable t) {
-                    // En caso de error de red, asumir que está pendiente
-                    actividad.setCompletada(false);
-                    actividadesPendientes.add(actividad);
-                    Log.w(TAG, "Actividad " + actividad.getId_actividad() + " marcada como pendiente (error de red: " + t.getMessage() + ")");
-                    
-                    // Verificar si ya tenemos todas las actividades verificadas
-                    int totalActividades = actividadesPendientes.size() + actividadesCompletadas.size();
-                    if (totalActividades > 0 && totalActividades >= getTotalActividadesEsperadas()) {
-                        actualizarListaActividades();
-                    }
-                }
-            });
+        
+        actualizarListaActividades();
     }
     
     private int getTotalActividadesEsperadas() {
@@ -355,9 +313,12 @@ public class ActividadesEstudianteFragment extends Fragment {
                 public void onFailure(Call<com.example.lectana.services.AuthApiService.MeResponse> call, Throwable t) {
                     mostrarCargando(false);
                     Log.e(TAG, "Error al llamar /api/auth/me", t);
-                    Toast.makeText(requireContext(), 
-                        "Error de conexión: " + t.getMessage(), 
-                        Toast.LENGTH_SHORT).show();
+                    // Verificar que el fragmento está aún vinculado antes de mostrar Toast
+                    if (isAdded()) {
+                        Toast.makeText(requireContext(), 
+                            "Error de conexión: " + t.getMessage(), 
+                            Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         );

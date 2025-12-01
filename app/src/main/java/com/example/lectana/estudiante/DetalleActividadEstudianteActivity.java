@@ -19,6 +19,7 @@ import com.example.lectana.R;
 import com.example.lectana.auth.SessionManager;
 import com.example.lectana.modelos.ActividadCompleta;
 import com.example.lectana.modelos.ActividadCompletaResponse;
+import com.example.lectana.modelos.ActividadCompletaResponseWrapper;
 import com.example.lectana.modelos.ApiResponse;
 import com.example.lectana.modelos.PreguntaActividad;
 import com.example.lectana.services.ActividadesApiService;
@@ -135,18 +136,41 @@ public class DetalleActividadEstudianteActivity extends AppCompatActivity {
         String token = "Bearer " + sessionManager.getToken();
 
         actividadesApiService.getActividadCompleta(token, idActividad)
-                .enqueue(new Callback<ActividadCompletaResponse>() {
+                .enqueue(new Callback<ActividadCompletaResponseWrapper>() {
                     @Override
-                    public void onResponse(Call<ActividadCompletaResponse> call,
-                                         Response<ActividadCompletaResponse> response) {
+                    public void onResponse(Call<ActividadCompletaResponseWrapper> call,
+                                         Response<ActividadCompletaResponseWrapper> response) {
                         mostrarCargando(false);
 
                         if (response.isSuccessful() && response.body() != null) {
-                            ActividadCompletaResponse data = response.body();
-                            List<PreguntaActividad> preguntas = data.getPreguntas();
+                            ActividadCompletaResponseWrapper wrapper = response.body();
+                            List<PreguntaActividad> preguntas = wrapper.getActividadCompleta();
+                            
+                            Log.d(TAG, "Respuesta recibida - Preguntas: " + (preguntas != null ? preguntas.size() : "null"));
                             
                             if (preguntas != null && !preguntas.isEmpty()) {
                                 Log.d(TAG, "Preguntas cargadas: " + preguntas.size());
+                                
+                                // Validar que cada pregunta tenga un enunciado
+                                boolean tieneEnunciados = false;
+                                for (PreguntaActividad p : preguntas) {
+                                    Log.d(TAG, "Pregunta: id=" + p.getIdPreguntaActividad() + 
+                                            ", enunciado=" + p.getEnunciado() + 
+                                            ", respuestas=" + (p.getRespuestaActividad() != null ? p.getRespuestaActividad().size() : 0));
+                                    if (p != null && p.getEnunciado() != null && !p.getEnunciado().isEmpty()) {
+                                        tieneEnunciados = true;
+                                        break;
+                                    }
+                                }
+                                
+                                if (!tieneEnunciados) {
+                                    Log.w(TAG, "Las preguntas no tienen enunciados válidos");
+                                    Toast.makeText(DetalleActividadEstudianteActivity.this,
+                                            "Error: No se cargaron correctamente las preguntas",
+                                            Toast.LENGTH_SHORT).show();
+                                    finish();
+                                    return;
+                                }
                                 
                                 // Crear objeto ActividadCompleta con las preguntas
                                 actividadCompleta = new ActividadCompleta();
@@ -174,7 +198,7 @@ public class DetalleActividadEstudianteActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<ActividadCompletaResponse> call, Throwable t) {
+                    public void onFailure(Call<ActividadCompletaResponseWrapper> call, Throwable t) {
                         mostrarCargando(false);
                         Log.e(TAG, "Error de conexión: " + t.getMessage(), t);
                         Toast.makeText(DetalleActividadEstudianteActivity.this,
@@ -187,6 +211,8 @@ public class DetalleActividadEstudianteActivity extends AppCompatActivity {
 
     private void mostrarDetalleActividad() {
         Log.d(TAG, "Mostrando detalles de la actividad...");
+        Log.d(TAG, "actividadCompleta: " + (actividadCompleta != null ? "OK" : "NULL"));
+        Log.d(TAG, "tienePreguntas: " + (actividadCompleta != null ? actividadCompleta.tienePreguntas() : "N/A"));
 
         // Título y descripción
         textTituloActividad.setText(actividadCompleta.getDescripcion());
