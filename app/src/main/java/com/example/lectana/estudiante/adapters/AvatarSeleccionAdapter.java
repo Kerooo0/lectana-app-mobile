@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.lectana.R;
-import com.example.lectana.models.Item;
+import com.example.lectana.modelos.Item;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +21,11 @@ public class AvatarSeleccionAdapter extends RecyclerView.Adapter<AvatarSeleccion
     private List<Item> avatares;
     private OnAvatarClickListener listener;
     private String avatarEquipadoId;
+    private static final String REMOVE_AVATAR_ID = "remove_avatar";
 
     public interface OnAvatarClickListener {
         void onAvatarClick(Item avatar);
+        void onRemoveAvatarClick();
     }
 
     public AvatarSeleccionAdapter(OnAvatarClickListener listener) {
@@ -33,6 +35,23 @@ public class AvatarSeleccionAdapter extends RecyclerView.Adapter<AvatarSeleccion
 
     public void setAvatares(List<Item> avatares) {
         this.avatares = avatares != null ? avatares : new ArrayList<>();
+        notifyDataSetChanged();
+    }
+    
+    /**
+     * Agrega un item especial al principio de la lista para "Quitar Avatar"
+     */
+    public void addRemoveAvatarOption() {
+        Item removeOption = new Item();
+        removeOption.setId(REMOVE_AVATAR_ID);
+        removeOption.setNombre("Quitar Avatar");
+        removeOption.setDescripcion("Desequipar avatar actual");
+        removeOption.setUrlImagen("");
+        
+        List<Item> updatedList = new ArrayList<>();
+        updatedList.add(removeOption);
+        updatedList.addAll(avatares);
+        this.avatares = updatedList;
         notifyDataSetChanged();
     }
 
@@ -73,6 +92,24 @@ public class AvatarSeleccionAdapter extends RecyclerView.Adapter<AvatarSeleccion
         }
 
         public void bind(Item avatar, OnAvatarClickListener listener, String avatarEquipadoId) {
+            // Verificar si es el item especial "Quitar Avatar"
+            if (REMOVE_AVATAR_ID.equals(avatar.getId())) {
+                nombreAvatar.setText("✕ Quitar Avatar");
+                badgeEquipado.setVisibility(View.GONE);
+                
+                // Usar un ícono predeterminado para la opción de quitar
+                imagenAvatar.setImageResource(R.drawable.ic_delete);
+                imagenAvatar.setScaleType(ImageView.ScaleType.CENTER);
+                imagenAvatar.setBackgroundResource(R.drawable.circle_red);
+                
+                itemView.setOnClickListener(v -> {
+                    if (listener != null) {
+                        listener.onRemoveAvatarClick();
+                    }
+                });
+                return;
+            }
+            
             nombreAvatar.setText(avatar.getNombre());
 
             // Mostrar badge si está equipado

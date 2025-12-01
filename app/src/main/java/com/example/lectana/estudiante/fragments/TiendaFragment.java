@@ -1,6 +1,7 @@
 package com.example.lectana.estudiante.fragments;
 
 import android.app.AlertDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,11 +25,12 @@ import java.util.ArrayList;
 import com.example.lectana.R;
 import com.example.lectana.auth.SessionManager;
 import com.example.lectana.estudiante.adapters.ItemsAdapter;
-import com.example.lectana.models.ApiResponse;
-import com.example.lectana.models.Item;
-import com.example.lectana.models.ItemsResponse;
-import com.example.lectana.models.PerfilAlumnoResponse;
-import com.example.lectana.models.PuntosResponse;
+import com.example.lectana.modelos.ApiResponse;
+import com.example.lectana.modelos.Item;
+import com.example.lectana.modelos.ItemsResponse;
+import com.example.lectana.modelos.CompraAvatarResponse;
+import com.example.lectana.modelos.PerfilAlumnoResponse;
+import com.example.lectana.modelos.PuntosResponse;
 import com.example.lectana.services.ApiClient;
 import com.example.lectana.services.ItemsApiService;
 import com.example.lectana.services.PuntosApiService;
@@ -146,11 +148,12 @@ public class TiendaFragment extends Fragment implements ItemsAdapter.OnItemClick
     private void cargarPuntosUsuario() {
         String token = "Bearer " + sessionManager.getToken();
         
-        puntosApiService.obtenerPerfilAlumno(token).enqueue(new Callback<PerfilAlumnoResponse>() {
+        puntosApiService.obtenerMisPuntos(token).enqueue(new Callback<PuntosResponse>() {
             @Override
-            public void onResponse(Call<PerfilAlumnoResponse> call, Response<PerfilAlumnoResponse> response) {
+            public void onResponse(Call<PuntosResponse> call, Response<PuntosResponse> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
-                    puntosActualesUsuario = response.body().getData().getPuntos();
+                    PuntosResponse.PuntosData puntosData = response.body().getPuntos();
+                    puntosActualesUsuario = puntosData.getPuntos();
                     puntosUsuario.setText(puntosActualesUsuario + " puntos disponibles");
                     Log.d(TAG, "Puntos cargados: " + puntosActualesUsuario);
                 } else {
@@ -160,7 +163,7 @@ public class TiendaFragment extends Fragment implements ItemsAdapter.OnItemClick
             }
 
             @Override
-            public void onFailure(Call<PerfilAlumnoResponse> call, Throwable t) {
+            public void onFailure(Call<PuntosResponse> call, Throwable t) {
                 Log.e(TAG, "Error de red al cargar puntos", t);
                 puntosUsuario.setText("0 puntos disponibles");
             }
@@ -397,23 +400,40 @@ public class TiendaFragment extends Fragment implements ItemsAdapter.OnItemClick
         
         String token = "Bearer " + sessionManager.getToken();
         
-        // Restar puntos (cantidad NEGATIVA)
-        PuntosApiService.PuntosRequest request = new PuntosApiService.PuntosRequest(-item.getPrecioPuntos());
-
-        puntosApiService.canjearPuntos(token, request).enqueue(new Callback<PuntosResponse>() {
+        // Usar el endpoint correcto: POST /api/items/comprar/{id}
+        // El id en Item es String, convertir a int
+        int itemId = Integer.parseInt(item.getId());
+        itemsApiService.comprarAvatar(itemId, token).enqueue(new Callback<CompraAvatarResponse>() {
             @Override
-            public void onResponse(Call<PuntosResponse> call, Response<PuntosResponse> response) {
+            public void onResponse(Call<CompraAvatarResponse> call, Response<CompraAvatarResponse> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
-                    // Actualizar puntos locales
-                    puntosActualesUsuario = response.body().getData().getPuntos();
+                    // Actualizar puntos locales desde la respuesta
+                    puntosActualesUsuario = response.body().getPuntosActuales();
+                    puntosUsuario.setText(puntosActualesUsuario + " puntos disponibles");
                     
-                    Toast.makeText(getContext(), "¡Comprado exitosamente! Puntos restantes: " + puntosActualesUsuario, Toast.LENGTH_SHORT).show();
+                    String mensaje = "¡Comprado exitosamente! ";
+                    if (response.body().getItem() != null) {
+                        mensaje += response.body().getItem().nombre;
+                    }
+                    mensaje += " - Puntos restantes: " + puntosActualesUsuario;
+                    
+                    Toast.makeText(getContext(), mensaje, Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "Compra exitosa: " + mensaje);
+                    
+                    // Establecer flag para que PerfilAlumnoActivity recargue avatares
+                    SharedPreferences prefs = requireContext().getSharedPreferences("avatar_prefs", android.content.Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putBoolean("should_refresh_avatars", true);
+                    editor.apply();
+                    Log.d(TAG, "Flag 'should_refresh_avatars' establecido a true");
                     
                     // Recargar items disponibles
                     recargarItemsSegunCategoria();
                 } else {
                     String error = "Error al procesar compra";
-                    if (response.body() != null && response.body().getMensaje() != null) {
+                    if (response.body() != null && response.body().getError() != null) {
+                        error = response.body().getError();
+                    } else if (response.body() != null && response.body().getMensaje() != null) {
                         error = response.body().getMensaje();
                     }
                     Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
@@ -421,8 +441,8 @@ public class TiendaFragment extends Fragment implements ItemsAdapter.OnItemClick
             }
 
             @Override
-            public void onFailure(Call<PuntosResponse> call, Throwable t) {
-                Log.e(TAG, "Error al canjear puntos", t);
+            public void onFailure(Call<CompraAvatarResponse> call, Throwable t) {
+                Log.e(TAG, "Error al comprar item", t);
                 Toast.makeText(getContext(), "Error de conexión al comprar", Toast.LENGTH_SHORT).show();
             }
         });

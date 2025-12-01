@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.lectana.R;
-import com.example.lectana.models.Avatar;
+import com.example.lectana.modelos.Avatar;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -21,7 +21,7 @@ import android.widget.Toast;
 
 import com.example.lectana.Login;
 import com.example.lectana.R;
-import com.example.lectana.models.DocenteRegistro;
+import com.example.lectana.modelos.DocenteRegistro;
 import com.example.lectana.network.RegistroDocenteClient;
 
 import org.json.JSONObject;

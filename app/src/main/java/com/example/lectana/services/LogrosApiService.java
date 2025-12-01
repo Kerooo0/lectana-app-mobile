@@ -1,8 +1,8 @@
 package com.example.lectana.services;
 
-import com.example.lectana.models.ApiResponse;
-import com.example.lectana.models.EstadisticasLogrosResponse;
-import com.example.lectana.models.LogrosResponse;
+import com.example.lectana.modelos.ApiResponse;
+import com.example.lectana.modelos.EstadisticasLogrosResponse;
+import com.example.lectana.modelos.LogrosResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

@@ -16,7 +16,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
-import com.example.lectana.models.Avatar;
+import com.example.lectana.modelos.Avatar;
 import com.example.lectana.services.AvatarService;
 import com.example.lectana.auth.SessionManager;
 
@@ -43,6 +43,28 @@ public class PerfilAlumnoActivity extends AppCompatActivity {
         inicializarComponentes();
         inicializarServicios();
         cargarDatos();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume() llamado en PerfilAlumnoActivity");
+        
+        // Verificar si se compró un nuevo avatar en TiendaFragment
+        SharedPreferences prefs = getSharedPreferences("avatar_prefs", Context.MODE_PRIVATE);
+        boolean shouldRefresh = prefs.getBoolean("should_refresh_avatars", false);
+        Log.d(TAG, "should_refresh_avatars: " + shouldRefresh);
+        
+        if (shouldRefresh) {
+            Log.d(TAG, "Refrescando avatares después de compra");
+            // Limpiar el flag
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("should_refresh_avatars", false);
+            editor.apply();
+            
+            // Recargar datos (especialmente avatares)
+            cargarDatos();
+        }
     }
 
     private void inicializarComponentes() {
@@ -103,6 +125,7 @@ public class PerfilAlumnoActivity extends AppCompatActivity {
     }
 
     private void configurarSpinnerAvatares() {
+        Log.d(TAG, "configurarSpinnerAvatares() - avatares disponibles: " + misAvatares.size());
         List<String> nombresAvatares = new ArrayList<>();
         
         // Si no hay avatares, mostrar mensaje
@@ -110,7 +133,9 @@ public class PerfilAlumnoActivity extends AppCompatActivity {
             nombresAvatares.add("No tienes avatares. ¡Visita la tienda!");
         } else {
             for (Avatar avatar : misAvatares) {
-                nombresAvatares.add(avatar.getNombre() + " (" + avatar.getPrecio() + " pts)");
+                String nombre = avatar.getNombre() + " (" + avatar.getPrecio() + " pts)";
+                nombresAvatares.add(nombre);
+                Log.d(TAG, "Agregando avatar al spinner: " + nombre);
             }
         }
 

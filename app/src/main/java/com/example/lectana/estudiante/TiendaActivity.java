@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.lectana.R;
-import com.example.lectana.models.Avatar;
+import com.example.lectana.modelos.Avatar;
 import com.example.lectana.services.AvatarService;
 import com.example.lectana.auth.SessionManager;
 import com.example.lectana.estudiante.adapters.TiendaAvatarAdapter;
@@ -116,7 +116,7 @@ public class TiendaActivity extends AppCompatActivity {
 
         avatarService.comprarAvatar(token, avatar.getIdItem(), new AvatarService.OnCompraListener() {
             @Override
-            public void onSuccess(com.example.lectana.models.CompraAvatarResponse response) {
+            public void onSuccess(com.example.lectana.modelos.CompraAvatarResponse response) {
                 pbCargando.setVisibility(View.GONE);
                 puntosActuales = response.getPuntosActuales();
                 tvPuntosActuales.setText("Puntos disponibles: " + puntosActuales);

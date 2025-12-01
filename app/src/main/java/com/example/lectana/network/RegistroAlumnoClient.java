@@ -2,7 +2,7 @@ package com.example.lectana.network;
 
 import android.util.Log;
 
-import com.example.lectana.models.AlumnoRegistro;
+import com.example.lectana.modelos.AlumnoRegistro;
 
 import org.json.JSONArray;
 import org.json.JSONException;

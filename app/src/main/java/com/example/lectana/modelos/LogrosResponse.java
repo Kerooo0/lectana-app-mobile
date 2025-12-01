@@ -1,4 +1,4 @@
-package com.example.lectana.models;
+package com.example.lectana.modelos;
 
 import com.google.gson.annotations.SerializedName;
 import java.util.List;

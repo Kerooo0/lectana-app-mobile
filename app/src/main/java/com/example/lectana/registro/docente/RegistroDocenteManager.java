@@ -3,7 +3,7 @@ package com.example.lectana.registro.docente;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.example.lectana.models.DocenteRegistro;
+import com.example.lectana.modelos.DocenteRegistro;
 
 /**
  * Gestor para almacenar temporalmente los datos del registro

@@ -1,9 +1,9 @@
 package com.example.lectana.services;
 
-import com.example.lectana.models.Avatar;
-import com.example.lectana.models.AvatarResponse;
-import com.example.lectana.models.CompraAvatarResponse;
-import com.example.lectana.models.ItemsResponse;
+import com.example.lectana.modelos.Avatar;
+import com.example.lectana.modelos.AvatarResponse;
+import com.example.lectana.modelos.CompraAvatarResponse;
+import com.example.lectana.modelos.ItemsResponse;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
@@ -66,14 +66,20 @@ public class AvatarService {
             public void onResponse(Call<ItemsResponse> call, Response<ItemsResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<Avatar> avatares = convertirItemsAvatares(response.body().getData());
+                    android.util.Log.d("AvatarService", "Avatares cargados: " + avatares.size());
+                    for (Avatar avatar : avatares) {
+                        android.util.Log.d("AvatarService", "Avatar: " + avatar.getNombre() + " - ID: " + avatar.getIdItem());
+                    }
                     listener.onSuccess(avatares);
                 } else {
+                    android.util.Log.e("AvatarService", "Error en respuesta: " + (response.body() == null ? "body null" : response.message()));
                     listener.onError("Error al obtener mis avatares");
                 }
             }
 
             @Override
             public void onFailure(Call<ItemsResponse> call, Throwable t) {
+                android.util.Log.e("AvatarService", "Error de red: " + t.getMessage(), t);
                 listener.onError("Error de red: " + t.getMessage());
             }
         });

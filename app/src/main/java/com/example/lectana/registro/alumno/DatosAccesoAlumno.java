@@ -20,7 +20,7 @@ import android.widget.TextView;
 
 import com.example.lectana.R;
 import com.example.lectana.clases.validaciones.ValidacionesPassword;
-import com.example.lectana.models.AlumnoRegistro;
+import com.example.lectana.modelos.AlumnoRegistro;
 
 
 public class DatosAccesoAlumno extends Fragment {

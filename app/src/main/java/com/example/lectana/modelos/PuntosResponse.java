@@ -1,4 +1,4 @@
-package com.example.lectana.models;
+package com.example.lectana.modelos;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -8,6 +8,9 @@ public class PuntosResponse {
     
     @SerializedName("mensaje")
     private String mensaje;
+    
+    @SerializedName("puntos")
+    private PuntosData puntos;
     
     @SerializedName("data")
     private PuntosData data;
@@ -28,8 +31,16 @@ public class PuntosResponse {
         this.mensaje = mensaje;
     }
     
+    public PuntosData getPuntos() {
+        return puntos != null ? puntos : data;
+    }
+    
+    public void setPuntos(PuntosData puntos) {
+        this.puntos = puntos;
+    }
+    
     public PuntosData getData() {
-        return data;
+        return data != null ? data : puntos;
     }
     
     public void setData(PuntosData data) {

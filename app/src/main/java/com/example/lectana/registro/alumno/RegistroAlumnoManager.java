@@ -3,7 +3,7 @@ package com.example.lectana.registro.alumno;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.example.lectana.models.AlumnoRegistro;
+import com.example.lectana.modelos.AlumnoRegistro;
 
 /**
  * Gestor para almacenar temporalmente los datos del registro de alumno

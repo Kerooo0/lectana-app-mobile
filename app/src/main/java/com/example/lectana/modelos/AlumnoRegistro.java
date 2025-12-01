@@ -1,4 +1,4 @@
-package com.example.lectana.models;
+package com.example.lectana.modelos;
 
 /**
  * Modelo para el registro de alumnos

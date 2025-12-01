@@ -31,12 +31,13 @@ import com.example.lectana.auth.SessionManager;
 import com.example.lectana.centro_ayuda;
 import com.example.lectana.estudiante.adapters.AvatarSeleccionAdapter;
 import com.example.lectana.estudiante.adapters.LogrosAdapter;
-import com.example.lectana.models.Item;
-import com.example.lectana.models.ItemsResponse;
-import com.example.lectana.models.Logro;
-import com.example.lectana.models.LogrosResponse;
-import com.example.lectana.models.PerfilAlumnoResponse;
-import com.example.lectana.models.EstadisticasLogrosResponse;
+import com.example.lectana.modelos.Item;
+import com.example.lectana.modelos.ItemsResponse;
+import com.example.lectana.modelos.Logro;
+import com.example.lectana.modelos.LogrosResponse;
+import com.example.lectana.modelos.PerfilAlumnoResponse;
+import com.example.lectana.modelos.PuntosResponse;
+import com.example.lectana.modelos.EstadisticasLogrosResponse;
 import com.example.lectana.services.ApiClient;
 import com.example.lectana.services.ItemsApiService;
 import com.example.lectana.services.LogrosApiService;
@@ -114,6 +115,17 @@ public class PerfilFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        
+        // Verificar si se compró un nuevo avatar en TiendaFragment
+        SharedPreferences prefs = requireContext().getSharedPreferences("avatar_prefs", android.content.Context.MODE_PRIVATE);
+        if (prefs.getBoolean("should_refresh_avatars", false)) {
+            Log.d(TAG, "Refrescando avatares después de compra en PerfilFragment");
+            // Limpiar el flag
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("should_refresh_avatars", false);
+            editor.apply();
+        }
+        
         // Recargar datos del perfil y logros al volver
         cargarDatosPerfil();
         cargarPuntosReales();
@@ -214,11 +226,12 @@ public class PerfilFragment extends Fragment {
     private void cargarPuntosReales() {
         String token = "Bearer " + sessionManager.getToken();
         
-        puntosApiService.obtenerPerfilAlumno(token).enqueue(new Callback<PerfilAlumnoResponse>() {
+        puntosApiService.obtenerMisPuntos(token).enqueue(new Callback<PuntosResponse>() {
             @Override
-            public void onResponse(Call<PerfilAlumnoResponse> call, Response<PerfilAlumnoResponse> response) {
+            public void onResponse(Call<PuntosResponse> call, Response<PuntosResponse> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
-                    puntosActuales = response.body().getData().getPuntos();
+                    PuntosResponse.PuntosData puntosData = response.body().getPuntos();
+                    puntosActuales = puntosData.getPuntos();
                     puntosEstudiantePerfil.setText(puntosActuales + " puntos");
                     Log.d(TAG, "Puntos cargados: " + puntosActuales);
                 } else {
@@ -228,7 +241,7 @@ public class PerfilFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<PerfilAlumnoResponse> call, Throwable t) {
+            public void onFailure(Call<PuntosResponse> call, Throwable t) {
                 Log.e(TAG, "Error de red al cargar puntos", t);
                 puntosEstudiantePerfil.setText("0 puntos");
             }
@@ -349,28 +362,40 @@ public class PerfilFragment extends Fragment {
         Button botonCancelar = bottomSheetView.findViewById(R.id.boton_cancelar);
 
         // Configurar RecyclerView
-        AvatarSeleccionAdapter avatarAdapter = new AvatarSeleccionAdapter(avatar -> {
-            // Al seleccionar un avatar
-            seleccionarAvatar(avatar);
-            bottomSheetDialog.dismiss();
+        AvatarSeleccionAdapter avatarAdapter = new AvatarSeleccionAdapter(new AvatarSeleccionAdapter.OnAvatarClickListener() {
+            @Override
+            public void onAvatarClick(Item avatar) {
+                // Al seleccionar un avatar
+                seleccionarAvatar(avatar);
+                bottomSheetDialog.dismiss();
+            }
+
+            @Override
+            public void onRemoveAvatarClick() {
+                // Al hacer click en "Quitar Avatar"
+                quitarAvatar();
+                bottomSheetDialog.dismiss();
+            }
         });
         
         recyclerViewAvatares.setLayoutManager(new GridLayoutManager(getContext(), 2));
         recyclerViewAvatares.setAdapter(avatarAdapter);
 
-        // Cargar avatares desbloqueados
+        // Cargar avatares comprados (mis items)
         progressBarAvatares.setVisibility(View.VISIBLE);
         recyclerViewAvatares.setVisibility(View.GONE);
 
         String token = "Bearer " + sessionManager.getToken();
-        itemsApiService.obtenerItemsDisponibles(token).enqueue(new Callback<ItemsResponse>() {
+        Log.d(TAG, "Cargando mis items (avatares comprados)...");
+        itemsApiService.obtenerMisItems(token).enqueue(new Callback<ItemsResponse>() {
             @Override
             public void onResponse(Call<ItemsResponse> call, Response<ItemsResponse> response) {
                 progressBarAvatares.setVisibility(View.GONE);
                 
                 if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
-                    // Filtrar solo avatares desbloqueados
-                    List<Item> avataresDesbloqueados = new ArrayList<>();
+                    Log.d(TAG, "Respuesta exitosa, convirtiendo items...");
+                    // Convertir los items de la respuesta
+                    List<Item> avataresMios = new ArrayList<>();
                     List<Item> items = new ArrayList<>();
                     for (ItemsResponse.Item itemResponse : response.body().getData()) {
                         Item item = new Item();
@@ -381,20 +406,23 @@ public class PerfilFragment extends Fragment {
                         item.setUrlImagen(itemResponse.getUrlImagen());
                         items.add(item);
                     }
-                    for (Item item : items) {
-                        if (item.isDesbloqueado()) {
-                            avataresDesbloqueados.add(item);
-                        }
-                    }
+                    avataresMios.addAll(items);
                     
-                    if (avataresDesbloqueados.isEmpty()) {
-                        // Mostrar mensaje de que no hay avatares, pero mantener visible el diálogo
-                        Toast.makeText(getContext(), "No tienes avatares desbloqueados. ¡Visita la tienda!", Toast.LENGTH_LONG).show();
-                        // No cerrar el diálogo, permitir que se siga viendo
+                    Log.d(TAG, "Total de avatares comprados: " + avataresMios.size());
+                    
+                    // Siempre mostrar la opción de quitar avatar
+                    avatarAdapter.setAvatares(avataresMios);
+                    avatarAdapter.addRemoveAvatarOption();
+                    avatarAdapter.setAvatarEquipado(avatarEquipadoActual);
+                    recyclerViewAvatares.setVisibility(View.VISIBLE);
+                    
+                    if (avataresMios.isEmpty()) {
+                        Log.d(TAG, "Sin avatares comprados, mostrando solo la opción de quitar avatar");
                     } else {
-                        avatarAdapter.setAvatares(avataresDesbloqueados);
-                        avatarAdapter.setAvatarEquipado(avatarEquipadoActual);
-                        recyclerViewAvatares.setVisibility(View.VISIBLE);
+                        Log.d(TAG, "Mostrando " + avataresMios.size() + " avatares en el bottom sheet");
+                        for (Item item : avataresMios) {
+                            Log.d(TAG, "Avatar: " + item.getNombre() + " - ID: " + item.getId());
+                        }
                     }
                 } else {
                     Toast.makeText(getContext(), "Error al cargar avatares", Toast.LENGTH_SHORT).show();
@@ -438,6 +466,24 @@ public class PerfilFragment extends Fragment {
         
         // TODO: Llamar al backend para guardar el avatar equipado cuando se agregue el campo al schema
         // actualizarAvatarEnBackend(avatar.getId());
+    }
+    
+    private void quitarAvatar() {
+        // Establecer el avatar actual como vacío
+        avatarEquipadoActual = "";
+        
+        // Restaurar la imagen de perfil al ícono predeterminado
+        fotoPerfilEstudiante.setImageResource(R.drawable.ic_person);
+        
+        // Guardar en SharedPreferences como vacío
+        guardarAvatarEnPreferencias("", "");
+        
+        Toast.makeText(getContext(), "Avatar desequipado", Toast.LENGTH_SHORT).show();
+        
+        Log.d(TAG, "Avatar desequipado");
+        
+        // TODO: Llamar al backend para limpiar el avatar equipado
+        // actualizarAvatarEnBackend("");
     }
     
     private void guardarAvatarEnPreferencias(String avatarId, String avatarUrl) {

@@ -21,7 +21,7 @@ import android.widget.Toast;
 
 import com.example.lectana.Login;
 import com.example.lectana.R;
-import com.example.lectana.models.AlumnoRegistro;
+import com.example.lectana.modelos.AlumnoRegistro;
 import com.example.lectana.network.RegistroAlumnoClient;
 import com.example.lectana.auth.SessionManager;
 
