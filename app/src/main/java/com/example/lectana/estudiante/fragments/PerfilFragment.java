@@ -66,7 +66,6 @@ public class PerfilFragment extends Fragment {
     private LinearLayout opcionCambiarAula;
     private LinearLayout opcionCentroAyuda;
     private LinearLayout opcionCerrarSesion;
-    private View botonIrTienda;
     private RecyclerView recyclerViewLogros;
     private ProgressBar progressBarLogros;
     
@@ -145,7 +144,6 @@ public class PerfilFragment extends Fragment {
         opcionCambiarAula = view.findViewById(R.id.opcion_cambiar_aula);
         opcionCentroAyuda = view.findViewById(R.id.opcion_centro_ayuda);
         opcionCerrarSesion = view.findViewById(R.id.opcion_cerrar_sesion);
-        botonIrTienda = view.findViewById(R.id.boton_ir_tienda);
         recyclerViewLogros = view.findViewById(R.id.recycler_view_logros);
         progressBarLogros = view.findViewById(R.id.progress_bar_logros);
     }
@@ -191,12 +189,6 @@ public class PerfilFragment extends Fragment {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             requireActivity().finish();
-        });
-
-        // Botón ir a tienda
-        botonIrTienda.setOnClickListener(v -> {
-            // TODO: Implementar navegación a tienda
-            Toast.makeText(getContext(), "Ir a Tienda", Toast.LENGTH_SHORT).show();
         });
     }
 

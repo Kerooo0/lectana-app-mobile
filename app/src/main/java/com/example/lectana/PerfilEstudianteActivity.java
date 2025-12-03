@@ -24,7 +24,6 @@ public class PerfilEstudianteActivity extends AppCompatActivity {
     private LinearLayout opcionCambiarPassword;
     private LinearLayout opcionCentroAyuda;
     private LinearLayout opcionCerrarSesion;
-    private View botonIrTienda;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +46,6 @@ public class PerfilEstudianteActivity extends AppCompatActivity {
         opcionCambiarPassword = findViewById(R.id.opcion_cambiar_password);
         opcionCentroAyuda = findViewById(R.id.opcion_centro_ayuda);
         opcionCerrarSesion = findViewById(R.id.opcion_cerrar_sesion);
-        botonIrTienda = findViewById(R.id.boton_ir_tienda);
     }
 
     private void configurarListeners() {
@@ -86,12 +84,6 @@ public class PerfilEstudianteActivity extends AppCompatActivity {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
-        });
-
-        // Botón ir a tienda
-        botonIrTienda.setOnClickListener(v -> {
-            // TODO: Implementar navegación a tienda
-            Toast.makeText(this, "Ir a Tienda", Toast.LENGTH_SHORT).show();
         });
 
         // Navegación inferior
