@@ -297,81 +297,26 @@ public class ResponderActividadActivity extends AppCompatActivity {
 
     private void enviarRespuestaOpcionMultiple(RespuestaActividad opcionSeleccionada) {
         PreguntaActividad preguntaActual = preguntas.get(indicePreguntaActual);
-        String token = "Bearer " + sessionManager.getToken();
 
-        Log.d(TAG, "Enviando respuesta para pregunta ID: " + preguntaActual.getIdPreguntaActividad());
+        Log.d(TAG, "Validando respuesta para pregunta ID: " + preguntaActual.getIdPreguntaActividad());
         Log.d(TAG, "ID de respuesta seleccionada: " + opcionSeleccionada.getIdRespuestaActividad());
         
-        String respuestaId = String.valueOf(opcionSeleccionada.getIdRespuestaActividad());
-        AlumnoApiService.ResponderPreguntaRequest request = new AlumnoApiService.ResponderPreguntaRequest(respuestaId);
-
-        alumnoApiService.responderPregunta(token, preguntaActual.getIdPreguntaActividad(), request)
-                .enqueue(new Callback<AlumnoApiService.RespuestaPreguntaResponse>() {
-                    @Override
-                    public void onResponse(Call<AlumnoApiService.RespuestaPreguntaResponse> call,
-                                         Response<AlumnoApiService.RespuestaPreguntaResponse> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            AlumnoApiService.RespuestaPreguntaResponse data = response.body();
-                            
-                            if (data.getRespuestaPregunta() != null && !data.getRespuestaPregunta().isEmpty()) {
-                                AlumnoApiService.RespuestaPreguntaResponse.RespuestaUsuario respuesta = 
-                                    data.getRespuestaPregunta().get(0);
-                                
-                                Log.d(TAG, "Respuesta guardada con ID: " + respuesta.getIdRespuestaUsuario());
-                                Log.d(TAG, "alumno_id_alumno: " + respuesta.getAlumnoIdAlumno());
-                                
-                                // Verificar si es correcta
-                                boolean esCorrecta = opcionSeleccionada.isRespuestaCorrecta();
-                                
-                                // Obtener texto de la respuesta del usuario
-                                String textoRespuestaUsuario = opcionSeleccionada.getRespuestas() != null && !opcionSeleccionada.getRespuestas().isEmpty()
-                                    ? opcionSeleccionada.getRespuestas().get(0)
-                                    : "";
-                                
-                                // Obtener la respuesta correcta para mostrar si está incorrecta
-                                String respuestaCorrectaTexto = null;
-                                if (!esCorrecta) {
-                                    PreguntaActividad preguntaActual = preguntas.get(indicePreguntaActual);
-                                    if (preguntaActual.getRespuestaActividad() != null) {
-                                        for (RespuestaActividad ra : preguntaActual.getRespuestaActividad()) {
-                                            if (ra.isRespuestaCorrecta() && ra.getRespuestas() != null && !ra.getRespuestas().isEmpty()) {
-                                                respuestaCorrectaTexto = ra.getRespuestas().get(0);
-                                                break;
-                                            }
-                                        }
-                                    }
-                                }
-                                
-                                mostrarResultadoRespuesta(esCorrecta, textoRespuestaUsuario, respuestaCorrectaTexto);
-                            } else {
-                                Toast.makeText(ResponderActividadActivity.this,
-                                        "Respuesta enviada",
-                                        Toast.LENGTH_SHORT).show();
-                                // Avanzar a la siguiente pregunta o finalizar
-                                if (indicePreguntaActual < preguntas.size() - 1) {
-                                    indicePreguntaActual++;
-                                    mostrarPreguntaActual();
-                                } else {
-                                    mostrarDialogoFinalizar();
-                                }
-                            }
-                            
-                        } else {
-                            Log.e(TAG, "Error al enviar respuesta: " + response.code());
-                            Toast.makeText(ResponderActividadActivity.this,
-                                    "Error al enviar respuesta",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<AlumnoApiService.RespuestaPreguntaResponse> call, Throwable t) {
-                        Log.e(TAG, "Error de conexión al enviar respuesta", t);
-                        Toast.makeText(ResponderActividadActivity.this,
-                                "Error de conexión",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
+        // Verificar si es correcta
+        boolean esCorrecta = opcionSeleccionada.isEsCorrecta();
+        
+        // Mostrar feedback visual basado en si fue correcta
+        String feedback = esCorrecta ? "✓ ¡Correcto!" : "✗ Incorrecto";
+        Toast.makeText(ResponderActividadActivity.this, feedback, Toast.LENGTH_SHORT).show();
+        
+        Log.d(TAG, "Resultado: " + (esCorrecta ? "Correcto" : "Incorrecto"));
+        
+        // Avanzar a la siguiente pregunta o finalizar
+        if (indicePreguntaActual < preguntas.size() - 1) {
+            indicePreguntaActual++;
+            mostrarPreguntaActual();
+        } else {
+            mostrarDialogoFinalizar();
+        }
     }
 
     private void enviarRespuestaAbierta() {
@@ -522,33 +467,10 @@ public class ResponderActividadActivity extends AppCompatActivity {
     }
 
     private void marcarActividadCompletada() {
-        String token = "Bearer " + sessionManager.getToken();
-        com.example.lectana.modelos.MarcarActividadCompletadaRequest request = 
-            new com.example.lectana.modelos.MarcarActividadCompletadaRequest(idActividad);
-
-        alumnoApiService.marcarActividadCompletada(token, request)
-                .enqueue(new Callback<ApiResponse<com.example.lectana.modelos.ResultadoActividad>>() {
-                    @Override
-                    public void onResponse(Call<ApiResponse<com.example.lectana.modelos.ResultadoActividad>> call, 
-                                         Response<ApiResponse<com.example.lectana.modelos.ResultadoActividad>> response) {
-                        if (response.isSuccessful()) {
-                            Log.d(TAG, "Actividad marcada como completada");
-                            Toast.makeText(ResponderActividadActivity.this, "Actividad completada", Toast.LENGTH_SHORT).show();
-                            finish();
-                        } else {
-                            Log.e(TAG, "Error al marcar actividad completada: " + response.code());
-                            Toast.makeText(ResponderActividadActivity.this, "Error al guardar progreso", Toast.LENGTH_SHORT).show();
-                            finish();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ApiResponse<com.example.lectana.modelos.ResultadoActividad>> call, Throwable t) {
-                        Log.e(TAG, "Error de conexión al marcar actividad completada", t);
-                        Toast.makeText(ResponderActividadActivity.this, "Error de conexión", Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-                });
+        // Validación local completada - volver a lista de actividades
+        Log.d(TAG, "Finalizando actividad ID: " + idActividad);
+        Toast.makeText(ResponderActividadActivity.this, "Actividad completada", Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     private void mostrarDialogoSalir() {

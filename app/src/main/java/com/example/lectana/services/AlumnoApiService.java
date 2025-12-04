@@ -120,8 +120,8 @@ public interface AlumnoApiService {
 
     /**
      * Request para responder una pregunta
-     * - Para preguntas de opción múltiple: {"respuesta": "ID_como_string"}
-     * - Para preguntas abiertas: {"respuesta": "texto de la respuesta"}
+     * Solo envía: {"respuesta": "texto de la respuesta"}
+     * El backend verifica correctness localmente y almacena en respuesta_usuario
      */
     class ResponderPreguntaRequest {
         @SerializedName("respuesta")

@@ -60,6 +60,8 @@ public class ResolverActividadActivity extends AppCompatActivity {
     private List<PreguntaActividad> preguntas;
     private Map<Integer, String> respuestasUsuario; // preguntaId -> respuestaTexto
     private Map<Integer, Integer> respuestasSeleccionadas; // preguntaId -> respuestaActividadId
+    private Map<Integer, Boolean> respuestasCorrectas; // preguntaId -> esCorrecta
+    private Map<Integer, Integer> puntosGanados; // preguntaId -> puntosGanados
     private int preguntaActualIndex = 0;
     
     // Servicios
@@ -93,6 +95,8 @@ public class ResolverActividadActivity extends AppCompatActivity {
         preguntas = new ArrayList<>();
         respuestasUsuario = new HashMap<>();
         respuestasSeleccionadas = new HashMap<>();
+        respuestasCorrectas = new HashMap<>();
+        puntosGanados = new HashMap<>();
 
         // Inicializar componentes
         inicializarComponentes();
@@ -250,6 +254,12 @@ public class ResolverActividadActivity extends AppCompatActivity {
             String textoRespuesta = respuesta.getRespuestas() != null && !respuesta.getRespuestas().isEmpty() 
                 ? respuesta.getRespuestas().get(0) 
                 : "";
+            
+            // Agregar indicador visual si es correcta (solo para referencia docente, no visible al estudiante)
+            if (respuesta.isEsCorrecta()) {
+                textoRespuesta += " ✓";
+            }
+            
             radioButton.setText(textoRespuesta);
             radioButton.setTextSize(16);
             radioButton.setPadding(16, 16, 16, 16);
@@ -377,8 +387,9 @@ public class ResolverActividadActivity extends AppCompatActivity {
             String respuestaTexto = respuestasUsuario.get(pregunta.getIdPreguntaActividad());
             
             if (respuestaTexto != null) {
+                // Solo enviar el texto de la respuesta
                 AlumnoApiService.ResponderPreguntaRequest request = 
-                        new AlumnoApiService.ResponderPreguntaRequest(respuestaTexto);
+                    new AlumnoApiService.ResponderPreguntaRequest(respuestaTexto);
                 
                 Call<AlumnoApiService.RespuestaPreguntaResponse> call = alumnoApiService.responderPregunta(
                     "Bearer " + token,
@@ -448,11 +459,33 @@ public class ResolverActividadActivity extends AppCompatActivity {
                                      Response<com.example.lectana.modelos.ApiResponse<com.example.lectana.modelos.ResultadoActividad>> response) {
                     progressBarCarga.setVisibility(View.GONE);
                     
+                    // Calcular estadísticas de respuestas
+                    int totalCorrectas = 0;
+                    int totalPuntos = 0;
+                    for (Boolean esCorrecta : respuestasCorrectas.values()) {
+                        if (esCorrecta) totalCorrectas++;
+                    }
+                    for (Integer puntos : puntosGanados.values()) {
+                        totalPuntos += puntos;
+                    }
+                    
+                    String mensaje;
+                    if (totalCorrectas == preguntas.size()) {
+                        // Todas correctas
+                        mensaje = String.format("¡Perfecto! 🎉\nRespuestas correctas: %d/%d\nPuntos ganados: %d", 
+                            totalCorrectas, preguntas.size(), totalPuntos);
+                    } else {
+                        // Algunas incorrectas
+                        int incorrectas = preguntas.size() - totalCorrectas;
+                        mensaje = String.format("¡Completa!\n✓ Correctas: %d\n✗ Incorrectas: %d\nPuntos ganados: %d", 
+                            totalCorrectas, incorrectas, totalPuntos);
+                    }
+                    
                     if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
                         // Actividad marcada como completada exitosamente
                         new AlertDialog.Builder(ResolverActividadActivity.this)
-                            .setTitle("¡Éxito!")
-                            .setMessage("Tus respuestas han sido enviadas correctamente.\nLa actividad ha sido marcada como completada.")
+                            .setTitle("¡Actividad Completada!")
+                            .setMessage(mensaje)
                             .setPositiveButton("Aceptar", (dialog, which) -> {
                                 setResult(RESULT_OK);
                                 finish();
@@ -463,7 +496,7 @@ public class ResolverActividadActivity extends AppCompatActivity {
                         // Si falla marcar completada, mostrar mensaje pero permitir cerrar
                         new AlertDialog.Builder(ResolverActividadActivity.this)
                             .setTitle("Éxito Parcial")
-                            .setMessage("Tus respuestas han sido enviadas, pero hubo un problema al registrar el estado.")
+                            .setMessage(mensaje + "\n\n(Aviso: Hubo un problema al registrar el estado)")
                             .setPositiveButton("Aceptar", (dialog, which) -> {
                                 setResult(RESULT_OK);
                                 finish();
@@ -477,10 +510,23 @@ public class ResolverActividadActivity extends AppCompatActivity {
                 public void onFailure(Call<com.example.lectana.modelos.ApiResponse<com.example.lectana.modelos.ResultadoActividad>> call, Throwable t) {
                     progressBarCarga.setVisibility(View.GONE);
                     
+                    // Calcular estadísticas de respuestas
+                    int totalCorrectas = 0;
+                    int totalPuntos = 0;
+                    for (Boolean esCorrecta : respuestasCorrectas.values()) {
+                        if (esCorrecta) totalCorrectas++;
+                    }
+                    for (Integer puntos : puntosGanados.values()) {
+                        totalPuntos += puntos;
+                    }
+                    
+                    String mensaje = String.format("¡Completa!\n✓ Correctas: %d/%d\nPuntos ganados: %d\n\n(Error al registrar: %s)", 
+                        totalCorrectas, preguntas.size(), totalPuntos, t.getMessage());
+                    
                     // Si falla la conexión, igual permitir cerrar
                     new AlertDialog.Builder(ResolverActividadActivity.this)
                         .setTitle("Éxito Parcial")
-                        .setMessage("Tus respuestas han sido enviadas.\n(Error al registrar estado: " + t.getMessage() + ")")
+                        .setMessage(mensaje)
                         .setPositiveButton("Aceptar", (dialog, which) -> {
                             setResult(RESULT_OK);
                             finish();

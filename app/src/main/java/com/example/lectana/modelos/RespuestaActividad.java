@@ -18,6 +18,9 @@ public class RespuestaActividad {
     @SerializedName("respuesta_correcta")
     private int respuestaCorrecta;
     
+    @SerializedName("es_correcta")
+    private boolean esCorrecta;
+    
     @SerializedName("pregunta_actividad_id_pregunta_actividad")
     private int preguntaActividadId;
 
@@ -53,6 +56,14 @@ public class RespuestaActividad {
     // Helper method for compatibility
     public void setRespuestaCorrecta(boolean respuestaCorrecta) {
         this.respuestaCorrecta = respuestaCorrecta ? 1 : 0;
+    }
+
+    public boolean isEsCorrecta() {
+        return esCorrecta;
+    }
+
+    public void setEsCorrecta(boolean esCorrecta) {
+        this.esCorrecta = esCorrecta;
     }
 
     public int getPreguntaActividadId() {

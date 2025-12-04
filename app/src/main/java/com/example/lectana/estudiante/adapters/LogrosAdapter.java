@@ -78,36 +78,43 @@ public class LogrosAdapter extends RecyclerView.Adapter<LogrosAdapter.LogroViewH
 
             // Aplicar estilo según estado (bloqueado/desbloqueado)
             if (logro.isDesbloqueado()) {
-                // DESBLOQUEADO: Mostrar en color normal
+                // DESBLOQUEADO: Mostrar en color normal y destacado
                 badgeDesbloqueado.setVisibility(View.VISIBLE);
                 progresoLogro.setVisibility(View.GONE);
                 textoProgresoLogro.setVisibility(View.GONE);
                 
-                // Opacidad 100% - totalmente visible
+                // Opacidad 100% - totalmente visible y con color
                 itemView.setAlpha(1.0f);
                 imagenLogro.setAlpha(1.0f);
                 nombreLogro.setAlpha(1.0f);
                 descripcionLogro.setAlpha(1.0f);
                 
-                // Color normal para textos
-                nombreLogro.setTextColor(itemView.getContext().getResources().getColor(R.color.gris_oscuro));
-                descripcionLogro.setTextColor(itemView.getContext().getResources().getColor(R.color.gris_medio));
+                // Color normal para textos desbloqueados
+                nombreLogro.setTextColor(itemView.getContext().getResources().getColor(R.color.negro));
+                descripcionLogro.setTextColor(itemView.getContext().getResources().getColor(R.color.gris_oscuro));
+                
+                // Sin filtro grisáceo - imagen en color completo
+                imagenLogro.setColorFilter(null);
                 
             } else {
-                // BLOQUEADO: Mostrar grisáceo/transparente
+                // BLOQUEADO: Mostrar grisáceo/transparente y con progreso
                 badgeDesbloqueado.setVisibility(View.GONE);
                 progresoLogro.setVisibility(View.VISIBLE);
                 textoProgresoLogro.setVisibility(View.VISIBLE);
                 
-                // Opacidad 40% - efecto transparente/grisáceo
-                itemView.setAlpha(0.4f);
-                imagenLogro.setAlpha(0.4f);
-                nombreLogro.setAlpha(0.5f);
-                descripcionLogro.setAlpha(0.5f);
+                // Opacidad 50% - efecto transparente/grisáceo más evidente
+                itemView.setAlpha(0.55f);
+                imagenLogro.setAlpha(0.55f);
+                nombreLogro.setAlpha(0.6f);
+                descripcionLogro.setAlpha(0.6f);
                 
                 // Color gris para textos bloqueados
                 nombreLogro.setTextColor(itemView.getContext().getResources().getColor(R.color.gris_medio));
                 descripcionLogro.setTextColor(itemView.getContext().getResources().getColor(R.color.gris_claro));
+                
+                // Aplicar filtro grisáceo a la imagen bloqueada
+                imagenLogro.setColorFilter(itemView.getContext().getResources().getColor(R.color.gris_claro), 
+                    android.graphics.PorterDuff.Mode.MULTIPLY);
             }
 
             // Cargar imagen
