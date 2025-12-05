@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <!-- Imagen del logro -->
+        <ImageView
+            android:id="@+id/imagen_logro_expandido"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="Logro"
+            android:layout_marginEnd="16dp"
+            android:background="@color/gris_claro"
+            android:layout_gravity="center_vertical" />
+
+        <!-- Información del logro -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical">
+
+            <!-- Nombre y badge -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:id="@+id/nombre_logro_expandido"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Nombre Logro"
+                    android:textColor="@color/negro"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <!-- Badge desbloqueado -->
+                <TextView
+                    android:id="@+id/badge_desbloqueado_expandido"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/boton_verde"
+                    android:paddingStart="8dp"
+                    android:paddingTop="2dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="2dp"
+                    android:text="✓"
+                    android:textColor="@color/blanco"
+                    android:textSize="12sp"
+                    android:visibility="gone"
+                    android:layout_marginStart="8dp" />
+
+            </LinearLayout>
+
+            <!-- Descripción -->
+            <TextView
+                android:id="@+id/descripcion_logro_expandido"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Descripción del logro"
+                android:textColor="@color/gris_medio"
+                android:textSize="12sp"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Barra de progreso (para logros bloqueados) -->
+            <ProgressBar
+                android:id="@+id/progreso_logro_expandido"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="6dp"
+                android:max="100"
+                android:progress="0"
+                android:progressTint="@color/verde_principal"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/texto_progreso_logro_expandido"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="0%"
+                android:textAlignment="center"
+                android:textColor="@color/gris_medio"
+                android:textSize="10sp"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

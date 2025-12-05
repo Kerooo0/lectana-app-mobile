@@ -31,6 +31,7 @@ import com.example.lectana.auth.SessionManager;
 import com.example.lectana.centro_ayuda;
 import com.example.lectana.estudiante.adapters.AvatarSeleccionAdapter;
 import com.example.lectana.estudiante.adapters.LogrosAdapter;
+import com.example.lectana.estudiante.adapters.LogrosExpandidosAdapter;
 import com.example.lectana.modelos.Item;
 import com.example.lectana.modelos.ItemsResponse;
 import com.example.lectana.modelos.Logro;
@@ -68,16 +69,19 @@ public class PerfilFragment extends Fragment {
     private LinearLayout opcionCerrarSesion;
     private RecyclerView recyclerViewLogros;
     private ProgressBar progressBarLogros;
+    private LinearLayout headerMisLogros;
     
     // Gestión de sesión
     private SessionManager sessionManager;
     
     // Adapter y API
     private LogrosAdapter logrosAdapter;
+    private LogrosExpandidosAdapter logrosExpandidosAdapter;
     private LogrosApiService logrosApiService;
     private ItemsApiService itemsApiService;
     private PuntosApiService puntosApiService;
     private String avatarEquipadoActual;
+    private List<Logro> logrosActuales = new ArrayList<>();
     
     // Puntos del estudiante
     private int puntosActuales = 0;
@@ -117,13 +121,22 @@ public class PerfilFragment extends Fragment {
         
         // Verificar si se compró un nuevo avatar en TiendaFragment
         SharedPreferences prefs = requireContext().getSharedPreferences("avatar_prefs", android.content.Context.MODE_PRIVATE);
-        if (prefs.getBoolean("should_refresh_avatars", false)) {
+        boolean shouldRefreshAvatars = prefs.getBoolean("should_refresh_avatars", false);
+        boolean shouldRefreshLogros = prefs.getBoolean("should_refresh_logros", false);
+        
+        if (shouldRefreshAvatars) {
             Log.d(TAG, "Refrescando avatares después de compra en PerfilFragment");
-            // Limpiar el flag
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean("should_refresh_avatars", false);
-            editor.apply();
         }
+        
+        if (shouldRefreshLogros) {
+            Log.d(TAG, "Refrescando logros después de desbloqueo en PerfilFragment");
+        }
+        
+        // Limpiar flags
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("should_refresh_avatars", false);
+        editor.putBoolean("should_refresh_logros", false);
+        editor.apply();
         
         // Recargar datos del perfil y logros al volver
         cargarDatosPerfil();
@@ -146,6 +159,7 @@ public class PerfilFragment extends Fragment {
         opcionCerrarSesion = view.findViewById(R.id.opcion_cerrar_sesion);
         recyclerViewLogros = view.findViewById(R.id.recycler_view_logros);
         progressBarLogros = view.findViewById(R.id.progress_bar_logros);
+        headerMisLogros = view.findViewById(R.id.header_mis_logros);
     }
 
     private void configurarRecyclerViewLogros() {
@@ -157,6 +171,9 @@ public class PerfilFragment extends Fragment {
     private void configurarListeners() {
         // Botón editar foto - Mostrar bottom sheet de selección
         botonEditarFoto.setOnClickListener(v -> mostrarBottomSheetSeleccionAvatar());
+
+        // Header Mis Logros - Mostrar bottom sheet expandido de logros
+        headerMisLogros.setOnClickListener(v -> mostrarBottomSheetLogros());
 
         // Editar Datos Personales - REMOVIDO según requisito del cliente
         // Solo se permite cambiar la contraseña, no los datos personales
@@ -312,8 +329,10 @@ public class PerfilFragment extends Fragment {
 
                 if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
                     Log.d(TAG, "Logros cargados exitosamente: " + response.body().getData().size());
+                    // Guardar los logros actuales para usarlos en el bottom sheet
+                    logrosActuales = response.body().getData();
                     if (logrosAdapter != null) {
-                        logrosAdapter.setLogros(response.body().getData());
+                        logrosAdapter.setLogros(logrosActuales);
                     }
                     if (recyclerViewLogros != null) {
                         recyclerViewLogros.setVisibility(View.VISIBLE);
@@ -501,5 +520,52 @@ public class PerfilFragment extends Fragment {
                     .into(fotoPerfilEstudiante);
             Log.d(TAG, "Avatar cargado desde SharedPreferences: " + avatarId);
         }
+    }
+
+    private void mostrarBottomSheetLogros() {
+        // Crear el BottomSheetDialog
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
+        View bottomSheetView = getLayoutInflater().inflate(R.layout.bottom_sheet_logros, null);
+        bottomSheetDialog.setContentView(bottomSheetView);
+
+        // Referencias a las vistas
+        RecyclerView recyclerViewLogrosExpandido = bottomSheetView.findViewById(R.id.recycler_view_logros_expandido);
+        TextView estadisticaDesbloqueados = bottomSheetView.findViewById(R.id.estadistica_desbloqueados);
+        TextView estadisticaTotales = bottomSheetView.findViewById(R.id.estadistica_totales);
+        ImageView btnCerrar = bottomSheetView.findViewById(R.id.btn_cerrar_logros);
+        TextView textoSinLogros = bottomSheetView.findViewById(R.id.texto_sin_logros);
+
+        // Configurar RecyclerView
+        logrosExpandidosAdapter = new LogrosExpandidosAdapter();
+        recyclerViewLogrosExpandido.setLayoutManager(new androidx.recyclerview.widget.LinearLayoutManager(getContext()));
+        recyclerViewLogrosExpandido.setAdapter(logrosExpandidosAdapter);
+
+        // Cargar logros actuales
+        if (logrosActuales != null && !logrosActuales.isEmpty()) {
+            logrosExpandidosAdapter.setLogros(logrosActuales);
+            recyclerViewLogrosExpandido.setVisibility(View.VISIBLE);
+            textoSinLogros.setVisibility(View.GONE);
+
+            // Contar logros desbloqueados
+            int desbloqueados = 0;
+            for (Logro logro : logrosActuales) {
+                if (logro.isDesbloqueado()) {
+                    desbloqueados++;
+                }
+            }
+            estadisticaDesbloqueados.setText(String.valueOf(desbloqueados));
+            estadisticaTotales.setText(String.valueOf(logrosActuales.size()));
+        } else {
+            recyclerViewLogrosExpandido.setVisibility(View.GONE);
+            textoSinLogros.setVisibility(View.VISIBLE);
+            estadisticaDesbloqueados.setText("0");
+            estadisticaTotales.setText("0");
+        }
+
+        // Botón cerrar
+        btnCerrar.setOnClickListener(v -> bottomSheetDialog.dismiss());
+
+        // Mostrar el BottomSheet
+        bottomSheetDialog.show();
     }
 }

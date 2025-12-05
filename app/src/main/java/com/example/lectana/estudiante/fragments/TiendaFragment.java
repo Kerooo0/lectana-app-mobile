@@ -424,6 +424,15 @@ public class TiendaFragment extends Fragment implements ItemsAdapter.OnItemClick
                     SharedPreferences prefs = requireContext().getSharedPreferences("avatar_prefs", android.content.Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putBoolean("should_refresh_avatars", true);
+                    
+                    // Si hay logros desbloqueados, establecer flag para refrescar logros
+                    if (response.body().getLogrosDesbloqueados() != null && 
+                        !response.body().getLogrosDesbloqueados().isEmpty()) {
+                        editor.putBoolean("should_refresh_logros", true);
+                        Log.d(TAG, "Flag 'should_refresh_logros' establecido a true - Logros desbloqueados: " + 
+                              response.body().getLogrosDesbloqueados().size());
+                    }
+                    
                     editor.apply();
                     Log.d(TAG, "Flag 'should_refresh_avatars' establecido a true");
                     
