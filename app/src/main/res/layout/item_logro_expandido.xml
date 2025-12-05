@@ -76,8 +76,10 @@
                 android:layout_height="wrap_content"
                 android:text="Descripción del logro"
                 android:textColor="@color/gris_medio"
-                android:textSize="12sp"
-                android:layout_marginBottom="8dp" />
+                android:textSize="13sp"
+                android:layout_marginBottom="8dp"
+                android:maxLines="3"
+                android:ellipsize="end" />
 
             <!-- Barra de progreso (para logros bloqueados) -->
             <ProgressBar

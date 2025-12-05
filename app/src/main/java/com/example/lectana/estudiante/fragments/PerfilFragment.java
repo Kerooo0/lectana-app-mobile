@@ -319,46 +319,90 @@ public class PerfilFragment extends Fragment {
 
         String token = "Bearer " + sessionManager.getToken();
 
-        // Usar obtenerLogrosDisponibles que trae TODOS los logros (bloqueados y desbloqueados)
+        // Cargar logros bloqueados
         logrosApiService.obtenerLogrosDisponibles(token).enqueue(new Callback<LogrosResponse>() {
             @Override
             public void onResponse(Call<LogrosResponse> call, Response<LogrosResponse> response) {
-                if (progressBarLogros != null) {
-                    progressBarLogros.setVisibility(View.GONE);
-                }
-
                 if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
-                    Log.d(TAG, "Logros cargados exitosamente: " + response.body().getData().size());
-                    // Guardar los logros actuales para usarlos en el bottom sheet
-                    logrosActuales = response.body().getData();
-                    if (logrosAdapter != null) {
-                        logrosAdapter.setLogros(logrosActuales);
+                    List<Logro> logrosBloqueados = response.body().getData();
+                    Log.d(TAG, "Logros bloqueados cargados: " + logrosBloqueados.size());
+                    
+                    // Marcar todos como bloqueados (desbloqueado = false)
+                    for (Logro logro : logrosBloqueados) {
+                        logro.setDesbloqueado(false);
                     }
-                    if (recyclerViewLogros != null) {
-                        recyclerViewLogros.setVisibility(View.VISIBLE);
-                    }
+                    
+                    // Ahora cargar logros desbloqueados
+                    logrosApiService.obtenerMisLogros(token).enqueue(new Callback<LogrosResponse>() {
+                        @Override
+                        public void onResponse(Call<LogrosResponse> call, Response<LogrosResponse> response) {
+                            if (response.isSuccessful() && response.body() != null && response.body().isOk()) {
+                                List<Logro> logrosDesbloqueados = response.body().getData();
+                                Log.d(TAG, "Logros desbloqueados cargados: " + logrosDesbloqueados.size());
+                                
+                                // Marcar todos como desbloqueados (desbloqueado = true)
+                                for (Logro logro : logrosDesbloqueados) {
+                                    logro.setDesbloqueado(true);
+                                }
+                                
+                                // Combinar ambas listas
+                                logrosActuales = new ArrayList<>();
+                                logrosActuales.addAll(logrosDesbloqueados);
+                                logrosActuales.addAll(logrosBloqueados);
+                                
+                                Log.d(TAG, "Total de logros combinados: " + logrosActuales.size());
+                                Log.d(TAG, "Desbloqueados: " + logrosDesbloqueados.size() + ", Bloqueados: " + logrosBloqueados.size());
+                                
+                                if (progressBarLogros != null) {
+                                    progressBarLogros.setVisibility(View.GONE);
+                                }
+                                
+                                if (logrosAdapter != null) {
+                                    logrosAdapter.setLogros(logrosActuales);
+                                }
+                                if (recyclerViewLogros != null) {
+                                    recyclerViewLogros.setVisibility(View.VISIBLE);
+                                }
+                            } else {
+                                Log.e(TAG, "Error al cargar logros desbloqueados");
+                                finalizarCargaLogros(logrosBloqueados);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<LogrosResponse> call, Throwable t) {
+                            Log.e(TAG, "Error de red al cargar logros desbloqueados", t);
+                            finalizarCargaLogros(logrosBloqueados);
+                        }
+                    });
                 } else {
-                    Log.e(TAG, "Error al cargar logros: " + response.message());
-                    Toast.makeText(getContext(), "No se pudieron cargar los logros", Toast.LENGTH_SHORT).show();
-                    if (recyclerViewLogros != null) {
-                        recyclerViewLogros.setVisibility(View.VISIBLE); // Mostrar vacío
-                    }
+                    Log.e(TAG, "Error al cargar logros bloqueados: " + response.message());
+                    finalizarCargaLogros(new ArrayList<>());
                 }
             }
 
             @Override
             public void onFailure(Call<LogrosResponse> call, Throwable t) {
-                if (progressBarLogros != null) {
-                    progressBarLogros.setVisibility(View.GONE);
-                }
-                if (recyclerViewLogros != null) {
-                    recyclerViewLogros.setVisibility(View.VISIBLE);
-                }
-                
-                Log.e(TAG, "Error de red al cargar logros", t);
-                Toast.makeText(getContext(), "Error de conexión. Verifica tu internet.", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Error de red al cargar logros bloqueados", t);
+                finalizarCargaLogros(new ArrayList<>());
             }
         });
+    }
+
+    private void finalizarCargaLogros(List<Logro> logros) {
+        if (progressBarLogros != null) {
+            progressBarLogros.setVisibility(View.GONE);
+        }
+        logrosActuales = logros;
+        if (logrosAdapter != null) {
+            logrosAdapter.setLogros(logrosActuales);
+        }
+        if (recyclerViewLogros != null) {
+            recyclerViewLogros.setVisibility(View.VISIBLE);
+        }
+        if (logros.isEmpty()) {
+            Toast.makeText(getContext(), "No se pudieron cargar los logros", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void mostrarBottomSheetSeleccionAvatar() {

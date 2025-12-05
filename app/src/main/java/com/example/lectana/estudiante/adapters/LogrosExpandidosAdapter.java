@@ -105,14 +105,14 @@ public class LogrosExpandidosAdapter extends RecyclerView.Adapter<LogrosExpandid
                 // Opacidad 60% - más visible que en el view compacto
                 itemView.setAlpha(0.65f);
                 imagenLogro.setAlpha(0.65f);
-                nombreLogro.setAlpha(0.7f);
-                descripcionLogro.setAlpha(0.7f);
+                nombreLogro.setAlpha(0.9f);
+                descripcionLogro.setAlpha(0.85f);
                 
-                // Colores grises
-                nombreLogro.setTextColor(itemView.getContext().getResources().getColor(R.color.gris_medio));
-                descripcionLogro.setTextColor(itemView.getContext().getResources().getColor(R.color.gris_claro));
+                // Colores más claros para mejor legibilidad
+                nombreLogro.setTextColor(itemView.getContext().getResources().getColor(R.color.gris_oscuro));
+                descripcionLogro.setTextColor(itemView.getContext().getResources().getColor(R.color.gris_medio));
                 
-                // Filtro grisáceo
+                // Filtro grisáceo más suave
                 imagenLogro.setColorFilter(itemView.getContext().getResources().getColor(R.color.gris_claro), 
                     android.graphics.PorterDuff.Mode.MULTIPLY);
             }
